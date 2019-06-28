@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the parser_ane index.")
+
+def main(request):
+    return render(request, 'parser_app/main.html', {})
 # Create your views here.
