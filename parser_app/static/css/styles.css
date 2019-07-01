@@ -1,0 +1,152 @@
+body {
+	color: #8f8f8f;
+	font: 12px Tahoma, sans-serif;
+	background: #f8f8f8 url(../images/bg.png);
+	border-top: 5px solid #7e7e7e;
+	margin: 0;
+}
+
+wrapper {
+	max-width: 1200px;
+	margin: 20;
+}
+
+/*ЛОГОТИП*/
+header {
+	padding: 20px 0;
+}
+img {
+	border: 0;
+}
+
+
+/* НАВИГАЦИОННОЕ МЕНЮ*/
+
+nav {
+	background: #f3f3f3;
+	border: 1px solid #e7e7e7;
+}
+
+nav a {
+	text-decoration: none;
+}
+
+nav ul {
+	margin: 0;
+	padding: 0;
+}
+
+nav li {
+	list-style-position: inside;
+	font: 20px 'Oswald';
+	padding: 0px;
+}
+
+.top-menu li {
+	display: inline-block;
+	padding: 10px 30px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.top-menu li.active,  .top-menu li:hover{
+	background:#870806;
+	color: #fff;
+}
+
+
+.top-menu a {
+	color: #b2b2b2;
+}
+
+/*КОНТЕНТ*/
+p {
+	margin: 20px 0;
+}
+section {
+	padding-bottom: 50px;
+	min-height: 70vh;
+}
+
+section > h2 {
+	background: #29c5e6;
+	font: 30px 'Oswald';
+	font-weight: 300;
+	color: #fff;
+	padding: 0 10px;
+	margin: 30px 0 0 0;
+}
+
+section > p, section > table {
+	font-size: 16px;
+}
+
+h1 {
+	display: inline-block;
+	color: #7e7e7e;
+	font: 40px/40px 'Oswald';
+	background: url(../images/bg.png);
+	margin: 0;
+	padding: 0 10px;
+}
+
+/*ПОДВАЛ САЙТА*/
+
+footer {
+	background: #7e7e7e;
+	color: #dbdbdb;
+	font-size: 14px;
+}
+
+#footer {
+	max-width: 960px;
+	margin: auto;
+	padding: 10px 0;
+	height: 90px;
+}
+
+footer h3 {
+	font: 14px 'Oswald';
+	color: #fff;
+	border-bottom: 1px solid #919191;
+	margin: 0 0 10px 0;
+}
+
+footer a {
+	color: #dbdbdb;
+}
+
+
+footer p {
+	margin: 5px 0;
+}
+
+#footer-logo {
+	float: right;
+	margin-top: 20px;
+	font-size: 10px;
+	text-align: right;
+}
+
+table { border-collapse: collapse; border-spacing: 0; }
+tr:nth-child(even) {background-color: #f2f2f2;}
+tr:nth-child(odd) {background-color: #ffffff;}
+tr:hover {background-color: #e5eef9;}
+table, th, td {
+    border-left: none;
+    border-bottom: none;
+    border-top: none;
+}
+table, th, td {
+    border-right: 1px solid #ddd;
+    padding: 3px;
+    font-size: 14px;
+}
+thead th{
+    background: lightgray;
+    font-weight: bold;
+}
+
+table > tfoot {
+font-weight: bold;
+}

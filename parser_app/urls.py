@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.main, name='main'),
+    path('', views.index, name='index'),
+    path('getNewSnap', views.get_snap, name='getSnap')
 ]

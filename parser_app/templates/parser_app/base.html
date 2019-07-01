@@ -1,0 +1,41 @@
+{% load static %}
+
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<title>{% block title %}{% endblock %}</title>
+	<link rel="stylesheet" href="{% static "css/styles.css" %}" type="text/css">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300" type="text/css">
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div id="wrapper">
+		<header>
+			<a href="/"><img src="{% static "images/ane home logo.png" %}" alt="Ane home logo"></a>
+		</header>
+		<nav>
+			<ul class="top-menu">
+				<li class="{% block classhome     %}{% endblock %}"><a href="/">Главная</a></li>
+				<li class="{% block classsnaps    %}{% endblock %}"><a href="/snaps/">Снапшоты</li>
+                <li class="{% block classsnaps_nonfood    %}{% endblock %}"><a href="/nonfood_snaps/">Снапшоты непродовольственные</li>
+				<li class="{% block classdynamics %}{% endblock %}"><a href="/dynamics/">Динамика цен</a></li>
+				<li class="{% block classcp       %}{% endblock %}"><a href="/cp/">Контрольная панель</a></li>
+			</ul>
+		</nav>
+
+		<section>
+			{% block real_content %}
+            {% endblock %}
+		</section>
+	</div>
+	<footer>
+		<div id="footer">
+			<p>Выполнено Эдуардом Поконечным, 2018 &#169</p>
+		</div>
+	</footer>
+</body>
+</html>
