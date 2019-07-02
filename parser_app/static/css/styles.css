@@ -69,10 +69,10 @@ section {
 }
 
 section > h2 {
-	background: #29c5e6;
+	/*background: #f8f8f8;*/
 	font: 30px 'Oswald';
 	font-weight: 300;
-	color: #fff;
+	color: #FFFFFF;
 	padding: 0 10px;
 	margin: 30px 0 0 0;
 }

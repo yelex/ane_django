@@ -1,0 +1,209 @@
+﻿id;type;cat_title;URL;keyword;keywords_cons;keywords_pro
+1;food;Говядина (кроме бескостного мяса);https://online.globus.ru/search/?section_id=3782&q=%D0%B3%D0%BE%D0%B2%D1%8F%D0%B4%D0%B8%D0%BD%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;говя|теля[тч];фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+1;food;Говядина (кроме бескостного мяса);https://www.perekrestok.ru/catalog/myaso-ptitsa-delikatesy/govyadina?;говя|теля[тч];фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+1;food;Говядина (кроме бескостного мяса);https://www.okeydostavka.ru/webapp/wcs/stores/servlet/ru/okmsk/miaso-ptitsa-kolbasy-16551-20/miaso-i-ptitsa-69069-20;говя|теля[тч];фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+1;food;Говядина (кроме бескостного мяса);https://www.utkonos.ru/cat/8;говя|теля[тч];фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+1;food;Говядина (кроме бескостного мяса);111.0;говя|теля[тч];фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+2;food;Свинина (кроме бескостного мяса);https://online.globus.ru/search/?section_id=3784&q=%D1%81%D0%B2%D0%B8%D0%BD%D0%B8%D0%BD%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_982_4092328740=Y&set_filter=Y&count=64;свин;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+2;food;Свинина (кроме бескостного мяса);https://www.perekrestok.ru/catalog/myaso-ptitsa-delikatesy/svinina?;свин;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+2;food;Свинина (кроме бескостного мяса);https://www.okeydostavka.ru/webapp/wcs/stores/servlet/ru/okmsk/miaso-ptitsa-kolbasy-16551-20/miaso-i-ptitsa-69069-20;свин;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+2;food;Свинина (кроме бескостного мяса);https://www.utkonos.ru/cat/2293;свин;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+2;food;Свинина (кроме бескостного мяса);113.0;свин;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+3;food;Баранина (кроме бескостного мяса);https://online.globus.ru/search/?section_id=3788&q=%D0%B1%D0%B0%D1%80%D0%B0%D0%BD%D0%B8%D0%BD%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;баран;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;бара[нш]|грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+3;food;Баранина (кроме бескостного мяса);https://www.perekrestok.ru/catalog/myaso-ptitsa-delikatesy/baranina?;баран;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;бара[нш]|грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+3;food;Баранина (кроме бескостного мяса);https://www.okeydostavka.ru/webapp/wcs/stores/servlet/ru/okmsk/miaso-ptitsa-kolbasy-16551-20/miaso-i-ptitsa-69069-20;баран;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;бара[нш]|грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+3;food;Баранина (кроме бескостного мяса);https://www.utkonos.ru/cat/2294;баран;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;бара[нш]|грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+3;food;Баранина (кроме бескостного мяса);116.0;баран;фарш|без\s+кости|бескостн|нарез|филе|азу|гуляш|для\s+плова|бекон|медальоны|колбас|сосиск|сардельк|мякоть|бургер|купаты|эскалоп|шашлык|фрикадельк|б\s*/\s*к|мякоть;бара[нш]|грудинк|лопатк|на\s*кост(?:и|очке)|р[её]бр|тазоб[её]др|с\s+костью|корейка|окорок|седло|[сн]\s*/\s*к|голяшк|ше[яй]
+4;food;Куры охлажденные и мороженые;https://online.globus.ru/search/?section_id=655&q=%D0%BA%D1%83%D1%80%D0%B8%D1%86%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;кури[цн]|цыпл;бедр[оаы]|голен|крылышк|крылья|крыло|филе|грудка|окорочок|котлет|колбас|сосиск|чевапчич|набор|сердц|желудо?к|купат|стейк|шашлык|бургер|шарик|индейк|шницел|медальон|полуфабрик|азу|печень|корнишон|ассорти|окорок;
+4;food;Куры охлажденные и мороженые;https://www.perekrestok.ru/catalog/myaso-ptitsa-delikatesy/myaso-ptitsy?attr%5B1878%5D%5B%5D=kuritsa;кури[цн]|цыпл;бедр[оаы]|голен|крылышк|крылья|крыло|филе|грудка|окорочок|котлет|колбас|сосиск|чевапчич|набор|сердц|желудо?к|купат|стейк|шашлык|бургер|шарик|индейк|шницел|медальон|полуфабрик|азу|печень|корнишон|ассорти|окорок;
+4;food;Куры охлажденные и мороженые;https://www.okeydostavka.ru/webapp/wcs/stores/servlet/ru/okmsk/miaso-ptitsa-kolbasy-16551-20/miaso-i-ptitsa-69069-20;кури[цн]|цыпл;бедр[оаы]|голен|крылышк|крылья|крыло|филе|грудка|окорочок|котлет|колбас|сосиск|чевапчич|набор|сердц|желудо?к|купат|стейк|шашлык|бургер|шарик|индейк|шницел|медальон|полуфабрик|азу|печень|корнишон|ассорти|окорок;
+4;food;Куры охлажденные и мороженые;https://www.utkonos.ru/cat/9;кури[цн]|цыпл;бедр[оаы]|голен|крылышк|крылья|крыло|филе|грудка|окорочок|котлет|колбас|сосиск|чевапчич|набор|сердц|желудо?к|купат|стейк|шашлык|бургер|шарик|индейк|шницел|медальон|полуфабрик|азу|печень|корнишон|ассорти|окорок;
+4;food;Куры охлажденные и мороженые;114.0;кури[цн]|цыпл;бедр[оаы]|голен|крылышк|крылья|крыло|филе|грудка|окорочок|котлет|колбас|сосиск|чевапчич|набор|сердц|желудо?к|купат|стейк|шашлык|бургер|шарик|индейк|шницел|медальон|полуфабрик|азу|печень|корнишон|ассорти|окорок;
+5;food;Рыба мороженая неразделанная;https://online.globus.ru/search/?section_id=659&q=%D1%80%D1%8B%D0%B1%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64 ;рыба;охл\.?|охлажд|филе|без\s+головы|без\s+кожи|б\s*/\s*г|креветк|миди|кальмар|варено|потр;
+5;food;Рыба мороженая неразделанная;https://www.perekrestok.ru/catalog/zamorojennye-produkty/ryba?attr%5B1903%5D%5B%5D=ryba;рыба;охл\.?|охлажд|филе|без\s+головы|без\s+кожи|б\s*/\s*г|креветк|миди|кальмар|варено|потр;
+5;food;Рыба мороженая неразделанная;https://www.okeydostavka.ru/msk/ryba-moreprodukty-i-ikra-16572-20/ryba-okhlazhdennaia-i-zamorozhennaia-16583-20;рыба;охл\.?|охлажд|филе|без\s+головы|без\s+кожи|б\s*/\s*г|креветк|миди|кальмар|варено|потр;
+5;food;Рыба мороженая неразделанная;https://www.utkonos.ru/cat/4190;рыба;охл\.?|охлажд|филе|без\s+головы|без\s+кожи|б\s*/\s*г|креветк|миди|кальмар|варено|потр;
+5;food;Рыба мороженая неразделанная;411.0;рыба;охл\.?|охлажд|филе|без\s+головы|без\s+кожи|б\s*/\s*г|креветк|миди|кальмар|варено|потр;
+6;food;Сельдь соленая;https://online.globus.ru/search/?section_id=670&q=%D1%81%D0%B5%D0%BB%D1%8C%D0%B4%D1%8C&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_848_25111632=Y&searchFilter_880_1706429935=Y&set_filter=Y&count=64;сельдь;форшмак;
+6;food;Сельдь соленая;https://www.perekrestok.ru/catalog/ryba-i-moreprodukty/ryba-solenaya?attr%5B1602%5D%5B%5D=seld;сельдь;форшмак;
+6;food;Сельдь соленая;https://www.okeydostavka.ru/msk/ryba-moreprodukty-i-ikra-16572-20/rybnaia-gastronomiia-16584-20/ryba-solenaia-i-kopchenaia-16586-20;сельдь;форшмак;
+6;food;Сельдь соленая;https://www.utkonos.ru/cat/79-128-735;сельдь;форшмак;
+6;food;Сельдь соленая;501.0;сельдь;форшмак;
+7;food;Масло сливочное;https://online.globus.ru/search/?section_id=621&q=%D0%A1%D0%BB%D0%B8%D0%B2%D0%BE%D1%87%D0%BD%D0%BE%D0%B5+%D0%BC%D0%B0%D1%81%D0%BB%D0%BE&count=64;масло сливочное;"маргарин|спред;чесночн;шоколад;соленое|топл[её]ное";
+7;food;Масло сливочное;https://www.perekrestok.ru/catalog/moloko-syr-yaytsa/slivochnoe-maslo-i-margarin?attr%5B1853%5D%5B%5D=maslo-slivochnoe;масло сливочное;"маргарин|спред;чесночн;шоколад;соленое|топл[её]ное";
+7;food;Масло сливочное;https://www.okeydostavka.ru/msk/molochnye-produkty-syry-iaitso-16100-20/molochnye-produkty-16101-20/maslo-slivochnoe-i-margarin-16113-20;масло сливочное;"маргарин|спред;чесночн;шоколад;соленое|топл[её]ное";
+7;food;Масло сливочное;https://www.utkonos.ru/cat/15-2207-985556 https://www.utkonos.ru/cat/4261-2207-985556;масло сливочное;"маргарин|спред;чесночн;шоколад;соленое|топл[её]ное";
+7;food;Масло сливочное;701.0;масло сливочное;"маргарин|спред;чесночн;шоколад;соленое|топл[её]ное";
+8;food;Масло подсолнечное;https://online.globus.ru/search/?section_id=729&q=%D0%A0%D0%B0%D1%81%D1%82%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5%20%D0%BC%D0%B0%D1%81%D0%BB%D0%BE&searchFilter_1060_3481289395=Y&set_filter=Y&count=64;подсолнечное;"топл[её]ное|кукурузн|оливк|льнян|кокосов|горчичн|виноградн|кунжутн|соевое;салатн(?:\.?|ая)?\s*заправка;грецкого\s*ореха";
+8;food;Масло подсолнечное;https://www.perekrestok.ru/catalog/makarony-krupy-spetsii/maslo-rastitelnoe?attr%5B1586%5D%5B%5D=podsolnechnoe;подсолнечное;"топл[её]ное|кукурузн|оливк|льнян|кокосов|горчичн|виноградн|кунжутн|соевое;салатн(?:\.?|ая)?\s*заправка;грецкого\s*ореха";
+8;food;Масло подсолнечное;https://www.okeydostavka.ru/msk/rastitel-nye-masla-sousy-i-pripravy-16598-20/maslo-rastitel-noe-16609-20;подсолнечное;"топл[её]ное|кукурузн|оливк|льнян|кокосов|горчичн|виноградн|кунжутн|соевое;салатн(?:\.?|ая)?\s*заправка;грецкого\s*ореха";
+8;food;Масло подсолнечное;https://www.utkonos.ru/cat/43-1411-687607;подсолнечное;"топл[её]ное|кукурузн|оливк|льнян|кокосов|горчичн|виноградн|кунжутн|соевое;салатн(?:\.?|ая)?\s*заправка;грецкого\s*ореха";
+9;food;Маргарин;https://online.globus.ru/search/?q=%D0%BC%D0%B0%D1%80%D0%B3%D0%B0%D1%80%D0%B8%D0%BD&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;маргарин;масло|спред|топл[её]н;
+9;food;Маргарин;https://www.perekrestok.ru/catalog/moloko-syr-yaytsa/slivochnoe-maslo-i-margarin?attr%5B1853%5D%5B%5D=margarin;маргарин;масло|спред|топл[её]н;
+9;food;Маргарин;https://www.okeydostavka.ru/msk/molochnye-produkty-syry-iaitso-16100-20/molochnye-produkty-16101-20/maslo-slivochnoe-i-margarin-16113-20;маргарин;масло|спред|топл[её]н;
+9;food;Маргарин;https://www.utkonos.ru/cat/15-2207-985544;маргарин;масло|спред|топл[её]н;
+9;food;Маргарин;1001.0;маргарин;масло|спред|топл[её]н;
+10;food;Молоко питьевое цельное пастеризованное 2,5-3,2% жирности;https://online.globus.ru/search/?section_id=607&q=%D0%BC%D0%BE%D0%BB%D0%BE%D0%BA%D0%BE&searchFilter_570_1566062185=Y&searchFilter_1414_1964963658=Y&searchFilter_1414_35243996=Y&searchFilter_1414_2601555558=Y&set_filter=Y?&count=64;молоко;козье|коз\.?|топл\.?|топленое|топлёное|ультрапастеризованное|ультрапаст\.?|утп\.?|коктейль|стерилизованное|стерил\.?;
+10;food;Молоко питьевое цельное пастеризованное 2,5-3,2% жирности;https://www.perekrestok.ru/catalog/moloko-syr-yaytsa/moloko?attr%5B1667%5D%5Bfrom%5D=2.43&attr%5B1667%5D%5Bto%5D=3.62&attr%5B1831%5D%5B%5D=pasterizovannoe;молоко;козье|коз\.?|топл\.?|топленое|топлёное|ультрапастеризованное|ультрапаст\.?|утп\.?|коктейль|стерилизованное|стерил\.?;
+10;food;Молоко питьевое цельное пастеризованное 2,5-3,2% жирности;https://www.okeydostavka.ru/msk/molochnye-produkty-syry-iaitso-16100-20/molochnye-produkty-16101-20/moloko-i-slivki-16110-20;молоко;козье|коз\.?|топл\.?|топленое|топлёное|ультрапастеризованное|ультрапаст\.?|утп\.?|коктейль|стерилизованное|стерил\.?;
+10;food;Молоко питьевое цельное пастеризованное 2,5-3,2% жирности;https://www.utkonos.ru/cat/11-2207-912019 https://www.utkonos.ru/cat/4261-2207-912019;молоко;козье|коз\.?|топл\.?|топленое|топлёное|ультрапастеризованное|ультрапаст\.?|утп\.?|коктейль|стерилизованное|стерил\.?;
+11;food;Сметана;https://online.globus.ru/search/?section_id=634&q=%D1%81%D0%BC%D0%B5%D1%82%D0%B0%D0%BD%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64 https://online.globus.ru/search/?section_id=1173&q=%D1%81%D0%BC%D0%B5%D1%82%D0%B0%D0%BD%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;сметана;сметанн(?:\.?ый)?\s*прод(?:\.?укт)?|прод(?:\.?укт)?\s*сметанн(?:\.?ый)?;
+11;food;Сметана;https://www.perekrestok.ru/catalog/moloko-syr-yaytsa/smetana?;сметана;сметанн(?:\.?ый)?\s*прод(?:\.?укт)?|прод(?:\.?укт)?\s*сметанн(?:\.?ый)?;
+11;food;Сметана;https://www.okeydostavka.ru/msk/molochnye-produkty-syry-iaitso-16100-20/molochnye-produkty-16101-20/smetana-16107-20;сметана;сметанн(?:\.?ый)?\s*прод(?:\.?укт)?|прод(?:\.?укт)?\s*сметанн(?:\.?ый)?;
+11;food;Сметана;https://www.utkonos.ru/cat/2279 https://www.utkonos.ru/cat/4261-2207-912047;сметана;сметанн(?:\.?ый)?\s*прод(?:\.?укт)?|прод(?:\.?укт)?\s*сметанн(?:\.?ый)?;
+11;food;Сметана;1102.0;сметана;сметанн(?:\.?ый)?\s*прод(?:\.?укт)?|прод(?:\.?укт)?\s*сметанн(?:\.?ый)?;
+12;food;Творог нежирный;https://online.globus.ru/search/?section_id=611&q=%D1%82%D0%B2%D0%BE%D1%80%D0%BE%D0%B3&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64&searchFilter_1414_3745925886=Y&searchFilter_1414_1964963658=Y&searchFilter_1414_35243996=Y&searchFilter_1414_2601555558=Y&searchFilter_1414_3960973040=Y&set_filter=Y;творог;масса творожная|творожная масса|творожный продукт|сырок|десерт|творожок;
+12;food;Творог нежирный;https://www.perekrestok.ru/catalog/moloko-syr-yaytsa/tvorog-syrki?attr%5B1667%5D%5Bfrom%5D=0&attr%5B1667%5D%5Bto%5D=5.2;творог;масса творожная|творожная масса|творожный продукт|сырок|десерт|творожок;
+12;food;Творог нежирный;https://www.okeydostavka.ru/msk/molochnye-produkty-syry-iaitso-16100-20/molochnye-produkty-16101-20/tvorozhnye-izdeliia-16106-20;творог;масса творожная|творожная масса|творожный продукт|сырок|десерт|творожок;
+12;food;Творог нежирный;https://www.utkonos.ru/cat/14 https://www.utkonos.ru/cat/4261-2207-977284;творог;масса творожная|творожная масса|творожный продукт|сырок|десерт|творожок;
+12;food;Творог нежирный;1106.0;творог;масса творожная|творожная масса|творожный продукт|сырок|десерт|творожок;
+13;food;Сыры сычужные твердые и мягкие;https://online.globus.ru/search/?section_id=613&q=%D1%81%D1%8B%D1%80+&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64 https://online.globus.ru/search/?section_id=614&q=%D1%81%D1%8B%D1%80+&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;сыр;;российск|голландск|швейцарск|адыгейск
+13;food;Сыры сычужные твердые и мягкие;https://www.perekrestok.ru/catalog/moloko-syr-yaytsa/syry?attr%5B1613%5D%5B%5D=myagkiy&attr%5B1613%5D%5B%5D=polutverdyy&attr%5B1613%5D%5B%5D=tverdyy;сыр;;российск|голландск|швейцарск|адыгейск
+13;food;Сыры сычужные твердые и мягкие;https://www.okeydostavka.ru/msk/molochnye-produkty-syry-iaitso-16100-20/syry-16103-20/tverdye-i-polutverdye-syry-16114-20;сыр;;российск|голландск|швейцарск|адыгейск
+13;food;Сыры сычужные твердые и мягкие;https://www.utkonos.ru/cat/16-15-189 https://www.utkonos.ru/cat/16-15-191;сыр;;российск|голландск|швейцарск|адыгейск
+13;food;Сыры сычужные твердые и мягкие;1201.0;сыр;;российск|голландск|швейцарск|адыгейск
+14;food;Яйца куриные;https://online.globus.ru/search/?section_id=629&q=%D1%8F%D0%B9%D1%86%D0%B0&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_573_2857199108=Y&set_filter=Y&count=64;яйц[ао];перепел;
+14;food;Яйца куриные;https://www.perekrestok.ru/catalog/moloko-syr-yaytsa/yaytso?attr%5B1936%5D%5B%5D=yaytso-kurinoe;яйц[ао];перепел;
+14;food;Яйца куриные;https://www.okeydostavka.ru/msk/molochnye-produkty-syry-iaitso-16100-20/iaitso-16104-20;яйц[ао];перепел;
+14;food;Яйца куриные;https://www.utkonos.ru/cat/108-152-934 https://www.utkonos.ru/cat/108-152-930 https://www.utkonos.ru/cat/108-152-929 https://www.utkonos.ru/cat/108-152-933;яйц[ао];перепел;
+14;food;Яйца куриные;1501.0;яйц[ао];перепел;
+15;food;Сахар-песок;https://online.globus.ru/search/?q=%D1%81%D0%B0%D1%85%D0%B0%D1%80+%D0%BF%D0%B5%D1%81%D0%BE%D0%BA&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;сахар[\s*\-]*(песок){0,1};тростник|кусков|рафинад|с?прессов|сахарозаменит;
+15;food;Сахар-песок;https://www.perekrestok.ru/catalog/kofe-chay-sahar/sahar?attr%5B1605%5D%5B%5D=pesok&attr%5B2151%5D%5B%5D=belyy;сахар[\s*\-]*(песок){0,1};тростник|кусков|рафинад|с?прессов|сахарозаменит;
+15;food;Сахар-песок;https://www.okeydostavka.ru/msk/bakaleia-i-konservatsiia-15063-20/sakhar-i-sol--24573-20#facet:-700000000000002565110571072109310721088;сахар[\s*\-]*(песок){0,1};тростник|кусков|рафинад|с?прессов|сахарозаменит;
+15;food;Сахар-песок;https://www.utkonos.ru/cat/44;сахар[\s*\-]*(песок){0,1};тростник|кусков|рафинад|с?прессов|сахарозаменит;
+15;food;Сахар-песок;1601.0;сахар[\s*\-]*(песок){0,1};тростник|кусков|рафинад|с?прессов|сахарозаменит;
+16;food;Мука пшеничная;https://online.globus.ru/search/?q=%D0%BC%D1%83%D0%BA%D0%B0+%D0%BF%D1%88%D0%B5%D0%BD%D0%B8%D1%87%D0%BD%D0%B0%D1%8F&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;мука;"смесь\s*(?:д/|для\s*)вып(?:е)?;хлебная\s*смесь;смесь\s*хлебная;смесь\s*мучная;фокаччо|десерт|пудинг;пицц|кекс|маффин|оладь|хлеб";пшенич
+16;food;Мука пшеничная;https://www.perekrestok.ru/catalog/search?text=%D0%BC%D1%83%D0%BA%D0%B0;мука;"смесь\s*(?:д/|для\s*)вып(?:е)?;хлебная\s*смесь;смесь\s*хлебная;смесь\s*мучная;фокаччо|десерт|пудинг;пицц|кекс|маффин|оладь|хлеб";пшенич
+16;food;Мука пшеничная;https://www.okeydostavka.ru/msk/bakaleia-i-konservatsiia-15063-20/muka-smesi-dlia-vypechki-15066-20;мука;"смесь\s*(?:д/|для\s*)вып(?:е)?;хлебная\s*смесь;смесь\s*хлебная;смесь\s*мучная;фокаччо|десерт|пудинг;пицц|кекс|маффин|оладь|хлеб";пшенич
+16;food;Мука пшеничная;https://www.utkonos.ru/cat/45-66-439;мука;"смесь\s*(?:д/|для\s*)вып(?:е)?;хлебная\s*смесь;смесь\s*хлебная;смесь\s*мучная;фокаччо|десерт|пудинг;пицц|кекс|маффин|оладь|хлеб";пшенич
+17;food;Хлеб из ржаной муки и из смеси муки ржаной и пшеничной;https://online.globus.ru/search/?section_id=785&q=%D1%85%D0%BB%D0%B5%D0%B1&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_995_4196395929=Y&searchFilter_995_1662433827=Y&set_filter=Y&count=64;хлеб;;"дарницк|бородинск|ржан;хлеб|батон|булка"
+17;food;Хлеб из ржаной муки и из смеси муки ржаной и пшеничной;https://www.perekrestok.ru/catalog/search?attr%5Bcategory%5D%5B%5D=1447&text=%D1%85%D0%BB%D0%B5%D0%B1;хлеб;;"дарницк|бородинск|ржан;хлеб|батон|булка"
+17;food;Хлеб из ржаной муки и из смеси муки ржаной и пшеничной;https://www.okeydostavka.ru/msk/konditerskie-izdeliia-khleb-16052-20/khlebobulochnye-izdeliia-16592-20/khleb-baton-lepeshki-lavash-16596-20;хлеб;;"дарницк|бородинск|ржан;хлеб|батон|булка"
+17;food;Хлеб из ржаной муки и из смеси муки ржаной и пшеничной;https://www.utkonos.ru/cat/5505;хлеб;;"дарницк|бородинск|ржан;хлеб|батон|булка"
+18;food;Хлеб и булочные изделия из пшеничной муки 1 и 2 сортов;https://online.globus.ru/search/?section_id=785&q=%D1%85%D0%BB%D0%B5%D0%B1&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64&searchFilter_995_2367216399=Y&set_filter=Y;батон;;столичн|городск|молочный|нарезной
+18;food;Хлеб и булочные изделия из пшеничной муки 1 и 2 сортов;https://www.perekrestok.ru/catalog/search?attr%5Bcategory%5D%5B%5D=1447&text=%D1%85%D0%BB%D0%B5%D0%B1;батон;;столичн|городск|молочный|нарезной
+18;food;Хлеб и булочные изделия из пшеничной муки 1 и 2 сортов;https://www.okeydostavka.ru/msk/konditerskie-izdeliia-khleb-16052-20/khlebobulochnye-izdeliia-16592-20/khleb-baton-lepeshki-lavash-16596-20;батон;;столичн|городск|молочный|нарезной
+18;food;Хлеб и булочные изделия из пшеничной муки 1 и 2 сортов;https://www.utkonos.ru/cat/5505;батон;;столичн|городск|молочный|нарезной
+18;food;Хлеб и булочные изделия из пшеничной муки 1 и 2 сортов;2203.0;батон;;столичн|городск|молочный|нарезной
+19;food;Рис шлифованный;https://online.globus.ru/search/?section_id=722&q=%D1%80%D0%B8%D1%81&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_939_1844118082=Y&set_filter=Y&count=64;рис;;шлиф
+19;food;Рис шлифованный;https://www.perekrestok.ru/catalog/makarony-krupy-spetsii/krupy-i-bobovye?attr%5B1870%5D%5B%5D=ris&attr%5B2201%5D%5B%5D=shlifovannyy;рис;;шлиф
+19;food;Рис шлифованный;https://www.okeydostavka.ru/msk/bakaleia-i-konservatsiia-15063-20/krupy-15064-20#facet:-7000000000000025651105610801089;рис;;шлиф
+19;food;Рис шлифованный;https://www.utkonos.ru/cat/41-2207-409;рис;;шлиф
+19;food;Рис шлифованный;2301.0;рис;;шлиф
+20;food;Пшено;https://online.globus.ru/search/?section_id=727&q=%D0%BF%D1%88%D0%B5%D0%BD%D0%BE&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;пшен[оа];хлопья;
+20;food;Пшено;https://www.perekrestok.ru/catalog/makarony-krupy-spetsii/krupy-i-bobovye?attr%5B1870%5D%5B%5D=pshenichnaya;пшен[оа];хлопья;
+20;food;Пшено;https://www.okeydostavka.ru/msk/bakaleia-i-konservatsiia-15063-20/krupy-15064-20;пшен[оа];хлопья;
+20;food;Пшено;https://www.utkonos.ru/cat/41-2207-910867;пшен[оа];хлопья;
+20;food;Пшено;2303.0;пшен[оа];хлопья;
+21;food;Горох и фасоль;https://online.globus.ru/search/?section_id=724&q=%D0%B3%D0%BE%D1%80%D0%BE%D1%85&s=%D0%9DD0%B0%D0%B9%D1%82%D0%B8&count=64 https://online.globus.ru/search/?section_id=724&q=%D1%84%D0%B0%D1%81%D0%BE%D0%BB%D1%8C&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;горох|фасоль;нут|маш|чечевиц|суп(?:|\s*-);
+21;food;Горох и фасоль;https://www.perekrestok.ru/catalog/makarony-krupy-spetsii/krupy-i-bobovye?attr%5B1870%5D%5B%5D=goroh&attr%5B1870%5D%5B%5D=fasol;горох|фасоль;нут|маш|чечевиц|суп(?:|\s*-);
+21;food;Горох и фасоль;https://www.okeydostavka.ru/msk/bakaleia-i-konservatsiia-15063-20/krupy-15064-20#facet:-70000000000000256511043108610881086109344321092107210891086108311004432109510771095108010941072;горох|фасоль;нут|маш|чечевиц|суп(?:|\s*-);
+21;food;Горох и фасоль;https://www.utkonos.ru/cat/41-2207-413 https://www.utkonos.ru/cat/41-2207-883636;горох|фасоль;нут|маш|чечевиц|суп(?:|\s*-);
+21;food;Горох и фасоль;2306.0;горох|фасоль;нут|маш|чечевиц|суп(?:|\s*-);
+22;food;Вермишель;https://online.globus.ru/search/?section_id=726&q=%D0%B2%D0%B5%D1%80%D0%BC%D0%B8%D1%88%D0%B5%D0%BB%D1%8C&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;вермишель;кукуруз|гречн|фунчоза;
+22;food;Вермишель;https://www.perekrestok.ru/catalog/makarony-krupy-spetsii/makaronnye-izdeliya?attr%5B1585%5D%5B%5D=vermishel;вермишель;кукуруз|гречн|фунчоза;
+22;food;Вермишель;https://www.okeydostavka.ru/msk/bakaleia-i-konservatsiia-15063-20/makaronnye-izdeliia-15065-20#facet:-7000000000000024651104210771088108410801096107710831100;вермишель;кукуруз|гречн|фунчоза;
+22;food;Вермишель;https://www.utkonos.ru/cat/42-481-40808;вермишель;кукуруз|гречн|фунчоза;
+22;food;Вермишель;2401.0;вермишель;кукуруз|гречн|фунчоза;
+23;food;Картофель;https://online.globus.ru/search/?section_id=687&q=%D0%BA%D0%B0%D1%80%D1%82%D0%BE%D1%84%D0%B5%D0%BB%D1%8C&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;картоф;;
+23;food;Картофель;https://www.perekrestok.ru/catalog/ovoschi-frukty-griby/ovoschi?attr%5B1930%5D%5B%5D=kartofel;картоф;;
+23;food;Картофель;https://www.okeydostavka.ru/msk/ovoshchi-frukty-griby-iagody-16568-20/ovoshchi-16570-20#facet:-7000000000000025651105010721088109010861092107710831100;картоф;;
+23;food;Картофель;https://www.utkonos.ru/cat/28-2207-886547;картоф;;
+23;food;Картофель;2501.0;картоф;;
+24;food;Капуста белокочанная свежая;https://online.globus.ru/search/?section_id=691&q=%D0%BA%D0%B0%D0%BF%D1%83%D1%81%D1%82%D0%B0+%D0%B1%D0%B5%D0%BB%D0%BE%D0%BA%D0%BE%D1%87%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;капуста;цветн|китайск|брокколи|краснокоч|красная|савойск|брюссельск|салат|пекин;
+24;food;Капуста белокочанная свежая;https://www.perekrestok.ru/catalog/ovoschi-frukty-griby/ovoschi?attr%5B1930%5D%5B%5D=kapusta;капуста;цветн|китайск|брокколи|краснокоч|красная|савойск|брюссельск|салат|пекин;
+24;food;Капуста белокочанная свежая;https://www.okeydostavka.ru/msk/ovoshchi-frukty-griby-iagody-16568-20/ovoshchi-16570-20#facet:-70000000000000256511050107210871091108910901072;капуста;цветн|китайск|брокколи|краснокоч|красная|савойск|брюссельск|салат|пекин;
+24;food;Капуста белокочанная свежая;https://www.utkonos.ru/cat/28-2207-887031;капуста;цветн|китайск|брокколи|краснокоч|красная|савойск|брюссельск|салат|пекин;
+24;food;Капуста белокочанная свежая;2601.0;капуста;цветн|китайск|брокколи|краснокоч|красная|савойск|брюссельск|салат|пекин;
+25;food;Морковь;https://online.globus.ru/search/?section_id=687&q=%D0%BC%D0%BE%D1%80%D0%BA%D0%BE%D0%B2%D1%8C&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;морковь;мини|мини-|набор\s*овощн;
+25;food;Морковь;https://www.perekrestok.ru/catalog/ovoschi-frukty-griby/ovoschi?attr%5B1930%5D%5B%5D=morkov;морковь;мини|мини-|набор\s*овощн;
+25;food;Морковь;https://www.okeydostavka.ru/msk/ovoshchi-frukty-griby-iagody-16568-20/ovoshchi-16570-20#facet:-70000000000000256511052108610881082108610741100;морковь;мини|мини-|набор\s*овощн;
+25;food;Морковь;https://www.utkonos.ru/cat/28-2207-886551;морковь;мини|мини-|набор\s*овощн;
+25;food;Морковь;2605.0;морковь;мини|мини-|набор\s*овощн;
+26;food;Огурцы свежие;https://online.globus.ru/search/?section_id=688&q=%D0%BE%D0%B3%D1%83%D1%80%D1%86%D1%8B&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_1047_3661895951=Y&searchFilter_1047_1129138357=Y&set_filter=Y&count=64;огурцы;корниш|ассорти|микс;
+26;food;Огурцы свежие;https://www.perekrestok.ru/catalog/ovoschi-frukty-griby/ovoschi?attr%5B1930%5D%5B%5D=ogurets;огурцы;корниш|ассорти|микс;
+26;food;Огурцы свежие;https://www.okeydostavka.ru/msk/ovoshchi-frukty-griby-iagody-16568-20/ovoshchi-16570-20#facet:-7000000000000025651105410751091108810771094;огурцы;корниш|ассорти|микс;
+26;food;Огурцы свежие;https://www.utkonos.ru/cat/28-2207-684426;огурцы;корниш|ассорти|микс;
+26;food;Огурцы свежие;2621.0;огурцы;корниш|ассорти|микс;
+27;food;Лук репчатый;https://online.globus.ru/search/?section_id=689&q=%D0%BB%D1%83%D0%BA%20%D1%80%D0%B5%D0%BF%D1%87%D0%B0%D1%82%D1%8B%D0%B9&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64&searchFilter_1001_2326859943=Y&set_filter=Y;лук;порей;
+27;food;Лук репчатый;https://www.perekrestok.ru/catalog/ovoschi-frukty-griby/ovoschi?attr%5B1930%5D%5B%5D=luk;лук;порей;
+27;food;Лук репчатый;https://www.okeydostavka.ru/msk/ovoshchi-frukty-griby-iagody-16568-20/ovoshchi-16570-20#facet:-7000000000000025651105110911082;лук;порей;
+27;food;Лук репчатый;https://www.utkonos.ru/search?query=%D0%BB%D1%83%D0%BA&search_id=;лук;порей;
+27;food;Лук репчатый;2603.0;лук;порей;
+28;food;Яблоки;https://online.globus.ru/search/?section_id=695&q=%D1%8F%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_916_2535756429=Y&set_filter=Y&count=64;яблоки;;
+28;food;Яблоки;https://www.perekrestok.ru/catalog/ovoschi-frukty-griby/frukty?attr%5B1930%5D%5B%5D=yabloki;яблоки;;
+28;food;Яблоки;https://www.okeydostavka.ru/msk/ovoshchi-frukty-griby-iagody-16568-20/frukty-i-iagody-16589-20#facet:-7000000000000025651107110731083108610821086;яблоки;;
+28;food;Яблоки;https://www.utkonos.ru/cat/29-2207-684432;яблоки;;
+28;food;Яблоки;2701.0;яблоки;;
+29;food;Печенье;https://online.globus.ru/search/?section_id=806&q=%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D1%8C%D0%B5&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8 https://online.globus.ru/search/?section_id=1213&q=%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D1%8C%D0%B5&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8;печенье;;
+29;food;Печенье;https://www.perekrestok.ru/catalog/hleb-sladosti-sneki/pechene-kreker-vafli-pryaniki?attr%5B1853%5D%5B%5D=pechene;печенье;;
+29;food;Печенье;https://www.okeydostavka.ru/msk/konditerskie-izdeliia-khleb-16052-20/muchnye-konditerskie-izdeliia-16056-20#facet:-70000000000000256511055107710951077108511001077;печенье;;
+29;food;Печенье;https://www.utkonos.ru/cat/4201;печенье;;
+29;food;Печенье;1701.0;печенье;;
+30;food;Карамель;https://online.globus.ru/search/?section_id=797&q=%D0%BA%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D0%BB%D1%8C&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_863_181240500=Y&set_filter=Y&count=64;карамель;чупс|ледене?ц;
+30;food;Карамель;https://www.perekrestok.ru/catalog/hleb-sladosti-sneki/konfety?attr%5B1580%5D%5B%5D=karamelnye;карамель;чупс|ледене?ц;
+30;food;Карамель;https://www.okeydostavka.ru/msk/konditerskie-izdeliia-khleb-16052-20/konfety-16054-20#facet:-700000000000002465110501072108810721084107710831100108510991077;карамель;чупс|ледене?ц;
+30;food;Карамель;https://www.utkonos.ru/cat/954-80-881560;карамель;чупс|ледене?ц;
+30;food;Карамель;1711.0;карамель;чупс|ледене?ц;
+31;food;Чай черный байховый;https://online.globus.ru/search/?section_id=771&q=%D1%87%D0%B0%D0%B9&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;чай;"зел[её]ный|травяной|фрукт|детский;добавка\s*в\s*чай;(?:со?\s*)?\s*(?:чабрец|земляник|аромат|вкус|яблок|мятой|мятн|шиповн|кориц|гибиску|маслом|травами|цедр|смородин|облепих|ягод|гвоздика|кардамо|лимон|лайм|lime|каркаде|чернослив|апельсин|бергам|мелисс|имбир|малин|специями|кипреем|василек|добавками);подарочный\s*набор;чайн(?:\.?ый)?\s*напиток;напиток\s*чайный";
+31;food;Чай черный байховый;https://www.perekrestok.ru/catalog/kofe-chay-sahar/chay?attr%5B1621%5D%5B%5D=chernyy&attr%5B2131%5D%5B%5D=bayhovyy;чай;"зел[её]ный|травяной|фрукт|детский;добавка\s*в\s*чай;(?:со?\s*)?\s*(?:чабрец|земляник|аромат|вкус|яблок|мятой|мятн|шиповн|кориц|гибиску|маслом|травами|цедр|смородин|облепих|ягод|гвоздика|кардамо|лимон|лайм|lime|каркаде|чернослив|апельсин|бергам|мелисс|имбир|малин|специями|кипреем|василек|добавками);подарочный\s*набор;чайн(?:\.?ый)?\s*напиток;напиток\s*чайный";
+31;food;Чай черный байховый;https://www.okeydostavka.ru/msk/goriachie-i-kholodnye-napitki-16562-20/chai-30552-20;чай;"зел[её]ный|травяной|фрукт|детский;добавка\s*в\s*чай;(?:со?\s*)?\s*(?:чабрец|земляник|аромат|вкус|яблок|мятой|мятн|шиповн|кориц|гибиску|маслом|травами|цедр|смородин|облепих|ягод|гвоздика|кардамо|лимон|лайм|lime|каркаде|чернослив|апельсин|бергам|мелисс|имбир|малин|специями|кипреем|василек|добавками);подарочный\s*набор;чайн(?:\.?ый)?\s*напиток;напиток\s*чайный";
+31;food;Чай черный байховый;https://www.utkonos.ru/cat/61-98-602;чай;"зел[её]ный|травяной|фрукт|детский;добавка\s*в\s*чай;(?:со?\s*)?\s*(?:чабрец|земляник|аромат|вкус|яблок|мятой|мятн|шиповн|кориц|гибиску|маслом|травами|цедр|смородин|облепих|ягод|гвоздика|кардамо|лимон|лайм|lime|каркаде|чернослив|апельсин|бергам|мелисс|имбир|малин|специями|кипреем|василек|добавками);подарочный\s*набор;чайн(?:\.?ый)?\s*напиток;напиток\s*чайный";
+32;food;Соль поваренная пищевая;https://online.globus.ru/search/?section_id=756&q=%D1%81%D0%BE%D0%BB%D1%8C&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&searchFilter_1080_3452370154=Y&set_filter=Y&count=64;соль;приправ|пряност|заправк|вкусная|черная;
+32;food;Соль поваренная пищевая;https://www.perekrestok.ru/catalog/makarony-krupy-spetsii/sol?attr%5B2150%5D%5B%5D=povarennaya;соль;приправ|пряност|заправк|вкусная|черная;
+32;food;Соль поваренная пищевая;https://www.okeydostavka.ru/msk/bakaleia-i-konservatsiia-15063-20/sakhar-i-sol--24573-20#facet:-70000000000000256511057108610831100;соль;приправ|пряност|заправк|вкусная|черная;
+32;food;Соль поваренная пищевая;https://www.utkonos.ru/cat/3284-2207-687544 https://www.utkonos.ru/cat/3284-2207-687545;соль;приправ|пряност|заправк|вкусная|черная;
+32;food;Соль поваренная пищевая;2002.0;соль;приправ|пряност|заправк|вкусная|черная;
+33;food;Перец черный (горошек);https://online.globus.ru/search/?q=%D0%BF%D0%B5%D1%80%D0%B5%D1%86+%D1%87%D0%B5%D1%80%D0%BD%D1%8B%D0%B9+%D0%B3%D0%BE%D1%80%D0%BE%D1%88%D0%B5%D0%BA&s=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&count=64;горош(?:ек|ком);молот|чили|красный|дробл|сладкий|болгарск;
+33;food;Перец черный (горошек);https://www.perekrestok.ru/catalog/search?attr%5Bcategory%5D%5B%5D=1369&text=%D0%BF%D0%B5%D1%80%D0%B5%D1%86;горош(?:ек|ком);молот|чили|красный|дробл|сладкий|болгарск;
+33;food;Перец черный (горошек);https://www.okeydostavka.ru/msk/rastitel-nye-masla-sousy-i-pripravy-16598-20/spetsii-pripravy-16611-20#facet:-700000000000002565110551077108810771094;горош(?:ек|ком);молот|чили|красный|дробл|сладкий|болгарск;
+33;food;Перец черный (горошек);https://www.utkonos.ru/cat/97-1479-688293?catalogue_id=97&catalogue=97&property%5B%5D=1478%3A881496&property%5B%5D=1479%3A688293&reset=1;горош(?:ек|ком);молот|чили|красный|дробл|сладкий|болгарск;
+33;food;Перец черный (горошек);2004.0;горош(?:ек|ком);молот|чили|красный|дробл|сладкий|болгарск;
+34;non-food;Ацетилсалициловая кислота (Аспирин отечественный);https://www.piluli.ru/product494875/product_info.html;;;
+35;non-food;Блузка женская;https://www.lamoda.ru/c/2483/clothes-bluzy/;;;
+36;non-food;Ботинки, полуботинки для детей школьного возраста;https://www.ozon.ru/category/botinki-dlya-malchikov-7686/?price=1118.000%3B4000.000;;;
+37;non-food;Брюки для детей школьного возраста из джинсовой ткани;https://www.lamoda.ru/c/1611/clothes-boys-dzinsi/;;;
+38;non-food;Брюки мужские из полушерстяных или смесовых тканей;https://www.lamoda.ru/c/725/clothes-muzhskie-bryuki-klassicheskiye/;;;
+39;non-food;Джемпер для детей школьного возраста;https://www.lamoda.ru/c/1601/clothes-boys-sviteri/;;;
+40;non-food;Джемпер женский;https://www.lamoda.ru/c/5871/clothes-zhendjempery/;;;
+41;non-food;Джемпер мужской;https://www.lamoda.ru/c/5975/clothes-muzhjempery/;;;
+42;non-food;Колготки детские;https://www.lamoda.ru/c/5378/default-malchikam/?from=button&multigender_page=1&gender_section=girls&submit=y&q=%D0%BA%D0%BE%D0%BB%D0%B3%D0%BE%D1%82%D0%BA%D0%B8&genders=boys;;;
+43;non-food;Колготки женские эластичные плотностью 15-20 DEN;https://www.ozon.ru/category/chulki-i-kolgotki-7539/?dense=28085&text=%D0%BA%D0%BE%D0%BB%D0%B3%D0%BE%D1%82%D0%BA%D0%B8+20;;;
+44;non-food;Комплект постельного белья 1,5 спального из хлопчатомажной ткани;https://www.ozon.ru/category/komplekty-postelnogo-belya-15086/?dimension=37156&material=30143&text=%D0%9A%D0%BE%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%82+%D0%BF%D0%BE%D1%81%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B3%D0%BE+%D0%B1%D0%B5%D0%BB%D1%8C%D1%8F+1%2C5;;;
+45;non-food;Корвалол;https://www.piluli.ru/product461665/product_info.html;;;
+46;non-food;Костюм-двойка мужской из шерстяных, полушерстяных или смесовых тканей;https://www.lamoda.ru/c/521/clothes-muzhskie-kostyumy/?q=%D0%BA%D0%BE%D1%81%D1%82%D1%8E%D0%BC&multigender_page=1&from=suggest&submit=y;;;
+47;non-food;Кроссовые туфли для детей с верхом из искусственной кожи;https://www.lamoda.ru/c/263/shoes-krossovki-dlya-malchikov/;;;
+48;non-food;Метамизол натрия (Анальгин отечественный);https://www.piluli.ru/product473580/product_info.html;;;
+49;non-food;Мыло туалетное;https://www.ozon.ru/category/mylo-6639/?type=39780&text=%D0%9C%D1%8B%D0%BB%D0%BE+%D1%82%D1%83%D0%B0%D0%BB%D0%B5%D1%82%D0%BD%D0%BE%D0%B5;;;
+50;non-food;Мыло хозяйственное;https://www.ozon.ru/category/hozyaystvennoe-mylo-14586/;;;
+51;non-food;Носки мужские;https://www.ozon.ru/category/noski-muzhskie-7579/?type=38705;;;
+52;non-food;Одеяло стеганое;https://www.ozon.ru/category/odeyala-15081/?type=37164&text=%D0%9E%D0%B4%D0%B5%D1%8F%D0%BB%D0%BE+%D1%81%D1%82%D0%B5%D0%B3%D0%B0%D0%BD%D0%BE%D0%B5;;;
+53;non-food;Пальто женское демисезонное из шерстяных или полушерстяных тканей;https://www.lamoda.ru/c/6058/clothes-zhendemisezonnyepalto/?q=%D0%BF%D0%B0%D0%BB%D1%8C%D1%82%D0%BE+%D0%B6%D0%B5%D0%BD%D1%81%D0%BA%D0%BE%D0%B5+%D0%B4%D0%B5%D0%BC%D0%B8%D1%81%D0%B5%D0%B7%D0%BE%D0%BD%D0%BD%D0%BE%D0%B5&total_found_qty=2803&multigender_page=0&from=button&submit=y;;;
+54;non-food;Платье (сарафан) летнее для девочек дошкольного возраста;https://www.ozon.ru/category/platya-i-sarafany-dlya-devochek-7599/?text=%D0%9F%D0%BB%D0%B0%D1%82%D1%8C%D0%B5+%28%D1%81%D0%B0%D1%80%D0%B0%D1%84%D0%B0%D0%BD%29+%D0%BB%D0%B5%D1%82%D0%BD%D0%B5%D0%B5+%D0%B4%D0%BB%D1%8F+%D0%B4%D0%B5%D0%B2%D0%BE%D1%87%D0%B5%D0%BA;;;
+55;non-food;Подушка;https://www.ozon.ru/category/podushki-15083/?type=37163;;;
+56;non-food;Полуботинки, туфли мужские с верхом из натуральной кожи;https://www.ozon.ru/category/tufli-muzhskie-7664/?material=28013&type=31864&text=%D1%82%D1%83%D1%84%D0%BB%D0%B8+%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%B8%D0%B5;;;
+57;non-food;Порошок стиральный;https://www.ozon.ru/category/stiralnyy-poroshok-14585/?editionform=37198;;;
+58;non-food;Сапоги женские зимние с верхом из натуральной кожи;https://www.ozon.ru/category/sapogi-i-polusapogi-zhenskie-7652/?material=28013&season=31827&type=31978&text=%D0%A1%D0%B0%D0%BF%D0%BE%D0%B3%D0%B8+%D0%B6%D0%B5%D0%BD%D1%81%D0%BA%D0%B8%D0%B5;;;
+59;non-food;Сорочка верхняя для мальчиков школьного возраста;https://www.ozon.ru/category/rubashki-dlya-malchikov-7622/;;;
+60;non-food;Сорочка верхняя мужская из хлопчатобумажных или смесовых тканей;https://www.lamoda.ru/c/2518/clothes-muzhskie-rubashki-s-dlinnym/?q=%D1%81%D0%BE%D1%80%D0%BE%D1%87%D0%BA%D0%B0+%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%B0%D1%8F&multigender_page=1&from=suggest&submit=y&base_materials=19;;;
+61;non-food;Халат женский из хлопчатобумажных, смесовых тканей или трикотажного полотна;https://www.ozon.ru/category/domashnyaya-odezhda-zhenskaya-7541/?text=%D0%A5%D0%B0%D0%BB%D0%B0%D1%82+%D0%B6%D0%B5%D0%BD%D1%81%D0%BA%D0%B8%D0%B9;;;
+62;non-food;Телевизор цветного изображения;https://www.ozon.ru/category/televizory-15528/?text=%D1%82%D0%B5%D0%BB%D0%B5%D0%B2%D0%B8%D0%B7%D0%BE%D1%80;;;
+63;non-food;Туфли женские закрытые с верхом из натуральной кожи;https://www.lamoda.ru/c/5308/shoes-shoeszakrytye/?q=%D1%82%D1%83%D1%84%D0%BB%D0%B8+%D0%B6%D0%B5%D0%BD%D1%81%D0%BA%D0%B8%D0%B5&total_found_qty=2773&multigender_page=1&from=suggest&submit=y&inside_materials=5988;;;
+64;non-food;Футболка детская;https://www.ozon.ru/category/odezhda-obuv-i-aksessuary-7500/?text=%D0%A4%D1%83%D1%82%D0%B1%D0%BE%D0%BB%D0%BA%D0%B0+%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%B0%D1%8F;;;
+65;non-food;Шампунь;https://www.ozon.ru/category/shampuni-dlya-volos-6585/?text=%D1%88%D0%B0%D0%BC%D0%BF%D1%83%D0%BD%D1%8C+%D0%B4%D0%BB%D1%8F+%D0%B2%D0%BE%D0%BB%D0%BE%D1%81+250+%D0%BC%D0%BB;;;
+66;services;Абонентская плата за неограниченный объем местных телефонных соединений;https://mgts.ru/home/phone/tariff/;;;
+67;services;Помывка в бане в общем отделении;http://legkiipar.ru/menraz.html;;;
+67;services;Помывка в бане в общем отделении;http://banya-lefortovo.ru/price.html;;;
+67;services;Помывка в бане в общем отделении;https://rzhevskie-bani.ru/rb/bani.html;;;
+67;services;Помывка в бане в общем отделении;http://vorontsovskie-bani.ru/obshchestvennye-bani/muzhskoj-zal-pervyj-razryad;;;
+68;services;Постановка набоек;https://masterskaya-obuvi.ru/tseny;;;
+68;services;Постановка набоек;http://www.lelab.ru/3.html;;;
+69;services;Проезд в городском муниципальном автобусе;https://protransport.msk.ru/tariff/trolleybus;;;
+70;services;Стрижка модельная в женском зале;http://ekonombeauty.ru/services/zhenskij-zal/;;;
+70;services;Стрижка модельная в женском зале;https://www.gorod-krasoti.com/prices/;;;
+70;services;Стрижка модельная в женском зале;http://salon-baumanskaya.ru/?page_id=9#1;;;
+71;services;Проезд в троллейбусе;https://protransport.msk.ru/tariff/trolleybus;;;
+;;;;;;
+;;;;;;
+;;;;;;
+;;;;;;
