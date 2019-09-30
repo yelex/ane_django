@@ -258,6 +258,7 @@ class Services():
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
 
+        '''
         #стрижка
         n=10
         price_dict=dict()
@@ -279,9 +280,10 @@ class Services():
                 price_dict['site_link']=url
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
+        '''
 
         #Билет на 1 поездку - мосгортранс
-        n=11
+        n=10
         price_dict=dict()
         price_dict['site_code']='services'
         price_dict['date']=Global().date

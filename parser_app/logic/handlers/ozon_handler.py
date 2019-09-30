@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from tqdm import tqdm
 import random
-from .tools import wspex, wspex_space
+from parser_app.logic.handlers.tools import wspex, wspex_space
 from .global_status import Global
 
 class OzonHandler():
@@ -74,7 +74,7 @@ class OzonHandler():
         #proxy = self.get_proxy()
         options = webdriver.ChromeOptions()
         # proxy = get_proxy('http://ozon.ru') # если понадобится прокси
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         # options.add_argument('--disable-gpu')
         # options.add_argument('--proxy-server=%s' % proxy)
 
@@ -242,41 +242,36 @@ class OzonHandler():
                 driver.get(href_i)
                 i += 1
                 soup = BeautifulSoup(driver.page_source, 'lxml')
-                '''
-                try:
-                    if proxies is not None:
-                        r = requests.get(href_i, proxies=proxies, headers=header)  # CRITICAL
-                    else:
-                        r = requests.get(href_i, headers=header)
-                except:
-                    proxies = get_proxy('https://www.ozon.ru/')
-                    r = requests.get(href_i, proxies=proxies, headers=header)
-                html = r.content
-
-                soup = BeautifulSoup(html, 'lxml')
-                
-                print(soup)
-                '''
                 price_dict = dict()
                 price_dict['date'] = Global().date
                 price_dict['site_code'] = site_code
                 price_dict['category_id'] = cat_id
                 price_dict['category_title'] = category_title
 
-                price_dict['site_title'] = wspex_space(soup.find('h1', {'itemprop': 'name'}).text)
                 try:
-                    div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'}).find('span', {
-                        'class': 'price-number'})
+                    price_dict['site_title'] = wspex_space(soup.find('h1').text)  # , {'class': '_718dda'}
+                except:
+                    i -= 1
+                    continue
+                try:
+                    div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
+                    '''
+                    .find('span', {
+                    'class': 'price-number'})
+                    '''
+                    if div_new == None:
+                        continue
                 except:
                     continue
-                div_old = soup.find('span', {'class': 'price-number cross'})
+                # div_old = soup.find('span', {'class': 'price-number cross'})
+                div_old = soup.find('div', {'class': 'ce6b47'})
 
                 if div_old != None:
-                    price_dict['price_old'] = int(wspex(div_old.text))
+                    price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])
                 else:
                     price_dict['price_old'] = ''
 
-                price_dict['price_new'] = int(wspex(div_new.text))
+                price_dict['price_new'] = int(re.search('\d+', wspex(div_new.text))[0])
 
                 price_dict['site_unit'] = 'шт.'
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него

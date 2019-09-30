@@ -5,7 +5,7 @@ import requests
 import re
 from .global_status import Global
 
-from .tools import filter_flag, list_html, wspex_space, get_proxy
+from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space, get_proxy
 from tqdm import tqdm
 
 
@@ -146,7 +146,7 @@ class GlobusHandler():
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        proxies = None
+        proxies = get_proxy('https://online.globus.ru/')
 
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
@@ -226,12 +226,12 @@ class GlobusHandler():
                 price_dict['site_unit'] = products_div.find('span', {'class':
                                                                          'item-price__unit'}).text.strip()
                 price_dict['site_link'] = url
-                """print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n'.format(price_dict['site_title'],
+                print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n'.format(price_dict['site_title'],
                                                                                         price_dict['price_new'],
                                                                                         price_dict['price_old'],
-                                                                                        price_dict['site_unit']))"""
+                                                                                        price_dict['site_unit']))
 
                 res = res.append(price_dict, ignore_index=True)
 
         print('GLOBUS has successfully parsed')
-        return (res)
+        return res

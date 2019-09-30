@@ -2,9 +2,10 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import requests
 import re
+from selenium import webdriver
 from datetime import datetime
 from fake_useragent import UserAgent
-from .tools import list_html, wspex_space, find_float_number, filter_flag, wspex, get_proxy
+from parser_app.logic.handlers.tools import list_html, wspex_space, find_float_number, filter_flag, wspex, get_proxy
 from .global_status import Global
 from tqdm import tqdm
 
@@ -171,18 +172,24 @@ class UtkonosHandler():
     def extract_product_page(self):
         site_code = 'utkonos'
         ua = UserAgent()
-        # header = {'User-Agent': str(ua.chrome)}
+        header = {'User-Agent': str(ua.chrome)}
+
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)].iloc[:Global().max_links]
-
-        links_df = links_df
 
         category_ids = links_df.category_id.unique()
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
         proxies = None
+
+        # selenium
+        path = Global().path_chromedriver
+        options = webdriver.ChromeOptions()
+        # options.add_argument('--headless')
+        driver = webdriver.Chrome(executable_path=path, chrome_options=options)
+
         # proxies = get_proxy('https://www.utkonos.ru/')
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
@@ -200,17 +207,31 @@ class UtkonosHandler():
                 i += 1
 
                 print('href_i: ', href_i)
-
-                if proxies is not None:
-                    r = requests.get(href_i, proxies=proxies)
+                if Global().is_selenium_utkonos:
+                    driver.get(href_i)
+                    soup = BeautifulSoup(driver.page_source, 'html.parser')
+                    # driver.close()
                 else:
-                    r = requests.get(href_i)
-                html = r.content
+                    if proxies is not None:
+                        try:
+                            r = requests.get(href_i, proxies=proxies, headers=header)
+                        except:
+                            proxies = get_proxy(href_i)
+                            r = requests.get(href_i, proxies=proxies, headers=header)
+                    else:
+                        try:
+                            r = requests.get(href_i, headers=header)
+                        except:
+                            proxies = get_proxy(href_i)
+                            r = requests.get(href_i, proxies=proxies, headers=header)
 
-                soup = BeautifulSoup(html, 'html.parser')
-                # print('soup:\n', soup)
+                    html = r.content
+
+                    soup = BeautifulSoup(html, 'html.parser')
+                    print('soup:\n', soup)
                 products_div = soup.find('div', {'class': 'goods_view_item-action'})
-                # print('products_div:\n', products_div)
+                # products_div = soup.find('div', {'class': 'b-section--bg i-pb30 js-product-item js-product-main'})
+                # print('\n\nproducts_div:\n', products_div)
                 price_dict = dict()
 
                 price_dict['date'] = Global().date
@@ -257,5 +278,105 @@ class UtkonosHandler():
                 price_dict['type'] = 'food'
                 res = res.append(price_dict, ignore_index=True)
 
+        if Global().is_selenium_utkonos:
+            driver.quit()
+
         print('UTKONOS has successfully parsed')
         return res
+
+    '''
+    def extract_product_page(self):
+        site_code = 'utkonos'
+        ua = UserAgent()
+        header = {'User-Agent': str(ua.chrome)}
+        desc_df = Global().desc_df
+        links_df = Global().links
+        links_df = links_df[links_df['site_link'].str.contains(site_code)].iloc[:Global().max_links]
+        category_ids = links_df.category_id.unique()
+        res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
+                                    'site_title', 'price_new', 'price_old', 'site_unit',
+                                    'site_link', 'site_code'])
+        # proxies = get_proxy(links_df.site_link.values[0])
+        proxies = None
+        for cat_id in tqdm(category_ids):  # испр
+            url_list = links_df[links_df.category_id == cat_id].site_link.values
+
+            category_title = desc_df.loc[cat_id, 'cat_title']
+
+            print("{}... ".format(category_title))
+
+            # print(' id_n =', id_n)
+            i = 0
+
+            while i + 1 <= len(url_list):
+
+                href_i = url_list[i]
+                i += 1
+                print('href_i: ', href_i)
+
+                try:
+                    if proxies is not None:
+                        r = requests.get(href_i, headers=header, proxies=proxies)
+                    else:
+                        r = requests.get(href_i, headers=header)
+                except:
+                    proxies = get_proxy(href_i)
+                    r = requests.get(href_i, headers=header, proxies=proxies)
+                html = r.content
+
+                soup = BeautifulSoup(html, 'html.parser')
+                # print('soup:\n', soup)
+                products_div = soup.find('div', {'class': 'b-section--bg i-pb30 js-product-item js-product-main'})
+                # print('products_div:\n', products_div)
+                price_dict = dict()
+
+                price_dict['date'] = datetime.now().date()
+                price_dict['site_code'] = 'utkonos'
+                price_dict['category_id'] = cat_id
+                price_dict['category_title'] = category_title
+
+                try:
+                    price_dict['site_title'] = wspex_space(
+                        products_div.find('h1', {'class': 'c-product__title'}).text)
+                except:
+                    print(href_i + ' NOT PARSED!')
+                    continue
+                price_dict['site_link'] = href_i
+                # print(price_dict['site_link'])
+
+                # if filter_flag(id_n, price_dict['site_title']) == False:
+                # print("   skipped position: {}".format(price_dict['site_title']))
+                # continue
+
+                div_sale = products_div.find('span', {'class': 'b-price b-price--old'})
+                # print('div_sale:', div_sale)
+                if div_sale is not None:
+                    # print('div_sale: ',div_sale)
+                    price_dict['price_old'] = float(re.search('\d+\.\d+', wspex(div_sale.text).replace(',', '.'))[0])
+
+                    div_new = products_div.find('span', {'class': 'b-price b-price--discounted'})
+                    price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(div_new.text).replace(',', '.'))[0])
+
+                    price_dict['site_unit'] = str(div_new.get('data-weight'))[1:]
+
+                else:
+                    # print('oops!')
+
+                    div_new = products_div.find('span', {'class': 'b-price'})
+
+                    # print('now im here')
+                    # if product_price_div is not None:
+                    price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(div_new.text).replace(',', '.'))[0])
+                    price_dict['price_old'] = ''
+                    price_dict['site_unit'] = str(div_new.get('data-weight'))[1:]
+                print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n'.format(price_dict['site_title'],
+                                                                                        price_dict['price_new'],
+                                                                                        price_dict['price_old'],
+                                                                                        price_dict['site_unit']))
+                # print(price_dict)
+                price_dict['type'] = 'food'
+                res = res.append(price_dict, ignore_index=True)
+
+        print('UTKONOS has successfully parsed')
+        return res
+        '''

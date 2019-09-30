@@ -6,6 +6,32 @@
 
 {% block real_content %}
 
+<script>
+function getNewSnapshot() {
+var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<h1>Контрольная панель</h1>
+
+<div class="myDIV">
+<form action="getNewSnap">
+  <button type="submit" onclick="getNewSnapshot()">Сделать снапшот прямо сейчас</button>
+</form>
+</div>
+
+
+<!--
+<form method="get" action="getNewSnap">
+  <button type="submit" onclick="getNewSnapshot()">Сделать снапшот прямо сейчас</button>
+</form>
 <h3><a href="{% url 'getSnap' %}">Сделать новый снапшот</a></h3>
+-->
+
 
 {% endblock %}

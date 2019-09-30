@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import requests
 from datetime import datetime, timedelta
-from .tools import filter_flag, get_proxy, tofloat, wspex_space
+from parser_app.logic.handlers.tools import filter_flag, get_proxy, tofloat, wspex_space
 from .global_status import Global
 from tqdm import tqdm
 import re
@@ -20,7 +20,7 @@ class PerekrestokHandler():
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
         fail_array = []
-        path_sfb = path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('perekrestok')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]

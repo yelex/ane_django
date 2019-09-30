@@ -2,12 +2,11 @@ from django.db import models
 
 # Create your models here.
 from django.utils import timezone
-import datetime
 
 
 class PricesRaw(models.Model):
 
-    date = models.DateTimeField('date', default=datetime.datetime.now())
+    date = models.DateTimeField('date', default=timezone.now)
     type = models.TextField('type', default='')
     category_id = models.IntegerField('category_id', default=0)
     category_title = models.TextField('category_title', default='')

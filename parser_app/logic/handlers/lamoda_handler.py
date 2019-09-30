@@ -3,12 +3,11 @@ import pandas as pd
 import requests
 import re
 from tqdm import tqdm
-from datetime import datetime
-import time
-from .tools import get_proxy, wspex, wspex_space, tofloat
+from parser_app.logic.handlers.tools import get_proxy, wspex, wspex_space, tofloat
 from fake_useragent import UserAgent
 from .global_status import Global
 import demjson
+
 
 class LamodaHandler():
 
@@ -160,7 +159,7 @@ class LamodaHandler():
                 i += 1
 
                 try:
-                    time.sleep(3)
+                    # time.sleep(3)
                     if proxies is not None:
                         r = requests.get(href_i, proxies=proxies, headers=header)  # CRITICAL
                     else:

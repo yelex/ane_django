@@ -5,7 +5,7 @@ import re
 import demjson
 import time
 from datetime import datetime, timedelta
-from .tools import filter_flag, wspex_space, tofloat, get_proxy, wspex
+from parser_app.logic.handlers.tools import filter_flag, wspex_space, tofloat, get_proxy, wspex
 from .global_status import Global
 from tqdm import tqdm
 from selenium import webdriver
@@ -29,7 +29,7 @@ class OkeyHandler():
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
-        path_sfb = path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('okeydostavka')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]
@@ -180,7 +180,8 @@ class OkeyHandler():
                 href_i = url_list[i]
                 print(href_i)
                 i += 1
-
+                # if i % 10 == 0 and i != 0:
+                    # proxies = get_proxy(href_i)
                 cookie = \
                     r"_ga=GA1.2.1743913103.1529597174; _ym_uid=1529597174997115265; _gac_UA-58508147-1=1.1529607077.EAIaIQobChMItoj" + \
                     r"f2rLl2wIVjIeyCh2stAAuEAAYASAAEgLCdvD_BwE; _gid=GA1.2.654182099.1529924428; _ym_d=1529924428; _ym_isad=1; _ym_" + \
@@ -204,7 +205,7 @@ class OkeyHandler():
                     'Accept-Encoding': 'gzip, deflate, br',
                     'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
                     'Cache-Control': 'max-age=0'}
-                if Global().is_selenium:
+                if Global().is_selenium_okey:
                     path = Global().path_chromedriver
                     options = webdriver.ChromeOptions()
                     driver = webdriver.Chrome(executable_path=path, chrome_options=options)
@@ -213,21 +214,24 @@ class OkeyHandler():
                     driver.close()
                 else:
                     try:
-                        # time.sleep(1)
+                        # time.sleep(3)
                         if proxies is not None:
                             r = requests.get(href_i, proxies=proxies, headers=headers)  # CRITICAL
                         else:
                             r = requests.get(href_i, headers=headers)
                     except:
-                        proxies = get_proxy('https://www.okeydostavka.ru/')
+                        proxies = get_proxy(href_i)
                         r = requests.get(href_i, headers=headers, proxies=proxies)
                     html = r.content
 
                     soup = BeautifulSoup(html, 'lxml')
                 # print('url: ', href_i)
-                products_div = soup.find('div', {'class': 'col4 product-information'})
+                products_div = soup.find('div', {'class': re.compile('col-8\s+col-lg-7\s+col-md-6\s+'
+                                                          'col-sm-12\s+product-information')})  #col4 product-information
+                # print(soup)
                 if not products_div:
                     print('no products_div!')
+                    # proxies = get_proxy('https://okeydostavka.ru/')
                     if n_err == 0:
                         n_err += 1
                         i -= 1
@@ -251,11 +255,11 @@ class OkeyHandler():
                 # print("skipped position: {}".format(price_dict['site_title']))
                 # continue
 
-                if 'price label label-red' in products_div.text:
+                if re.search('price\s+label\s+label-red\s*', products_div.text) is not None:
                     print(href_i, 'has sale!')
                 try:
-                    if products_div.find('span', {'class': 'price label label-red'}) is not None:
-                        price_new_div = wspex(products_div.find('span', {'class': 'price label label-red'}).text)
+                    if products_div.find('span', {'class': re.compile('price\s+label\s+label-red\s*')}) is not None:
+                        price_new_div = wspex(products_div.find('span', {'class': re.compile('price\s+label\s+label-red\s*')}).text)
                         sale_div = products_div.find('span', {'class': 'label small crossed'})
                         price_dict['price_new'] = float(re.search('\d+\,\d+', price_new_div)[0].replace(',', '.'))
                         price_dict['price_old'] = float(re.search('\d+\,\d+', sale_div.text)[0].replace(',', '.'))

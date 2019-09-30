@@ -7,6 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<title>{% block title %}{% endblock %}</title>
 	<link rel="stylesheet" href="{% static "css/styles.css" %}" type="text/css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300" type="text/css">
 	<!--[if lt IE 9]>
 	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -20,9 +21,6 @@
 		<nav>
 			<ul class="top-menu">
 				<li class="{% block classhome     %}{% endblock %}"><a href="/">Главная</a></li>
-				<li class="{% block classsnaps    %}{% endblock %}"><a href="/snaps/">Снапшоты</li>
-                <li class="{% block classsnaps_nonfood    %}{% endblock %}"><a href="/nonfood_snaps/">Снапшоты непродовольственные</li>
-				<li class="{% block classdynamics %}{% endblock %}"><a href="/dynamics/">Динамика цен</a></li>
 				<li class="{% block classcp       %}{% endblock %}"><a href="/cp/">Контрольная панель</a></li>
 			</ul>
 		</nav>

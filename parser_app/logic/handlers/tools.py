@@ -81,7 +81,9 @@ def find_float_number(str):
 
 def get_proxy(link):
     while True:
-        driver = webdriver.Chrome(executable_path = Global().path_chromedriver)
+        options = webdriver.ChromeOptions()
+        # options.add_argument('--headless')
+        driver = webdriver.Chrome(executable_path = Global().path_chromedriver, options=options)
         driver.get("https://hidemyna.me/ru/proxy-list/?maxtime=300&ports=3128..")
         while True:
             time.sleep(1)
@@ -153,4 +155,3 @@ def send_mail(message, sender='ane_debug@mail.ru', to='evseev_alexey94@bk.ru'):
     mail_lib.sendmail(sender, to, msg)
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     print('e-mail has been sent {}'.format(date))
-
