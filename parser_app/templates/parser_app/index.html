@@ -8,7 +8,7 @@
 
 {% block real_content %}
     {% if last_succ_snap_date %}
-        <h3>Дата последнего успешного снапшота: {{ last_succ_snap_date.date }}</h3>
+        <h1>Дата последнего успешного снапшота: {{ last_succ_snap_date.date }}</h1>
     {% endif %}
 
     {% render_table snapstable %}

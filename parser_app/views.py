@@ -13,6 +13,7 @@ class PriceTable(tables.Table):
     index = tables.Column(verbose_name='ID категории')
     type = tables.Column(verbose_name='Тип')
     category_title = tables.Column(verbose_name='Категория')
+    gks = tables.Column(verbose_name='Росстат (цена)')
     globus = tables.Column(verbose_name='Глобус (цена)')
     okey = tables.Column(verbose_name='Окей (цена)')
     perekrestok = tables.Column(verbose_name='Перекресток (цена)')
@@ -24,12 +25,13 @@ class PriceTable(tables.Table):
     services = tables.Column(verbose_name='Услуги (цена)')
 
 
+
 def index(request):
 
     fresh_snapshot_date = SnapshotManager().last_succ_date
-    print(fresh_snapshot_date)
+    # print(fresh_snapshot_date)
     df = pd.DataFrame(list(PricesRaw.objects.filter(date=PricesRaw.objects.last().date).all().values()))
-    print(df.head())
+    # print(df.head())
     df.date = pd.to_datetime(df.date)
     pivot = df.pivot_table(index=['type', 'category_title'],
                            columns='site_code', values='price_new', aggfunc=lambda x: round(x.mean(), 2)).reset_index()
