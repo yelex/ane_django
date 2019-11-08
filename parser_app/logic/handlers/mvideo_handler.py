@@ -4,7 +4,7 @@ import numpy as np
 import requests, re
 from datetime import datetime
 from fake_useragent import UserAgent
-from parser_app.logic.handlers.global_status import Global
+from parser_app.logic.global_status import Global
 from tqdm import tqdm
 from parser_app.logic.handlers.tools import wspex_space, wspex
 
@@ -18,9 +18,6 @@ class MvideoHandler:
         desc_df = Global().desc_df
         links_df = Global().links.replace(np.nan, '')
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
-
-        if Global().max_links != None:
-            links_df = links_df.iloc[:Global().max_links]
         # print(links_df.head())
         category_ids = links_df.category_id.unique()
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',

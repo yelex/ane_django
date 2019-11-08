@@ -3,10 +3,9 @@ import pandas as pd
 import requests
 import re
 import demjson
-import time
 from datetime import datetime, timedelta
 from parser_app.logic.handlers.tools import filter_flag, wspex_space, tofloat, get_proxy, wspex
-from .global_status import Global
+from parser_app.logic.global_status import Global
 from tqdm import tqdm
 from selenium import webdriver
 """import socks
@@ -34,7 +33,7 @@ class OkeyHandler():
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('okeydostavka')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]
         id_n = 0
-        proxies = get_proxy('https://www.okeydostavka.ru/')
+        # proxies = get_proxy('https://www.okeydostavka.ru/')
 
         for href in tqdm(hrefs):
 
@@ -226,10 +225,11 @@ class OkeyHandler():
 
                     soup = BeautifulSoup(html, 'lxml')
                 # print('url: ', href_i)
+                # print(soup)
                 products_div = soup.find('div', {'class': re.compile('col-8\s+col-lg-7\s+col-md-6\s+'
                                                           'col-sm-12\s+product-information')})  #col4 product-information
-                # print(soup)
-                if not products_div:
+                # print(products_div)
+                if products_div is None:
                     print('no products_div!')
                     # proxies = get_proxy('https://okeydostavka.ru/')
                     if n_err == 0:
@@ -265,7 +265,7 @@ class OkeyHandler():
                         price_dict['price_old'] = float(re.search('\d+\,\d+', sale_div.text)[0].replace(',', '.'))
                     else:
                         price_dict['price_new'] = products_div.find('span', {
-                            'class': 'price label'})  # показывает цену, название товара и ссылку на него
+                            'class': re.compile('price\s+label\s*')})  # показывает цену, название товара и ссылку на него
                         price_dict['price_new'] = float(
                             re.search('\d+\,\d+', price_dict['price_new'].text)[0].replace(',', '.'))
                         price_dict['price_old'] = ''

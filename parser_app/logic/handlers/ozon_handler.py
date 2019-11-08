@@ -9,7 +9,7 @@ import time
 from tqdm import tqdm
 import random
 from parser_app.logic.handlers.tools import wspex, wspex_space
-from .global_status import Global
+from parser_app.logic.global_status import Global
 
 class OzonHandler():
     def option_chrome(self, proxy):
@@ -62,7 +62,7 @@ class OzonHandler():
         return a
 
     def extract_products(self, max_prod=200):
-        path_sfb = path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')]['URL'].values
@@ -242,6 +242,7 @@ class OzonHandler():
                 driver.get(href_i)
                 i += 1
                 soup = BeautifulSoup(driver.page_source, 'lxml')
+                # print(soup)
                 price_dict = dict()
                 price_dict['date'] = Global().date
                 price_dict['site_code'] = site_code
@@ -249,22 +250,34 @@ class OzonHandler():
                 price_dict['category_title'] = category_title
 
                 try:
-                    price_dict['site_title'] = wspex_space(soup.find('h1').text)  # , {'class': '_718dda'}
+                    price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'a3z6'}).text)  # , {'class': '_718dda'}
                 except:
-                    i -= 1
+                    if 'Такой страницы не существует' in soup.text:
+                        print('Такой страницы не существует!')
+                    # i -= 1
                     continue
-                try:
-                    div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
-                    '''
-                    .find('span', {
-                    'class': 'price-number'})
-                    '''
-                    if div_new == None:
-                        continue
-                except:
+
+                # div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
+                # print('soup:\n', soup)
+                # if 'Товар закончился' in soup.text:
+                # print('Товар закончился!')
+                # continue
+                div_new = soup.find('span', {'class': 'a4ca4c0 a4c3'})
+                if div_new is None:
+                    div_new = soup.find('span', {'class': 'a4c0'})
+
+                '''
+                .find('span', {
+                'class': 'price-number'})
+                '''
+                if div_new is None:
+                    # print('div_new None!')
                     continue
+
                 # div_old = soup.find('span', {'class': 'price-number cross'})
-                div_old = soup.find('div', {'class': 'ce6b47'})
+                # div_old = soup.find('div', {'class': 'ce6b47'})
+
+                div_old = soup.find('span', {'class': 'a4c5'})
 
                 if div_old != None:
                     price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])

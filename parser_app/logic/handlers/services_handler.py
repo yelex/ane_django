@@ -2,9 +2,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import requests
 import os
-from .global_status import Global
+from parser_app.logic.global_status import Global
 import re
-from datetime import datetime
 from fake_useragent import UserAgent
 
 
@@ -160,7 +159,6 @@ class Services():
         final_df=final_df.append(price_dict,ignore_index=True)
 
         #Постановка набоек, пара	https://masterskaya-obuvi.ru/tseny
-        '''
         n=6
         price_dict=dict()
         price_dict['date']=Global().date
@@ -182,7 +180,6 @@ class Services():
                 price_dict['site_link']=url
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
-        '''
 
         #Билет на 1 поездку - мосгортранс
         n=7
@@ -260,7 +257,6 @@ class Services():
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
 
-        '''
         #стрижка
         n=10
         price_dict=dict()
@@ -282,10 +278,9 @@ class Services():
                 price_dict['site_link']=url
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
-        '''
 
         #Билет на 1 поездку - мосгортранс
-        n=10
+        n=11
         price_dict=dict()
         price_dict['site_code']='services'
         price_dict['date']=Global().date
@@ -306,5 +301,5 @@ class Services():
                 price_dict['site_link']=url
                 break
         final_df = final_df.append(price_dict,ignore_index=True)
-
+        print('ALL SERVICES HAS BEEN SUCCESSFULLY PARSED!')
         return final_df

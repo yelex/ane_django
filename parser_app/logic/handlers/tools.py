@@ -1,23 +1,24 @@
 
+from bs4 import BeautifulSoup
 import pandas as pd
 import re
 import random
 import requests
 import time
 import os
-from .global_status import Global
+from parser_app.logic.global_status import Global
 from selenium import webdriver
-from threading import Timer, Thread, Event # для автозапуска
+from threading import Timer  # для автозапуска
 from fake_useragent import UserAgent
 import smtplib
 import datetime
 
 class perpetualTimer():
 
-   def __init__(self,t,hFunction):
-      self.t = t #t
+   def __init__(self, t, hFunction):
+      self.t = t  # t
       self.hFunction = hFunction
-      self.thread = Timer(0,self.handle_function)
+      self.thread = Timer(0, self.handle_function)
 
    def handle_function(self):
       self.hFunction()
@@ -129,18 +130,20 @@ def get_proxy(link):
                     html = requests.get(link, headers=headers, proxies=proxies).content
                 else:
                     html = requests.get(link, proxies=proxies, headers=header).content
-                if html != None:
+                soup = BeautifulSoup(html, 'lxml')
+
+                if html is not None and 'We have detected' not in soup.text:
                     break
             except:
                 continue
 
-        if html !=None:
+        if html is not None:
             break
         else:
             continue
     print('good proxy: {}'.format(proxy))
     driver.quit()
-    return(proxies)
+    return proxies
 
 def strsim(a, b):
     return wspex_space(a).lower() == wspex_space(b).lower()
@@ -155,3 +158,45 @@ def send_mail(message, sender='ane_debug@mail.ru', to='evseev_alexey94@bk.ru'):
     mail_lib.sendmail(sender, to, msg)
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     print('e-mail has been sent {}'.format(date))
+
+
+def fill_df(df):
+    df.loc[:, 'price_old'] = df.loc[:, 'price_old'].apply(lambda x: -1.0 if x == '' else x)
+    df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'], format='%Y-%m-%d')
+
+    df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
+    df.tail()
+    df.date = pd.to_datetime(df.date)
+
+    df.price_new = df.price_new.astype(float)
+    start_date = df.date.values.min()
+    end_date = df.date.values.max()
+    daterange = pd.date_range(start=start_date, end=end_date)
+    pvt_before = df.pivot_table(columns='site_link', index='date', values='price_new')
+    n_days_limit = 150
+    pvt_after = pvt_before.merge(pd.Series(index=daterange, data=np.nan, name=1), left_index=True, \
+                                 right_index=True, how='right').iloc[:, :-1].apply(
+        lambda x: x.fillna(method='ffill', limit=n_days_limit))
+
+    df = df.drop('price_new', axis=1).merge(pvt_after.transpose().stack().rename('price_new'), \
+                                            left_on=['site_link', 'date'], right_index=True, how='right')
+
+    df.loc[:, 'miss'] = df.loc[:, 'site_title'].isna().astype(int)
+    df.loc[:, 'price_old'] = df.loc[:, 'price_old'].apply(lambda x: -1.0 if x == None else x)
+
+    df = df.reset_index().drop('index', axis=1)
+    df = df.sort_values(['site_link', 'date'])
+    df.loc[:, 'URL'] = df.loc[:, 'site_link']
+    df = df.groupby('URL').transform(lambda x: x.fillna(method='ffill'))
+    df = df.reset_index().drop('index', axis=1)
+    df.category_id = df.category_id.astype(int)
+    df.loc[:, 'nsprice_f'] = ((df.price_old == -1.0).replace(False, np.nan)) * (df.price_new).apply(
+        lambda x: np.nan if x == 0 else x)
+    df = df.groupby('site_link').apply(lambda x: x.fillna(method='ffill', limit=n_days_limit))
+    df.loc[df.nsprice_f.isna(), 'nsprice_f'] = df.loc[df.nsprice_f.isna(), 'price_old']
+    df.nsprice_f = df.nsprice_f.astype(float)
+    df = df.drop_duplicates()
+    return df
+    path_db2 = r'D:\ANE_django\db.sqlite3'
+    con2 = sqlite3.connect(path_db2)
+    df.to_sql(name='parser_app_pricesprocessed', con=con2, if_exists='replace', index=False)

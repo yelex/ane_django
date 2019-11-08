@@ -3,13 +3,13 @@ import pandas as pd
 from datetime import datetime, timedelta
 import requests
 import re
-from .global_status import Global
-
+from parser_app.logic.global_status import Global
+import os
 from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space, get_proxy
 from tqdm import tqdm
 
 
-class GlobusHandler():
+class GlobusHandler:
 
     def construct_html(self,start_html,begin_index):
         end_html='&PAGEN_2={}'.format(begin_index)
@@ -18,7 +18,7 @@ class GlobusHandler():
 
     def extract_products(self):
         start_time = datetime.now().minute
-        path_sfb = path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['URL'].values
         id_n = 0

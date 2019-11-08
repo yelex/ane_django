@@ -6,7 +6,7 @@ from selenium import webdriver
 from datetime import datetime
 from fake_useragent import UserAgent
 from parser_app.logic.handlers.tools import list_html, wspex_space, find_float_number, filter_flag, wspex, get_proxy
-from .global_status import Global
+from parser_app.logic.global_status import Global
 from tqdm import tqdm
 
 class UtkonosHandler():
@@ -185,10 +185,11 @@ class UtkonosHandler():
         proxies = None
 
         # selenium
-        path = Global().path_chromedriver
-        options = webdriver.ChromeOptions()
-        # options.add_argument('--headless')
-        driver = webdriver.Chrome(executable_path=path, chrome_options=options)
+        if Global().is_selenium_utkonos:
+            path = Global().path_chromedriver
+            options = webdriver.ChromeOptions()
+            # options.add_argument('--headless')
+            driver = webdriver.Chrome(executable_path=path, chrome_options=options)
 
         # proxies = get_proxy('https://www.utkonos.ru/')
         for cat_id in tqdm(category_ids):  # испр
@@ -228,7 +229,7 @@ class UtkonosHandler():
                     html = r.content
 
                     soup = BeautifulSoup(html, 'html.parser')
-                    print('soup:\n', soup)
+                    # print('soup:\n', soup)
                 products_div = soup.find('div', {'class': 'goods_view_item-action'})
                 # products_div = soup.find('div', {'class': 'b-section--bg i-pb30 js-product-item js-product-main'})
                 # print('\n\nproducts_div:\n', products_div)

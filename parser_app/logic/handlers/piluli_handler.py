@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 from selenium import webdriver
-from .global_status import Global
+from parser_app.logic.global_status import Global
 import os
 
 

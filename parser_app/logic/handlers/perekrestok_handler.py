@@ -3,12 +3,12 @@ import pandas as pd
 import requests
 from datetime import datetime, timedelta
 from parser_app.logic.handlers.tools import filter_flag, get_proxy, tofloat, wspex_space
-from .global_status import Global
+from parser_app.logic.global_status import Global
 from tqdm import tqdm
 import re
 
 
-class PerekrestokHandler():
+class PerekrestokHandler:
 
     def extract_products(self, is_proxy = True):
         if is_proxy == True:

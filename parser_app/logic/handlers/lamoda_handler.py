@@ -5,9 +5,9 @@ import re
 from tqdm import tqdm
 from parser_app.logic.handlers.tools import get_proxy, wspex, wspex_space, tofloat
 from fake_useragent import UserAgent
-from .global_status import Global
+from parser_app.logic.global_status import Global
 import demjson
-
+import os
 
 class LamodaHandler():
 
@@ -17,7 +17,7 @@ class LamodaHandler():
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         # количество страниц
-        path_sfb = path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df[sfb_df.fillna('')['URL'].str.contains('lamoda')]['URL'].values  # ссылки на URL lamoda
@@ -199,7 +199,10 @@ class LamodaHandler():
                     products_div.find('div', {'class': 'ii-select__option'}).get('data-value'))
                 except:
                     continue
+                # print(products_div)
                 div_new = products_div.find('div', {'class': 'ii-product__price ii-product__price_several'})
+                if div_new is None:
+                    div_new = products_div.find('div', {'class': 'ii-product__price ii-product__price_several DT1717'})
                 dct = demjson.decode(div_new.get('data-several-prices'))
 
                 if len(dct['details']) > 1:
@@ -207,6 +210,12 @@ class LamodaHandler():
                     price_dict['price_new'] = int(dct['details'][1]['value'])
                 else:
                     price_dict['price_new'] = int(dct['details'][0]['value'])
+                '''
+                else:
+                    div_old = 
+                    price_dict['price_old'] = int(wspex())
+                    price_dict['price_new'] = int(dct['details'][1]['value'])
+                '''
 
                 price_dict['site_unit'] = 'шт.'
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него

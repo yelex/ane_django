@@ -6,9 +6,9 @@ body {
 	margin: 0;
 }
 
-wrapper {
-	max-width: 1200px;
-	margin: 20;
+#wrapper {
+	max-width: 980px; /*980px*/
+	margin: auto;
 }
 
 /*ЛОГОТИП*/
@@ -25,6 +25,7 @@ img {
 nav {
 	background: #f3f3f3;
 	border: 1px solid #e7e7e7;
+	margin: 0;
 }
 
 nav a {
@@ -39,7 +40,7 @@ nav ul {
 nav li {
 	list-style-position: inside;
 	font: 20px 'Oswald';
-	padding: 0px;
+	padding: 10px;
 }
 
 .top-menu li {
@@ -61,7 +62,7 @@ nav li {
 
 /*КОНТЕНТ*/
 p {
-	margin: 20px 0;
+	margin: 10px 0;
 }
 section {
 	padding-bottom: 50px;
@@ -69,10 +70,10 @@ section {
 }
 
 section > h2 {
-	/*background: #f8f8f8;*/
+	background: url(../images/bg.png);
 	font: 30px 'Oswald';
 	font-weight: 300;
-	color: #FFFFFF;
+	color: #fff;
 	padding: 0 10px;
 	margin: 30px 0 0 0;
 }
@@ -88,11 +89,6 @@ h1 {
 	background: url(../images/bg.png);
 	margin: 0;
 	padding: 0 10px;
-}
-
-
-div {
-    margin-left: 20px;
 }
 
 /*ПОДВАЛ САЙТА*/
@@ -154,4 +150,4 @@ thead th{
 
 table > tfoot {
 font-weight: bold;
-}
+}}
