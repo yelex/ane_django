@@ -182,7 +182,7 @@ class UtkonosHandler():
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        proxies = None
+        proxies = get_proxy('https://www.utkonos.ru/')
 
         # selenium
         if Global().is_selenium_utkonos:

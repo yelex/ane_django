@@ -70,7 +70,7 @@ section {
 }
 
 section > h2 {
-	background: url(../images/bg.png);
+	background: #f8f8f8 url(../images/bg.png);
 	font: 30px 'Oswald';
 	font-weight: 300;
 	color: #fff;
@@ -85,7 +85,7 @@ section > p, section > table {
 h1 {
 	display: inline-block;
 	color: #7e7e7e;
-	font: 40px/40px 'Oswald';
+	font: 30px/30px 'Oswald';
 	background: url(../images/bg.png);
 	margin: 0;
 	padding: 0 10px;
@@ -129,7 +129,11 @@ footer p {
 	text-align: right;
 }
 
-table { border-collapse: collapse; border-spacing: 0; }
+table {
+border-collapse: collapse;
+border-spacing: 0;
+width: 100%;}
+
 tr:nth-child(even) {background-color: #f2f2f2;}
 tr:nth-child(odd) {background-color: #ffffff;}
 tr:hover {background-color: #e5eef9;}

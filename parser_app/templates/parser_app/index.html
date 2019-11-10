@@ -8,12 +8,13 @@
 
 {% block real_content %}
     {% if last_succ_snap_date %}
-        <h3>Дата последнего успешного снапшота: {{ last_succ_snap_date.date }}</h3>
+    Дата последнего успешного снапшота: {{ last_succ_snap_date.date }}
+    <h1></h1>
     {% endif %}
-        <h2>Продовольственные товары</h2>
+        <h3>Продовольственные товары</h3>
     {% render_table snapstable_food %}
-        <h2>Непродовольственные товары</h2>
+        <h3>Непродовольственные товары</h3>
     {% render_table snapstable_nonfood %}
-        <h2>Услуги</h2>
+        <h3>Услуги</h3>
     {% render_table snapstable_services %}
 {% endblock %}

@@ -158,6 +158,7 @@ class Services():
 
         final_df=final_df.append(price_dict,ignore_index=True)
 
+        '''
         #Постановка набоек, пара	https://masterskaya-obuvi.ru/tseny
         n=6
         price_dict=dict()
@@ -180,6 +181,7 @@ class Services():
                 price_dict['site_link']=url
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
+        '''
 
         #Билет на 1 поездку - мосгортранс
         n=7
@@ -300,6 +302,7 @@ class Services():
                 price_dict['site_unit']='поездка'
                 price_dict['site_link']=url
                 break
-        final_df = final_df.append(price_dict,ignore_index=True)
+        final_df = final_df.append(price_dict, ignore_index=True)
+        final_df = final_df[final_df.site_title.notna()]
         print('ALL SERVICES HAS BEEN SUCCESSFULLY PARSED!')
         return final_df

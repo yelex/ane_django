@@ -12,6 +12,10 @@ from threading import Timer  # для автозапуска
 from fake_useragent import UserAgent
 import smtplib
 import datetime
+from datetime import date
+import numpy as np
+from tqdm import tqdm
+
 
 class perpetualTimer():
 
@@ -30,6 +34,7 @@ class perpetualTimer():
 
    def cancel(self):
       self.thread.cancel()
+
 
 def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=True если учитывать слова "за", False - иначе
     path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
@@ -57,19 +62,24 @@ def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=
     else:
         flag = False
 
-    return (flag)
+    return flag
+
 
 def wspex(x):
     return re.sub(u'\u200a', '', ''.join(x.split()))
 
+
 def list_html(text):
     return (text.split())
+
 
 def wspex_space(x):
     return re.sub(u'\u200a', '', ' '.join(str(x).split()))
 
+
 def tofloat(s):
     return float(wspex(s.replace(',', '.')))
+
 
 def find_float_number(str):
 
@@ -79,6 +89,7 @@ def find_float_number(str):
         return float(sr[0].replace(',', '.'))
     else:
         return None
+
 
 def get_proxy(link):
     while True:
@@ -145,8 +156,10 @@ def get_proxy(link):
     driver.quit()
     return proxies
 
+
 def strsim(a, b):
     return wspex_space(a).lower() == wspex_space(b).lower()
+
 
 def send_mail(message, sender='ane_debug@mail.ru', to='evseev_alexey94@bk.ru'):
     smtp_server = 'smtp.mail.ru'
@@ -197,6 +210,141 @@ def fill_df(df):
     df.nsprice_f = df.nsprice_f.astype(float)
     df = df.drop_duplicates()
     return df
-    path_db2 = r'D:\ANE_django\db.sqlite3'
-    con2 = sqlite3.connect(path_db2)
-    df.to_sql(name='parser_app_pricesprocessed', con=con2, if_exists='replace', index=False)
+
+
+def pack_to_gramm(string):  # перевод в граммы для (50×2г)
+    pattern_1 = re.compile('\d+\s{0,1}(пак){0,1}\s{0,1}(?:\*|×|x|х)')
+    pattern_2 = re.compile('(?:\*|×|x|х)\s{0,1}\d+\,{0,1}\d*\s*г')
+    pattern_3 = re.compile('\d+(?:\,|\.){0,1}\d*\s*г(?:\*|×|x|х)')
+    pattern_4 = re.compile('(?:\*|×|x|х)\s{0,1}\d+\s{0,1}(пак){0,1}')
+
+    if re.search(pattern_1, string) != None and re.search(pattern_2, string) != None:
+        return str(int(wspex(re.search('\d+', ((re.search(pattern_1, string)[0])[:-1]))[0])) * tofloat(
+            re.search(pattern_2, string)[0][1:-1])) + 'г'
+    if re.search(pattern_3, string) != None and re.search(pattern_4, string) != None:
+        return str(int(wspex(re.search('\d+', ((re.search(pattern_4, string)[0])))[0])) * tofloat(
+            wspex(re.search(pattern_3, string)[0])[:-2])) + 'г'
+
+# price_in_basket
+
+sfb = pd.read_csv(r'C:\anehome_test\anehome\logic\sfb.csv', sep=';')
+
+
+def price_coef(id_n, string_unit):  # основано на весах 33 категорий условного минимального набора товаров и услуг
+    # столбик весов - перевод в нужные единицы веса - перевод в стоимость через коэффициент
+    # print(string_unit)
+    global sfb
+    kg_units = ['кг', 'kg', 'килограмм']
+    g_units = ['г', 'g', 'грамм', 'граммов', 'гр']  # в кг
+    litre_units = ['л', 'l', 'литр', 'литров', 'литра']
+    ml_units = ['мл', 'ml', 'миллилитров', 'миллилитра']
+    amount = float(re.search('\d+(\.\d*){0,1}', string_unit)[0])
+    unit = re.search('[а-яa-z]+', string_unit)[0]
+
+    if unit in g_units or unit in ml_units:
+        coeff = 1000 / amount
+    elif unit in kg_units or unit in litre_units:
+        coeff = 1 / amount
+    elif unit == 'шт':
+        coeff = 10 / amount
+    else:
+        raise ValueError('Unit {} from string_unit {} is unknown'.format(unit, string_unit))
+    coeff = coeff * sfb[sfb.id == id_n].req_amount.iloc[0]
+    return coeff / 12
+
+
+def percentile(n):
+    def percentile_(x):
+        return np.percentile(x, n)
+    percentile_.__name__ = 'percentile_%s' % n
+    return percentile_
+
+
+def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
+    df_gks.loc[:, 'nsprice_f'] = df_gks.price_new
+    df_gks.loc[:, 'date'] = pd.to_datetime(df_gks.loc[:, 'date'], format='%Y-%m-%d')
+    df_gks = df_gks.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
+
+    # онлайн-проды
+    df_retail = df_retail.drop('id', axis=1)
+    df_retail.loc[:, 'date'] = pd.to_datetime(df_retail.loc[:, 'date'], format='%Y-%m-%d')
+    print('df_gks.head():{}\n\ndf_retail.head():{}\n'.format(df_gks.head(3), df_retail.head(3)))
+    df = pd.concat([df_gks, df_retail], join='inner')
+    df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
+    df_new = df.loc[df.date >= pd.Timestamp(date), :]
+    grouped = df_new.groupby(['category_id', 'site_code', 'site_link']).nunique()[['date']]
+    grouped = grouped[grouped.date == max(grouped.date)]
+    links = grouped.index.get_level_values(level=2)
+    # подготовленный датафрейм (только те товары, которые наблюдались с 1 июля 2019 и по сегодня)
+    df_new = df_new[df_new.site_link.isin(links)]
+    # weight
+
+    piece_units = ['шт', 'штук', 'штуки', 'штука', 'пак', 'пакетиков', 'пак']
+    kg_units = ['кг', 'kg', 'килограмм']  # оставить в граммах
+    gram_units = ['г', 'g', 'грамм', 'граммов', 'гр']  # в кг
+    litre_units = ['л', 'l', 'литр', 'литров', 'литра']
+    ml_units = ['мл', 'ml', 'миллилитров', 'миллилитра']
+    tenpiece_units = ['10 шт', '10 шт.', '10шт', '10шт.', 'десяток', 'дес.']
+
+    kg_pattern = r'\s*(?:\d{1,4}[×,.]\d{1,4}|\d{1,4})\s*(?:' + r'|'.join(kg_units) + r')'
+    g_pattern = r'\s*(?:\d{1,4}[×,.]\d{1,4}|\d{1,4})\s*(?:' + r'|'.join(gram_units) + r')'
+    l_pattern = r'\s*(?:\d{1,4}[×,.]\d{1,4}|\d{1,4})\s*(?:' + r'|'.join(litre_units) + r')'
+    ml_pattern = r'\s*(?:\d{1,4}[×,.]\d{1,4}|\d{1,4})\s*(?:' + r'|'.join(ml_units) + r')'
+    piece_pattern = r'\s*(?:\d{1,4}[×,.]\d{1,4}|\d{1,4})\s*(?:' + r'|'.join(piece_units) + r')'
+    tenpiece_pattern = r'\s*(?:\d{1,4}[×,.]\d{1,4}|\d{1,4})\s*(?:' + r'|'.join(tenpiece_units) + r')'
+
+    patterns = [piece_pattern, tenpiece_pattern, kg_pattern, g_pattern, l_pattern, ml_pattern]
+    df_new['weight'] = None
+
+    for title in tqdm(df_new.site_title.unique()):
+        for pattern in patterns:
+            match = re.search(pattern, title.lower())
+            if match:
+                df_new.loc[df_new.site_title == title, 'weight'] = match[0]
+    df_new.loc[df_new.weight.isna(), 'weight'] = df_new.loc[df_new.weight.isna(), 'site_unit']
+    df_new.loc[df_new.site_unit.isin(['за 1 кг', 'кг', 'за 100 г']), 'weight'] = df_new.loc[
+        df_new.site_unit.isin(['за 1 кг', 'кг', 'за 100 г']), 'weight'].apply(lambda x: wspex(x).replace('за', ''))
+    df_new.loc[df_new.weight == 'кг', 'weight'] = '1кг'
+    df_new.loc[df_new.site_unit == 'кг', 'weight'] = '1кг'
+
+    # weight only
+
+    df_new.weight = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
+
+    df_new.weight = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
+    pattern1 = re.compile('\d+\s{0,1}(пак){0,1}\s{0,1}(?:\*|×|x|х)\s{0,1}\d+\,{0,1}\d*\s*г')
+    pattern2 = re.compile('\d+(?:\,|\.){0,1}\d*\s*г(?:\*|×|x|х)\s{0,1}\d+\s{0,1}(пак){0,1}')
+    df_new.weight = df_new.apply(
+        lambda x: pack_to_gramm(x['site_title']) if re.search(pattern1, x['site_title']) != None or re.search(pattern2,
+                                                                                                              x[
+                                                                                                                  'site_title']) is not None
+        else x['weight'], axis=1)
+
+    dict_pack = {'25пак': '50г', '20пак': '80г', '100пак': '200г', 'л': '1л', '010шт': '10шт.',
+                 '2019кг': '1кг', '110шт': '10шт', '210шт': '10шт'}
+
+    df_new.weight = df_new.weight.replace(dict_pack)
+    df_new.loc[(df_new.weight == '4l') & (df_new.type == 'food'), 'weight'] = df_new.loc[
+        (df_new.weight == '4l') & (df_new.type == 'food'), 'site_unit'].apply(lambda x: wspex(x).replace(',', '.'))
+    df_new.loc[df_new.site_title == 'Соль поваренная пищевая каменная помол №1', 'weight'] = '1кг'
+    df_new = df_new[df_new.site_title.str.contains('Огурцы длинноплодные шт') == False]
+    df_new = df_new[df_new.weight != '1шт']
+    non_sht = df_new.loc[
+        (df_new.site_title.str.contains(re.compile('Яйц(?:о|а)')) == False) & (df_new.weight.str.contains('шт')) & (
+                    df_new.type == 'food')].site_link.unique()
+    df_new = df_new[df_new.site_link.isin(non_sht) == False]
+    df_new.loc[:, 'coef'] = None
+    # df_new.loc[df_new.nsprice_f==-1.0,'nspices_f']=0
+    for id_n in tqdm(df_new.category_id.unique()):
+        for unit in df_new.loc[df_new.category_id == id_n].weight.unique():
+            df_new.loc[(df_new.category_id == id_n) & (df_new.weight == unit), 'coef'] = price_coef(id_n, unit)
+
+    df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'coef'] * df_new.loc[:, 'nsprice_f']  # поменять на регулярные цены
+    df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'price_bsk'].astype(float)
+    df_new = df_new.drop_duplicates(subset=['date', 'site_title', 'site_code'])
+    basket_df = pd.DataFrame()
+    basket_df.loc[:, 'gks_price'] = df_new[df_new.site_code == 'gks'].groupby(['date']).sum()['price_bsk']
+    basket_df.loc[:, 'online_price'] = \
+    df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
+        'price_bsk']
+    return basket_df
