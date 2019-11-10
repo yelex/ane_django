@@ -11,16 +11,17 @@ import random
 from parser_app.logic.handlers.tools import wspex, wspex_space
 from parser_app.logic.global_status import Global
 
+
 class OzonHandler():
     def option_chrome(self, proxy):
         chromeOptions = webdriver.ChromeOptions()
         chromeOptions.add_argument('--proxy-server=%s' % proxy)
         return chromeOptions
 
-    def get_proxy(self):# опционально, если понадобится прокси
+    def get_proxy(self):  # опционально, если понадобится прокси
         success = False
         while True:
-            driver = webdriver.Chrome(executable_path = Global().path_chromedriver)
+            driver = webdriver.Chrome(executable_path=Global().path_chromedriver)
             driver.get("https://hidemyna.me/ru/proxy-list/?maxtime=300&ports=3128..")
             while True:
                 # time.sleep(1)
@@ -30,7 +31,7 @@ class OzonHandler():
             driver.quit()
 
             for it in range(5):
-                print('it =',it)
+                print('it =', it)
                 proxy = random.choice(ip_list[1:]) + ":3128"
                 success = False
 
@@ -54,9 +55,9 @@ class OzonHandler():
                 continue
         print('good proxy: {}'.format(proxy))
         driver.quit()
-        return(proxy)
+        return (proxy)
 
-    def tnout(self, s):#убрать \n и \t
+    def tnout(self, s):  # убрать \n и \t
         a = re.sub('\n', '', ' '.join(s.split()))
         a = re.sub('\t', '', ' '.join(a.split()))
         return a
@@ -68,10 +69,10 @@ class OzonHandler():
         list_urls = sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')]['URL'].values
 
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
-                           'site_title', 'price_new', 'price_old', 'site_unit',
-                           'site_link', 'site_code'])
+                                    'site_title', 'price_new', 'price_old', 'site_unit',
+                                    'site_link', 'site_code'])
 
-        #proxy = self.get_proxy()
+        # proxy = self.get_proxy()
         options = webdriver.ChromeOptions()
         # proxy = get_proxy('http://ozon.ru') # если понадобится прокси
         # options.add_argument('--headless')
@@ -79,16 +80,14 @@ class OzonHandler():
         # options.add_argument('--proxy-server=%s' % proxy)
 
         driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                  chrome_options=options) #, chrome_options=self.option_chrome(proxy))
-
+                                  chrome_options=options)  # , chrome_options=self.option_chrome(proxy))
 
         store = 'ozon'
         driver.implicitly_wait(30)
 
         id_n = -1
 
-
-        for url in tqdm(list_urls[id_n+1:]):
+        for url in tqdm(list_urls[id_n + 1:]):
             flag = 0
 
             id_n += 1
@@ -135,11 +134,11 @@ class OzonHandler():
 
                     price_dict['site_unit'] = 'шт.'
                     price_dict['site_code'] = store
-                    price_dict['category_id'] = int(sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')].index[id_n])
+                    price_dict['category_id'] = int(
+                        sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')].index[id_n])
                     # print('category_id: ',price_dict['category_id'])
                     price_dict['date'] = Global().date
                     price_dict['type'] = 'non-food'
-
 
                     try:
                         price_dict['site_title'] = self.tnout(tile.find('a', {'data-test-id': "tile-name"}).text)
@@ -154,14 +153,15 @@ class OzonHandler():
                         price_dict['site_link'] = ''
                         print("ACHTUNG! link has not parsed for site_title: {}".format(price_dict['site_title']))
                     else:
-                        price_dict['site_link'] = 'https://www.ozon.ru' + tile.find('a', {'class': 'full-cover-link'}).get(
+                        price_dict['site_link'] = 'https://www.ozon.ru' + tile.find('a',
+                                                                                    {'class': 'full-cover-link'}).get(
                             'href')
                     '''print('site_title[{}]: {}\nprice_new: {}\nprice_old: {}\n\n'.format(i,price_dict['site_title'],
                                                                                         price_dict['price_new'],
                                                                                         price_dict['price_old']))'''
                     res = res.append(price_dict, ignore_index=True)
 
-                if i >= n or i >= max_prod or flag==1:
+                if i >= n or i >= max_prod or flag == 1:
                     print('   parsing has ended!')
                     break
 
@@ -221,11 +221,11 @@ class OzonHandler():
         options.add_argument('--headless')
         # options.add_argument('--proxy-server=%s' % proxy)
         driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                  chrome_options=options) #, chrome_options=self.option_chrome(proxy))
+                                  chrome_options=options)  # , chrome_options=self.option_chrome(proxy))
         #
-        # ua = UserAgent()
-        # header = {'User-Agent': str(ua.chrome)}
-
+        ua = UserAgent()
+        header = {'User-Agent': str(ua.chrome)}
+        proxies = None
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
 
@@ -238,10 +238,25 @@ class OzonHandler():
             while i + 1 <= len(url_list):
 
                 href_i = url_list[i]
-                print('site_link: ', href_i)
-                driver.get(href_i)
+                print(href_i)
+                if Global().is_selenium_ozon is True:
+                    driver.get(href_i)
+                    soup = BeautifulSoup(driver.page_source, 'lxml')
+                else:
+                    try:
+                        # time.sleep(3)
+                        if proxies is not None:
+                            r = requests.get(href_i, proxies=proxies, headers=header)  # CRITICAL
+                        else:
+                            r = requests.get(href_i, headers=header)
+                    except:
+                        proxies = get_proxy(href_i)
+                        r = requests.get(href_i, proxies=proxies, headers=header)
+                    html = r.content
+                    soup = BeautifulSoup(html, 'lxml')
+
                 i += 1
-                soup = BeautifulSoup(driver.page_source, 'lxml')
+
                 # print(soup)
                 price_dict = dict()
                 price_dict['date'] = Global().date
@@ -250,8 +265,15 @@ class OzonHandler():
                 price_dict['category_title'] = category_title
 
                 try:
-                    price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'a3z6'}).text)  # , {'class': '_718dda'}
+
+                    if soup.find('h1', {'class': 'a7w2'}) is not None:
+                        price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'a7w2'}).text)
+                    else:
+                        price_dict['site_title'] = wspex_space(
+                            soup.find('h1', {'class': 'bv3'}).text)  # , {'class': '_718dda'}, {'class': 'a3z6'}
+                    print('site_title: ', price_dict['site_title'])
                 except:
+                    print('except sitetitle not found')
                     if 'Такой страницы не существует' in soup.text:
                         print('Такой страницы не существует!')
                     # i -= 1
@@ -262,37 +284,49 @@ class OzonHandler():
                 # if 'Товар закончился' in soup.text:
                 # print('Товар закончился!')
                 # continue
-                div_new = soup.find('span', {'class': 'a4ca4c0 a4c3'})
-                if div_new is None:
-                    div_new = soup.find('span', {'class': 'a4c0'})
 
+                div_new = soup.find('span', {'class': 'bt8 bu0'})
+
+                if div_new is None:
+                    div_new = soup.find('span', {'class': 'bt8'})
+                    if div_new is None:
+                        div_new = soup.find('span', {'class': 'a8a1'})
+
+                if soup.find('div', {'class': 'a8a2'}) is not None and \
+                        'закончился' in soup.find('div', {'class': 'a8a2'}).text:
+                    print('Товар закончился!')
+                    continue
+                # print('din_new:\n', div_new)
                 '''
-                .find('span', {
+
+                soup.find('span', {
                 'class': 'price-number'})
                 '''
-                if div_new is None:
-                    # print('div_new None!')
-                    continue
 
                 # div_old = soup.find('span', {'class': 'price-number cross'})
                 # div_old = soup.find('div', {'class': 'ce6b47'})
 
-                div_old = soup.find('span', {'class': 'a4c5'})
+                # div_old = soup.find('span', {'class': 'a4c5'})
+                div_old = soup.find('span', {'class': 'bu2'})
 
-                if div_old != None:
+                if div_old is not None:
                     price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])
                 else:
-                    price_dict['price_old'] = ''
+                    div_old = soup.find('span', {'class': 'a8a6'})
+                    if div_old is not None:
+                        price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])
+                    else:
+                        price_dict['price_old'] = ''
 
                 price_dict['price_new'] = int(re.search('\d+', wspex(div_new.text))[0])
 
                 price_dict['site_unit'] = 'шт.'
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него
                 price_dict['type'] = 'non-food'
-                print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n\n'.format(price_dict['site_title'],
-                                                                                          price_dict['price_new'],
-                                                                                          price_dict['price_old'],
-                                                                                          price_dict['site_unit']))
+                print('price_new: {}\nprice_old: {}\nunit: {}\n\n'.format(
+                    price_dict['price_new'],
+                    price_dict['price_old'],
+                    price_dict['site_unit']))
                 res = res.append(price_dict, ignore_index=True)
 
         print('OZON has successfully parsed')

@@ -12,8 +12,12 @@ class Global:
         self.desc_df = pd.read_csv(self.path_desc, sep=';', index_col='id')
         self.date = datetime.now().date()-timedelta(days=0)
         self.max_links = 2
+        self.is_selenium_ozon = False
         self.is_selenium_okey = False
         self.is_selenium_utkonos = False
         self.path_chromedriver = 'C:\\Users\\evsee\\Downloads\\chromedriver.exe'
+
+
+
 
 

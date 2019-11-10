@@ -17,7 +17,7 @@ class LamodaHandler():
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         # количество страниц
-        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df[sfb_df.fillna('')['URL'].str.contains('lamoda')]['URL'].values  # ссылки на URL lamoda
@@ -155,7 +155,7 @@ class LamodaHandler():
             while i + 1 <= len(url_list):
 
                 href_i = url_list[i]
-                print('site_link: ', href_i)
+                print(href_i)
                 i += 1
 
                 try:
@@ -166,6 +166,7 @@ class LamodaHandler():
                         r = requests.get(href_i, headers=header)
                 except:
                     proxies = get_proxy('https://www.lamoda.ru/')
+                    time.sleep(3)
                     r = requests.get(href_i, proxies=proxies, headers=header)
                 html = r.content
 
@@ -192,11 +193,18 @@ class LamodaHandler():
                 else:
                     price_dict['price_old'] = ''
 
-                # print(products_div)
+                type_good = wspex_space(products_div.find('a', {'class': 'hidden'}).text)
+                if type_good == '':
+                    # print(' imhere!')
+                    type_good = wspex_space(text_diff(soup.find('span', {'class': 'heading_m ii-product__title'}).text,
+                                                      soup.find('span', {'class': 'ii-product__brand'}).text))
+
                 try:
-                    price_dict['site_title'] = wspex_space(
-                    products_div.find('a', {'class': 'hidden'}).text) + ' Артикул: ' + wspex_space(
-                    products_div.find('div', {'class': 'ii-select__option'}).get('data-value'))
+                    # if products_div.find('a', {'class': 'hidden'}).text is '':
+                        # print(soup)
+                    price_dict['site_title'] = type_good + ' Артикул: ' + wspex_space(
+                        products_div.find('div', {'class': 'ii-select__option'}).get('data-value'))
+
                 except:
                     continue
                 # print(products_div)

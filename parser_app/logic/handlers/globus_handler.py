@@ -163,7 +163,7 @@ class GlobusHandler:
 
                 i += 1
 
-                print('\tloading {} ...'.format(url))
+                print('{} ...'.format(url))
                 try:
                     if proxies != None:
                         html = requests.get(url, proxies=proxies).content
@@ -186,7 +186,7 @@ class GlobusHandler:
                     price_dict['site_title'] = wspex_space(
                         products_div.find('h1', {'class': 'js-with-nbsp-after-digit'}).text)
                 except:
-                    print('OOPS! {} has not been parsed'.format(url))
+                    # print('OOPS! {} has not been parsed'.format(url))
                     continue
 
                 # if filter_flag(id_n, price_dict['site_title']) == False:

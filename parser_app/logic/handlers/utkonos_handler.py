@@ -9,6 +9,7 @@ from parser_app.logic.handlers.tools import list_html, wspex_space, find_float_n
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 
+
 class UtkonosHandler():
 
     def representsInt(self,s):
@@ -182,7 +183,7 @@ class UtkonosHandler():
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        proxies = get_proxy('https://www.utkonos.ru/')
+        proxies = None
 
         # selenium
         if Global().is_selenium_utkonos:
@@ -207,7 +208,7 @@ class UtkonosHandler():
                 href_i = url_list[i]
                 i += 1
 
-                print('href_i: ', href_i)
+                print(href_i)
                 if Global().is_selenium_utkonos:
                     driver.get(href_i)
                     soup = BeautifulSoup(driver.page_source, 'html.parser')

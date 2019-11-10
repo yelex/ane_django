@@ -158,6 +158,12 @@ class OkeyHandler():
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
         if Global().max_links != None:
             links_df = links_df.iloc[:Global().max_links]
+
+        if Global().is_selenium_okey:
+            path = Global().path_chromedriver
+            options = webdriver.ChromeOptions()
+            driver = webdriver.Chrome(executable_path=path, chrome_options=options)
+
         category_ids = links_df.category_id.unique()
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
@@ -205,9 +211,6 @@ class OkeyHandler():
                     'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
                     'Cache-Control': 'max-age=0'}
                 if Global().is_selenium_okey:
-                    path = Global().path_chromedriver
-                    options = webdriver.ChromeOptions()
-                    driver = webdriver.Chrome(executable_path=path, chrome_options=options)
                     driver.get(href_i)
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     driver.close()

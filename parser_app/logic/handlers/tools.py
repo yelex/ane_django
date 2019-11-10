@@ -15,6 +15,7 @@ import datetime
 from datetime import date
 import numpy as np
 from tqdm import tqdm
+import difflib
 
 
 class perpetualTimer():
@@ -210,6 +211,11 @@ def fill_df(df):
     df.nsprice_f = df.nsprice_f.astype(float)
     df = df.drop_duplicates()
     return df
+
+def text_diff(case_a, case_b):
+    output_list = [li for li in difflib.ndiff(case_a, case_b) if li[0] != ' ']
+
+    return ''.join([i[-1] for i in output_list])
 
 
 def pack_to_gramm(string):  # перевод в граммы для (50×2г)

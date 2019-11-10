@@ -8,7 +8,7 @@ from tqdm import tqdm
 import re
 
 
-class PerekrestokHandler:
+class PerekrestokHandler():
 
     def extract_products(self, is_proxy = True):
         if is_proxy == True:
@@ -180,7 +180,7 @@ class PerekrestokHandler:
             while i + 1 <= len(url_list):
 
                 href_i = url_list[i]
-                print('site_link: ', href_i)
+                print(href_i)
                 i += 1
 
                 try:

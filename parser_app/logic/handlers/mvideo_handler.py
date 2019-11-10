@@ -40,7 +40,7 @@ class MvideoHandler:
                 href_i = url_list[i]
                 i += 1
                 page = 0
-                print('href_i: ', href_i)
+                print(href_i)
 
                 r = requests.get(href_i, headers=header)
                 html = r.content
