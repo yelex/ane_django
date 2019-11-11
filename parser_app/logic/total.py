@@ -5,6 +5,7 @@ from parser_app.logic.handlers.services_handler import Services
 from parser_app.logic.handlers.tools import perpetualTimer, fill_df, get_basket_df
 from parser_app.logic.global_status import Global
 from parser_app.logic.handlers.gks_handler import SiteHandlerGks
+from parser_app.models import PricesRaw, PricesProcessed, Gks, Basket
 import pandas as pd
 from datetime import datetime
 import sqlite3
@@ -25,16 +26,16 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-
-        df = df.append(TotalNongrocery().get_df_page())
-        df = df.append(TotalGrocery().get_df_page())
         df = df.append(Services().get_df())
+        # df = df.append(TotalNongrocery().get_df_page())
+        # df = df.append(TotalGrocery().get_df_page())
+
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
         # df = df.drop_duplicates(subset=['date', 'category_id', 'site_link'])
         df = df.sort_values(['category_id', 'site_link'])
 
-        conn = sqlite3.connect(os.path.join(BASE_DIR, 'db.sqlite3'))
+        # conn = sqlite3.connect(os.path.join(BASE_DIR, 'db.sqlite3'))
         df.reset_index(drop=True, inplace=True)
         df.loc[:, 'miss'] = 0
 
@@ -42,14 +43,104 @@ class Total:
         pivot = df.pivot_table(index='category_id', columns=['type', 'site_code'],
                                values='site_link', aggfunc='nunique')
         pivot.to_csv(r'D:\ANE_2\parsed_content\pivot_test_{}.csv'.format(date_now))
+        df.loc[:, 'price_old'] = df.loc[:, 'price_old'].replace('', -1.0)
         df.loc[:, 'price_old'] = df.loc[:, 'price_old'].fillna(-1.0)
-        df.to_sql(name='parser_app_pricesraw', con=conn, if_exists='append', index=False)
-        filled_df = fill_df(pd.read_sql(sql='SELECT * FROM parser_app_pricesraw', con=conn))
-        filled_df.to_sql(name='parser_app_pricesprocessed', con=conn, if_exists='replace', index=False)
+
+        cached_list = []
+        print('Storing raw prices to db...')
+        for _, row in df.iterrows():
+            # product = ProductHandler(**dict(row))
+            # cached_list.append(product)
+            # Person.objects.bulk_create(person_list)
+            prod = PricesRaw(date=row['date'],
+                             type=row['type'],
+                             category_id=row['category_id'],
+                             category_title=row['category_title'],
+                             site_title=row['site_title'],
+                             price_new=row['price_new'],
+                             price_old=row['price_old'],
+                             site_unit=row['site_unit'],
+                             site_link=row['site_link'],
+                             site_code=row['site_code'],
+                             miss=row['miss'])
+            cached_list.append(prod)
+
+            # m.save()
+        PricesRaw.objects.bulk_create(cached_list)
+        print('Storing complete!')
+
+        filled_df = fill_df(pd.DataFrame(list(PricesRaw.objects.all().values())))
+
+
+        '''
+        cached_list = []
+
+        PricesProcessed.objects.all().delete()
+        for _, row in filled_df.iterrows():
+            # product = ProductHandler(**dict(row))
+            # cached_list.append(product)
+            # Person.objects.bulk_create(person_list)
+            prod = PricesProcessed(date=row['date'],
+                                   type=row['type'],
+                                   category_id=row['category_id'],
+                                   category_title=row['category_title'],
+                                   site_title=row['site_title'],
+                                   price_new=row['price_new'],
+                                   price_old=row['price_old'],
+                                   nsprice_f=row['nsprice_f'],
+                                   site_unit=row['site_unit'],
+                                   site_link=row['site_link'],
+                                   site_code=row['site_code'],
+                                   miss=row['miss'])
+            cached_list.append(prod)
+
+            # m.save()
+        PricesProcessed.objects.bulk_create(cached_list)
+        '''
+
         df_gks = SiteHandlerGks().get_df()
-        df_gks.to_sql(name='parser_app_gks', con=conn, if_exists='replace', index=False)
+        cached_list = []
+
+        Gks.objects.all().delete()
+        print('Storing gks prices to db...')
+        for _, row in df_gks.iterrows():
+
+            prod = Gks(date=row['date'],
+                       type=row['type'],
+                       category_id=row['category_id'],
+                       category_title=row['category_title'],
+                       site_title=row['site_title'],
+                       price_new=row['price_new'],
+                       price_old=row['price_old'],
+                       site_unit=row['site_unit'],
+                       site_link=row['site_link'],
+                       site_code=row['site_code'],
+                       miss=row['miss'])
+            cached_list.append(prod)
+
+            # m.save()
+        Gks.objects.bulk_create(cached_list)
+        print('Storing raw prices to db...')
+        filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
+
         basket_df = get_basket_df(df_gks, filled_df[filled_df.type == 'food'])
-        basket_df.to_sql(name='parser_app_basket', con=conn, if_exists='replace', index=True)
+        # basket_df.to_csv('basket_df.csv')
+        basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
+        cached_list = []
+        print(basket_df.tail())
+        print('Storing basket to db...')
+        Basket.objects.all().delete()
+        print('Storing completed!')
+        for _, row in basket_df.iterrows():
+
+            prod = Basket(date=row['date'],
+                       gks_price=row['gks_price'],
+                       online_price=row['online_price'])
+            cached_list.append(prod)
+
+            # m.save()
+        Basket.objects.bulk_create(cached_list)
+
         end = datetime.now()
         time_execution = str(end - start)
         # send_mail(message='Снапшот успешно создан {}'.format(end))

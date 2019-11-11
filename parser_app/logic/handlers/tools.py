@@ -175,14 +175,12 @@ def send_mail(message, sender='ane_debug@mail.ru', to='evseev_alexey94@bk.ru'):
 
 
 def fill_df(df):
-    df.loc[:, 'price_old'] = df.loc[:, 'price_old'].apply(lambda x: -1.0 if x == '' else x)
+
     df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'], format='%Y-%m-%d')
+    df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index().reset_index().drop(
+        columns='id').rename(columns={'index': 'id'}).set_index('id')
 
-    df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
-    df.tail()
-    df.date = pd.to_datetime(df.date)
-
-    df.price_new = df.price_new.astype(float)
+    df.loc[:,'price_new'] = df.price_new.astype(float)
     start_date = df.date.values.min()
     end_date = df.date.values.max()
     daterange = pd.date_range(start=start_date, end=end_date)
@@ -196,21 +194,18 @@ def fill_df(df):
                                             left_on=['site_link', 'date'], right_index=True, how='right')
 
     df.loc[:, 'miss'] = df.loc[:, 'site_title'].isna().astype(int)
-    df.loc[:, 'price_old'] = df.loc[:, 'price_old'].apply(lambda x: -1.0 if x == None else x)
-
-    df = df.reset_index().drop('index', axis=1)
-    df = df.sort_values(['site_link', 'date'])
+    df = df.sort_values(['category_id', 'site_link', 'date'])
     df.loc[:, 'URL'] = df.loc[:, 'site_link']
     df = df.groupby('URL').transform(lambda x: x.fillna(method='ffill'))
-    df = df.reset_index().drop('index', axis=1)
-    df.category_id = df.category_id.astype(int)
-    df.loc[:, 'nsprice_f'] = ((df.price_old == -1.0).replace(False, np.nan)) * (df.price_new).apply(
+    df = df.reset_index().drop('id', axis=1).reset_index().rename(columns={'index': 'id'}).set_index('id')
+    df.loc[:, 'category_id'] = df.category_id.astype(int)
+    df.loc[:, 'price_old'] = df.price_old.astype(float)
+    df.loc[:, 'nsprice_f'] = (df.price_old == -1.0).replace(False, np.nan) * (df.price_new).apply(
         lambda x: np.nan if x == 0 else x)
     df = df.groupby('site_link').apply(lambda x: x.fillna(method='ffill', limit=n_days_limit))
-    df.loc[df.nsprice_f.isna(), 'nsprice_f'] = df.loc[df.nsprice_f.isna(), 'price_old']
-    df.nsprice_f = df.nsprice_f.astype(float)
-    df = df.drop_duplicates()
+    df.loc[df.nsprice_f.isna(), 'nsprice_f'] = df[df.nsprice_f.isna()].price_old
     return df
+
 
 def text_diff(case_a, case_b):
     output_list = [li for li in difflib.ndiff(case_a, case_b) if li[0] != ' ']
@@ -267,14 +262,15 @@ def percentile(n):
 
 
 def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
+    print('get basket df...')
     df_gks.loc[:, 'nsprice_f'] = df_gks.price_new
     df_gks.loc[:, 'date'] = pd.to_datetime(df_gks.loc[:, 'date'], format='%Y-%m-%d')
     df_gks = df_gks.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
 
     # онлайн-проды
-    df_retail = df_retail.drop('id', axis=1)
+    # df_retail = df_retail.drop('id', axis=1)
     df_retail.loc[:, 'date'] = pd.to_datetime(df_retail.loc[:, 'date'], format='%Y-%m-%d')
-    print('df_gks.head():{}\n\ndf_retail.head():{}\n'.format(df_gks.head(3), df_retail.head(3)))
+    # print('df_gks.head():{}\n\ndf_retail.head():{}\n'.format(df_gks.head(3), df_retail.head(3)))
     df = pd.concat([df_gks, df_retail], join='inner')
     df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
     df_new = df.loc[df.date >= pd.Timestamp(date), :]
@@ -315,12 +311,12 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
 
     # weight only
 
-    df_new.weight = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
+    df_new.loc[:,'weight'] = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
 
-    df_new.weight = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
+    df_new.loc[:,'weight']  = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
     pattern1 = re.compile('\d+\s{0,1}(пак){0,1}\s{0,1}(?:\*|×|x|х)\s{0,1}\d+\,{0,1}\d*\s*г')
     pattern2 = re.compile('\d+(?:\,|\.){0,1}\d*\s*г(?:\*|×|x|х)\s{0,1}\d+\s{0,1}(пак){0,1}')
-    df_new.weight = df_new.apply(
+    df_new.loc[:,'weight']  = df_new.apply(
         lambda x: pack_to_gramm(x['site_title']) if re.search(pattern1, x['site_title']) != None or re.search(pattern2,
                                                                                                               x[
                                                                                                                   'site_title']) is not None
@@ -329,7 +325,7 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     dict_pack = {'25пак': '50г', '20пак': '80г', '100пак': '200г', 'л': '1л', '010шт': '10шт.',
                  '2019кг': '1кг', '110шт': '10шт', '210шт': '10шт'}
 
-    df_new.weight = df_new.weight.replace(dict_pack)
+    df_new.loc[:,'weight']  = df_new.weight.replace(dict_pack)
     df_new.loc[(df_new.weight == '4l') & (df_new.type == 'food'), 'weight'] = df_new.loc[
         (df_new.weight == '4l') & (df_new.type == 'food'), 'site_unit'].apply(lambda x: wspex(x).replace(',', '.'))
     df_new.loc[df_new.site_title == 'Соль поваренная пищевая каменная помол №1', 'weight'] = '1кг'
@@ -353,4 +349,6 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     basket_df.loc[:, 'online_price'] = \
     df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
         'price_bsk']
+    basket_df = basket_df.reset_index().reset_index().rename(columns={'index': 'id'}).set_index('id')
+    print('completed!')
     return basket_df

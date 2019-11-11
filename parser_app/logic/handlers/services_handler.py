@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import requests
 import os
+from parser_app.logic.handlers.tools import get_proxy
 from parser_app.logic.global_status import Global
 import re
 from fake_useragent import UserAgent
@@ -23,7 +24,7 @@ class Services():
         return re.sub(u'\u200a', '', ' '.join(str(x).split()))
 
     def get_df(self):
-
+        print('get data from services...')
         sfb_df = pd.read_csv(self.path_sfb, sep=';', index_col='id')
         serv_df = sfb_df[sfb_df['type'] == 'services']
 
@@ -123,7 +124,11 @@ class Services():
         price_dict['site_code']='services'
         url=list_url[n]
         price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
-        html=requests.get(url, headers={'User-Agent': UserAgent().chrome}).content
+        try:
+            html=requests.get(url, headers={'User-Agent': UserAgent().chrome}, timeout=10).content
+        except:
+            proxy = get_proxy(url)
+            html = requests.get(url, headers={'User-Agent': UserAgent().chrome}, proxies=proxy).content
         soup=BeautifulSoup(html, 'lxml')
         price_div=soup.findAll('div',{'class':'price-head'})[0]
         price_dict['price_new']=int(re.findall('\d+',price_div.findAll('span',{'class':'price'})[0].text)[0])
@@ -304,5 +309,5 @@ class Services():
                 break
         final_df = final_df.append(price_dict, ignore_index=True)
         final_df = final_df[final_df.site_title.notna()]
-        print('ALL SERVICES HAS BEEN SUCCESSFULLY PARSED!')
+        print('ALL SERVICES HAVE BEEN SUCCESSFULLY PARSED!')
         return final_df

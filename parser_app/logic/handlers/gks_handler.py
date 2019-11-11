@@ -147,14 +147,16 @@ class SiteHandlerGks:
         return self.extract_products(html)
 
     def get_df_weekly(self):
+        print('get data from GKS...')
         year = str(datetime.now().year)
 
         table = self.process_table_weekly(year)
         df_map = pd.read_csv(Global().gks_links, sep=';', index_col=0)[['cat_title']]
+
         df = pd.DataFrame(np.reshape(table[1], (len(table[1]) // 29, 29)),
                           index=[datetime.strptime('{}-W{}-1'.format(str(datetime.now().year), i), "%Y-W%W-%w") for i in
                                  range(date(2019, 2, 1).isocalendar()[1] - 1,
-                                       datetime.now().date().isocalendar()[1])],
+                                       date(2019, 2, 1).isocalendar()[1] - 1 + len(table[1]) // 29)],
                           columns=list(df_map.index))
 
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
@@ -180,6 +182,7 @@ class SiteHandlerGks:
             columns={'unit': 'site_unit'})
         df.loc[:, 'price_old'] = -1.0
         df.loc[:, 'miss'] = 0
+        print('completed!')
         return df
 
     def get_df_monthly(self):

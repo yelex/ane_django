@@ -3,11 +3,13 @@ import pandas as pd
 import requests
 import re
 from tqdm import tqdm
-from parser_app.logic.handlers.tools import get_proxy, wspex, wspex_space, tofloat
+from parser_app.logic.handlers.tools import get_proxy, wspex, wspex_space, tofloat, text_diff
 from fake_useragent import UserAgent
 from parser_app.logic.global_status import Global
 import demjson
 import os
+import time
+
 
 class LamodaHandler():
 

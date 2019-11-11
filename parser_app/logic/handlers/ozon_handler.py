@@ -8,8 +8,10 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from tqdm import tqdm
 import random
-from parser_app.logic.handlers.tools import wspex, wspex_space
+from parser_app.logic.handlers.tools import wspex, wspex_space, get_proxy
 from parser_app.logic.global_status import Global
+from fake_useragent import UserAgent
+import requests
 
 
 class OzonHandler():
