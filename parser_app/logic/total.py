@@ -26,9 +26,10 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
+        df = df.append(TotalGrocery().get_df_page())
+        df = df.append(TotalNongrocery().get_df_page())
         df = df.append(Services().get_df())
-        # df = df.append(TotalNongrocery().get_df_page())
-        # df = df.append(TotalGrocery().get_df_page())
+
 
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
@@ -68,9 +69,9 @@ class Total:
             # m.save()
         PricesRaw.objects.bulk_create(cached_list)
         print('Storing complete!')
-
+        print('Start filling...')
         filled_df = fill_df(pd.DataFrame(list(PricesRaw.objects.all().values())))
-
+        print('Filling complete!')
 
         '''
         cached_list = []
@@ -120,10 +121,10 @@ class Total:
 
             # m.save()
         Gks.objects.bulk_create(cached_list)
-        print('Storing raw prices to db...')
+
         filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
 
-        basket_df = get_basket_df(df_gks, filled_df[filled_df.type == 'food'])
+        basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food', :])
         # basket_df.to_csv('basket_df.csv')
         basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
         cached_list = []

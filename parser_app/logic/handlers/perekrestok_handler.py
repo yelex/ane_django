@@ -6,6 +6,7 @@ from parser_app.logic.handlers.tools import filter_flag, get_proxy, tofloat, wsp
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 import re
+import time
 
 
 class PerekrestokHandler():
@@ -190,6 +191,7 @@ class PerekrestokHandler():
                         r = requests.get(href_i)
                 except:
                     proxies = get_proxy('https://www.perekrestok.ru/')
+                    time.sleep(3)
                     r = requests.get(href_i, proxies=proxies)
                 html = r.content
 
