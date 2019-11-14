@@ -263,28 +263,24 @@ def percentile(n):
 
 def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     print('get basket df...')
-    df_gks.loc[:, 'nsprice_f'] = df_gks.loc[:, 'price_new']
+    df_gks.loc[:, 'nsprice_f'] = df_gks.price_new
     df_gks.loc[:, 'date'] = pd.to_datetime(df_gks.loc[:, 'date'], format='%Y-%m-%d')
     df_gks = df_gks.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
-    # print('1 точка')
-    # онлайн-проды
-    # df_gks.to_csv(r'D:\ANE_2\parsed_content\df_gks.csv')
-    df_retail = df_retail.drop('level_0', axis=1)
-    df_retail.loc[:, 'date'] = pd.to_datetime(df_retail.date)
-    # df_retail.to_csv(r'D:\ANE_2\parsed_content\retail_df.csv')
-    # print('2 точка')
-    df = pd.concat([df_gks, df_retail], join='inner')
-    # print('3 точка')
-    df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
-    # print('4 точка')
 
-    # error raised before
-    df_new = df.loc[df.date > pd.Timestamp(date), :]
+    # онлайн-проды
+    # df_retail = df_retail.drop('id', axis=1)
+    df_retail.loc[:, 'date'] = pd.to_datetime(df_retail.loc[:, 'date'], format='%Y-%m-%d')
+    # print('df_gks.head():{}\n\ndf_retail.head():{}\n'.format(df_gks.head(3), df_retail.head(3)))
+    df = pd.concat([df_gks, df_retail], join='inner')
+    df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
+    df_new = df.loc[df.date >= pd.Timestamp(date), :]
     grouped = df_new.groupby(['category_id', 'site_code', 'site_link']).nunique()[['date']]
     grouped = grouped[grouped.date == max(grouped.date)]
     links = grouped.index.get_level_values(level=2)
     # подготовленный датафрейм (только те товары, которые наблюдались с 1 июля 2019 и по сегодня)
     df_new = df_new[df_new.site_link.isin(links)]
+    # weight
+
     piece_units = ['шт', 'штук', 'штуки', 'штука', 'пак', 'пакетиков', 'пак']
     kg_units = ['кг', 'kg', 'килограмм']  # оставить в граммах
     gram_units = ['г', 'g', 'грамм', 'граммов', 'гр']  # в кг
@@ -307,7 +303,6 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
             match = re.search(pattern, title.lower())
             if match:
                 df_new.loc[df_new.site_title == title, 'weight'] = match[0]
-
     df_new.loc[df_new.weight.isna(), 'weight'] = df_new.loc[df_new.weight.isna(), 'site_unit']
     df_new.loc[df_new.site_unit.isin(['за 1 кг', 'кг', 'за 100 г']), 'weight'] = df_new.loc[
         df_new.site_unit.isin(['за 1 кг', 'кг', 'за 100 г']), 'weight'].apply(lambda x: wspex(x).replace('за', ''))
@@ -316,21 +311,21 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
 
     # weight only
 
-    df_new.weight = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
+    df_new.loc[:,'weight'] = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
 
-    df_new.weight = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
+    df_new.loc[:,'weight']  = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
     pattern1 = re.compile('\d+\s{0,1}(пак){0,1}\s{0,1}(?:\*|×|x|х)\s{0,1}\d+\,{0,1}\d*\s*г')
     pattern2 = re.compile('\d+(?:\,|\.){0,1}\d*\s*г(?:\*|×|x|х)\s{0,1}\d+\s{0,1}(пак){0,1}')
-    df_new.weight = df_new.apply(
+    df_new.loc[:,'weight']  = df_new.apply(
         lambda x: pack_to_gramm(x['site_title']) if re.search(pattern1, x['site_title']) != None or re.search(pattern2,
                                                                                                               x[
-                                                                                                                  'site_title']) != None
+                                                                                                                  'site_title']) is not None
         else x['weight'], axis=1)
 
     dict_pack = {'25пак': '50г', '20пак': '80г', '100пак': '200г', 'л': '1л', '010шт': '10шт.',
                  '2019кг': '1кг', '110шт': '10шт', '210шт': '10шт'}
 
-    df_new.weight = df_new.weight.replace(dict_pack)
+    df_new.loc[:,'weight']  = df_new.weight.replace(dict_pack)
     df_new.loc[(df_new.weight == '4l') & (df_new.type == 'food'), 'weight'] = df_new.loc[
         (df_new.weight == '4l') & (df_new.type == 'food'), 'site_unit'].apply(lambda x: wspex(x).replace(',', '.'))
     df_new.loc[df_new.site_title == 'Соль поваренная пищевая каменная помол №1', 'weight'] = '1кг'
@@ -348,20 +343,12 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
 
     df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'coef'] * df_new.loc[:, 'nsprice_f']  # поменять на регулярные цены
     df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'price_bsk'].astype(float)
-
-    def percentile(n):
-        def percentile_(x):
-            return np.percentile(x, n)
-
-        percentile_.__name__ = 'percentile_%s' % n
-        return percentile_
-
-    # .groupby(['date_n','id']).agg(percentile(25)).groupby('date_n').sum()[['price_in_basket']]
     df_new = df_new.drop_duplicates(subset=['date', 'site_title', 'site_code'])
     basket_df = pd.DataFrame()
     basket_df.loc[:, 'gks_price'] = df_new[df_new.site_code == 'gks'].groupby(['date']).sum()['price_bsk']
     basket_df.loc[:, 'online_price'] = \
-        df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
-            'price_bsk']
+    df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
+        'price_bsk']
+    basket_df = basket_df.reset_index().reset_index().rename(columns={'index': 'id'}).set_index('id')
     print('completed!')
     return basket_df
