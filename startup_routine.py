@@ -15,7 +15,7 @@ class SnapshotManager:
     def __init__(self):
         self.last_succ_date = PricesRaw.objects.last().date # доделать
 
-    def update_plot(self, wdw=5):
+    def update_plot(self, wdw=3):
 
         df = pd.DataFrame(list(Basket.objects.all().values()))
         df = df.set_index('date')

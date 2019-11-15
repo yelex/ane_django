@@ -18,6 +18,7 @@ class Total:
 
     def printer_test(self):
 
+
         print('Timer call : start making snapshots')
         start = datetime.now()
         date_now = Global().date
@@ -26,9 +27,10 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
+        df = df.append(TotalGrocery().get_df_page())
         df = df.append(Services().get_df())
-        # df = df.append(TotalNongrocery().get_df_page())
-        # df = df.append(TotalGrocery().get_df_page())
+        df = df.append(TotalNongrocery().get_df_page())
+
 
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
@@ -123,7 +125,7 @@ class Total:
         print('Storing raw prices to db...')
         filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
 
-        basket_df = get_basket_df(df_gks, filled_df[filled_df.type == 'food'])
+        basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food',:])
         # basket_df.to_csv('basket_df.csv')
         basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
         cached_list = []
@@ -147,12 +149,17 @@ class Total:
 
         print('PARSING ENDED!\ntotal time of execution: {}'.format(time_execution))
 
+        # if Global().is_shutdown is True:
+        #    os.system('shutdown /p /f')
+
 
 
     def get_new_snap_threaded(self):
         print('Start making snapshot!')
         tim = perpetualTimer(86400, self.printer_test)
         tim.start()
+
+
 """
 
 

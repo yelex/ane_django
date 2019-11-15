@@ -268,11 +268,9 @@ class OzonHandler():
 
                 try:
 
-                    if soup.find('h1', {'class': 'a7w2'}) is not None:
-                        price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'a7w2'}).text)
-                    else:
-                        price_dict['site_title'] = wspex_space(
-                            soup.find('h1', {'class': 'bv3'}).text)  # , {'class': '_718dda'}, {'class': 'a3z6'}
+                    if soup.find('h1', {'class': 'by8'}) is not None:
+                        price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'by8'}).text)
+
                     print('site_title: ', price_dict['site_title'])
                 except:
                     print('except sitetitle not found')
@@ -287,15 +285,13 @@ class OzonHandler():
                 # print('Товар закончился!')
                 # continue
 
-                div_new = soup.find('span', {'class': 'bt8 bu0'})
+                div_new = soup.find('span', {'class': 'b0i0 b0j5'})
 
                 if div_new is None:
-                    div_new = soup.find('span', {'class': 'bt8'})
-                    if div_new is None:
-                        div_new = soup.find('span', {'class': 'a8a1'})
+                    div_new = soup.find('span', {'class': 'b0i0'})
 
-                if soup.find('div', {'class': 'a8a2'}) is not None and \
-                        'закончился' in soup.find('div', {'class': 'a8a2'}).text:
+                if soup.find('div', {'class': 'b0j4'}) is not None and \
+                        'закончился' in soup.find('div', {'class': 'b0j4'}).text:
                     print('Товар закончился!')
                     continue
                 # print('din_new:\n', div_new)
@@ -309,16 +305,12 @@ class OzonHandler():
                 # div_old = soup.find('div', {'class': 'ce6b47'})
 
                 # div_old = soup.find('span', {'class': 'a4c5'})
-                div_old = soup.find('span', {'class': 'bu2'})
+                div_old = soup.find('span', {'class': 'b0i4'})
 
                 if div_old is not None:
                     price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])
                 else:
-                    div_old = soup.find('span', {'class': 'a8a6'})
-                    if div_old is not None:
-                        price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])
-                    else:
-                        price_dict['price_old'] = ''
+                    price_dict['price_old'] = ''
 
                 price_dict['price_new'] = int(re.search('\d+', wspex(div_new.text))[0])
 

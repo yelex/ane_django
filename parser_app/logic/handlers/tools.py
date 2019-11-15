@@ -263,19 +263,23 @@ def percentile(n):
 
 def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     print('get basket df...')
-    df_gks.loc[:, 'nsprice_f'] = df_gks.price_new
+    df_gks.loc[:, 'nsprice_f'] = df_gks.loc[:,'price_new']
     df_gks.loc[:, 'date'] = pd.to_datetime(df_gks.loc[:, 'date'], format='%Y-%m-%d')
     df_gks = df_gks.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
-
+    print('1 точка')
     # онлайн-проды
     # df_retail = df_retail.drop('id', axis=1)
-    df_retail.loc[:, 'date'] = pd.to_datetime(df_retail.loc[:, 'date'], format='%Y-%m-%d')
+    df_retail = df_retail.drop('level_0', axis=1)
+    df_retail.loc[:, 'date'] = pd.to_datetime(df_retail.date)
     # print('df_gks.head():{}\n\ndf_retail.head():{}\n'.format(df_gks.head(3), df_retail.head(3)))
+    print('2 точка')
     df = pd.concat([df_gks, df_retail], join='inner')
+    print('3 точка')
     df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
+    print('4 точка')
     df_new = df.loc[df.date >= pd.Timestamp(date), :]
     grouped = df_new.groupby(['category_id', 'site_code', 'site_link']).nunique()[['date']]
-    grouped = grouped[grouped.date == max(grouped.date)]
+    grouped = grouped.loc[grouped.date == max(grouped.date), :]
     links = grouped.index.get_level_values(level=2)
     # подготовленный датафрейм (только те товары, которые наблюдались с 1 июля 2019 и по сегодня)
     df_new = df_new[df_new.site_link.isin(links)]
@@ -344,11 +348,19 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'coef'] * df_new.loc[:, 'nsprice_f']  # поменять на регулярные цены
     df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'price_bsk'].astype(float)
     df_new = df_new.drop_duplicates(subset=['date', 'site_title', 'site_code'])
+
+    def percentile(n):
+        def percentile_(x):
+            return np.percentile(x, n)
+
+        percentile_.__name__ = 'percentile_%s' % n
+        return percentile_
+
     basket_df = pd.DataFrame()
     basket_df.loc[:, 'gks_price'] = df_new[df_new.site_code == 'gks'].groupby(['date']).sum()['price_bsk']
     basket_df.loc[:, 'online_price'] = \
-    df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
-        'price_bsk']
+        df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
+            'price_bsk']
     basket_df = basket_df.reset_index().reset_index().rename(columns={'index': 'id'}).set_index('id')
     print('completed!')
     return basket_df
