@@ -125,5 +125,5 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/dynamics/images/'),
 )
 
-STATIC_URL = '/static/'
+STATIC_URL = '/parser_app/static/'
 STATIC_ROOT = ''
