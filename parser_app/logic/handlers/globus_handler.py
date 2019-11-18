@@ -7,7 +7,8 @@ from parser_app.logic.global_status import Global
 import os
 from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space, get_proxy
 from tqdm import tqdm
-
+import time
+from fake_useragent import UserAgent
 
 class GlobusHandler:
 
@@ -26,7 +27,7 @@ class GlobusHandler:
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
         proxies = None
-
+        header = UserAgent().chrome
         for href in tqdm(hrefs): #испр
             id_n += 1
             category_title = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['cat_title'].iloc[id_n - 1]
@@ -51,13 +52,15 @@ class GlobusHandler:
                     # print('loading {} ...'.format(href_i))
                     try:
                         if proxies != None:
-                            html = requests.get(href_i, proxies=proxies).content
+                            r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)
                         else:
-                            html = requests.get(href_i).content
+                            r = requests.get(href_i, headers=header, timeout=10)
                     except:
-                        proxies = get_proxy(href_i)
-                        html = requests.get(href_i, proxies=proxies).content
-
+                        while r.status_code != 200:
+                            proxies = get_proxy(href_i)
+                            time.sleep(3)
+                            r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)
+                    html = r.content
                     soup = BeautifulSoup(html, 'lxml')
                     products_div = soup.find('div', {'class': 'catalog-section'})
                     if not products_div:
@@ -140,6 +143,8 @@ class GlobusHandler:
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
+        ua = UserAgent()
+        header = {'User-Agent': str(ua.chrome)}
         if Global().max_links != None:
             links_df = links_df.iloc[:Global().max_links]
         category_ids = links_df.category_id.unique()
@@ -165,14 +170,18 @@ class GlobusHandler:
 
                 print('{} ...'.format(url))
                 try:
-                    if proxies != None:
-                        html = requests.get(url, proxies=proxies).content
+                    # time.sleep(3)
+                    if proxies is not None:
+                        r = requests.get(url, proxies=proxies, headers=header, timeout=10)  # CRITICAL
                     else:
-                        html = requests.get(url).content
+                        r = requests.get(url, headers=header, timeout=10)
                 except:
-                    proxies = get_proxy('https://online.globus.ru/')
-                    html = requests.get(url, proxies=proxies).content
-
+                    r = requests.get(url, headers=header, timeout=10)
+                    while r.status_code != 200:
+                        proxies = get_proxy(url)
+                        time.sleep(3)
+                        r = requests.get(url, proxies=proxies, headers=header)
+                html = r.content
                 soup = BeautifulSoup(html, 'lxml')
                 products_div = soup.find('div', {'class': 'item-card__content--right'})
 

@@ -6,6 +6,8 @@ from parser_app.logic.handlers.tools import filter_flag, get_proxy, tofloat, wsp
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 import re
+import time
+from fake_useragent import UserAgent
 
 
 class PerekrestokHandler():
@@ -157,6 +159,8 @@ class PerekrestokHandler():
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
+        ua = UserAgent()
+        header = {'User-Agent': str(ua.chrome)}
         if Global().max_links != None:
             links_df = links_df.iloc[:Global().max_links]
         category_ids = links_df.category_id.unique()
@@ -164,11 +168,10 @@ class PerekrestokHandler():
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
 
-        proxies = get_proxy('https://www.perekrestok.ru/')
-        # proxies = None
+        proxies = get_proxy(links_df[links_df.category_id == 1].site_link.values[0])
+
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
-            # url_list = ['https://www.okeydostavka.ru/webapp/wcs/stores/servlet/ProductDisplay?urlRequestType=Base&catalogId=12051&categoryId=84082&productId=44245&errorViewName=ProductDisplayErrorView&urlLangId=-20&langId=-20&top_category=65054&parent_category_rn=65054&storeId=10151']
 
             category_title = desc_df.loc[cat_id, 'cat_title']
 
@@ -185,12 +188,17 @@ class PerekrestokHandler():
 
                 try:
                     if proxies!=None:
-                        r = requests.get(href_i, proxies=proxies)  # CRITICAL
+                        r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)  # CRITICAL
                     else:
-                        r = requests.get(href_i)
+                        r = requests.get(href_i, headers=header, timeout=10)
                 except:
-                    proxies = get_proxy('https://www.perekrestok.ru/')
-                    r = requests.get(href_i, proxies=proxies)
+                    proxies = get_proxy(href_i)
+                    time.sleep(3)
+                    r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)
+                    while r.status_code != 200:
+                        proxies = get_proxy(href_i)
+                        time.sleep(3)
+                        r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)
                 html = r.content
 
                 soup = BeautifulSoup(html, 'lxml')

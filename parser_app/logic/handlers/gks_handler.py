@@ -162,7 +162,7 @@ class SiteHandlerGks:
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
         df = df.pivot_table(index='date', columns='category_id', values='price_new').merge(
             pd.DataFrame(index=pd.date_range(start='2/1/2019',
-                                             end=datetime.now().date().strftime('%m/%d/%Y'))), left_index=True,
+                                             end=Global().date.strftime('%m/%d/%Y'))), left_index=True,
             right_index=True,
             how='right').fillna(method='ffill')
 
@@ -199,7 +199,7 @@ class SiteHandlerGks:
         df = df.rename(columns={'level_1': 'category_id', 0: 'price_new'})
         df = df.pivot_table(index='date', columns='category_id', values='price_new').merge(
             pd.DataFrame(index=pd.date_range(start='2/1/2019',
-                                             end=datetime.now().date().strftime('%m/%d/%Y'))), left_index=True,
+                                             end=Global().date.strftime('%m/%d/%Y'))), left_index=True,
             right_index=True,
             how='right').fillna(method='ffill')
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})

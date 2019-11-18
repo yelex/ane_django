@@ -8,12 +8,10 @@ from parser_app.logic.handlers.tools import filter_flag, wspex_space, tofloat, g
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 from selenium import webdriver
-"""import socks
-import socket
-socks.set_default_proxy(socks.SOCKS5, "localhost", 9150)
-socket.socket = socks.socksocket"""
+import time
 
-class OkeyHandler():
+
+class OkeyHandler:
 
     def construct_html(self,start_html,begin_index):
         if start_html[-3:]=='-20':
@@ -74,8 +72,11 @@ class OkeyHandler():
                 try:
                     r = requests.get(url_full, headers=headers)  # CRITICAL
                 except:
-                    proxies = get_proxy('https://www.okeydostavka.ru/')
-                    r = requests.get(url_full, proxies=proxies, headers=headers)
+                    r = 404
+                    while r.status_code != 200:
+                        proxies = get_proxy(url_full)
+                        time.sleep(3)
+                        r = requests.get(url_full, proxies=proxies, headers=headers)
                 html = r.content
 
                 soup = BeautifulSoup(html, 'lxml')
@@ -218,14 +219,17 @@ class OkeyHandler():
                     try:
                         # time.sleep(3)
                         if proxies is not None:
-                            r = requests.get(href_i, proxies=proxies, headers=headers)  # CRITICAL
+                            r = requests.get(href_i, proxies=proxies, headers=headers, timeout=10)  # CRITICAL
                         else:
-                            r = requests.get(href_i, headers=headers)
+                            r = requests.get(href_i, headers=headers, timeout=10)
                     except:
-                        proxies = get_proxy(href_i)
-                        r = requests.get(href_i, headers=headers, proxies=proxies)
-                    html = r.content
+                        r = requests.get(href_i, headers=headers, timeout=10)
+                        while r.status_code != 200:
+                            proxies = get_proxy(href_i)
+                            time.sleep(3)
+                            r = requests.get(href_i, headers=headers, proxies=proxies, timeout=10)
 
+                    html = r.content
                     soup = BeautifulSoup(html, 'lxml')
                 # print('url: ', href_i)
                 # print(soup)

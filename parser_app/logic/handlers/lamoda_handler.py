@@ -163,13 +163,16 @@ class LamodaHandler():
                 try:
                     # time.sleep(3)
                     if proxies is not None:
-                        r = requests.get(href_i, proxies=proxies, headers=header)  # CRITICAL
+                        r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)  # CRITICAL
                     else:
-                        r = requests.get(href_i, headers=header)
+                        r = requests.get(href_i, headers=header, timeout=10)
                 except:
-                    proxies = get_proxy('https://www.lamoda.ru/')
-                    time.sleep(3)
-                    r = requests.get(href_i, proxies=proxies, headers=header)
+                    r = requests.get(href_i, headers=header, timeout=10)
+                    while r.status_code != 200:
+                        proxies = get_proxy(href_i)
+                        time.sleep(3)
+                        r = requests.get(href_i, proxies=proxies, headers=header)
+
                 html = r.content
 
                 soup = BeautifulSoup(html, 'lxml')

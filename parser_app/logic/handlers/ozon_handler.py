@@ -277,6 +277,14 @@ class OzonHandler():
                     if 'Такой страницы не существует' in soup.text:
                         print('Такой страницы не существует!')
                     # i -= 1
+                    if soup.find('li', {'class': 'links-item'}) is None:
+                        proxies = get_proxy(href_i)
+                        time.sleep(3)
+                        r = requests.get(href_i, proxies=proxies, headers=header)
+                        while r.status_code != 200:
+                            proxies = get_proxy(href_i)
+                            time.sleep(3)
+                            r = requests.get(href_i, proxies=proxies, headers=header)
                     continue
 
                 # div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
