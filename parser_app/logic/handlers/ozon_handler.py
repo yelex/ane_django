@@ -268,8 +268,8 @@ class OzonHandler():
 
                 try:
 
-                    if soup.find('h1', {'class': 'a5k2'}) is not None:
-                        price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'a5k2'}).text)
+                    if soup.find('h1', {'class': 'bq4'}) is not None:
+                        price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'bq4'}).text)
 
                     print('site_title: ', price_dict['site_title'])
                 except:
@@ -293,10 +293,10 @@ class OzonHandler():
                 # print('Товар закончился!')
                 # continue
 
-                div_new = soup.find('span', {'class': 'a4l1 a4m6'})
+                div_new = soup.find('span', {'class': 'b0a1 b0b6'})
 
                 if div_new is None:
-                    div_new = soup.find('span', {'class': 'a4l1'})
+                    div_new = soup.find('span', {'class': 'b0a1'})
 
                 if div_new is None:
                     print('Товар закончился!')
@@ -312,7 +312,7 @@ class OzonHandler():
                 # div_old = soup.find('div', {'class': 'ce6b47'})
 
                 # div_old = soup.find('span', {'class': 'a4c5'})
-                div_old = soup.find('span', {'class': 'a4l5'})
+                div_old = soup.find('span', {'class': 'b0a5'})
 
                 if div_old is not None:
                     price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])
