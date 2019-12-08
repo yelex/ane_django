@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import os
+from parser_app.logic.global_status import Global
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,6 +16,7 @@ class SnapshotManager:
     def __init__(self):
         self.last_succ_date = PricesRaw.objects.last().date # доделать
 
+        # Global().getproxies()
     def update_plot(self, wdw=3):
 
         df = pd.DataFrame(list(Basket.objects.all().values()))

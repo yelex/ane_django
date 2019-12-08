@@ -139,8 +139,8 @@ class LamodaHandler():
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
 
-        proxies = get_proxy('https://www.lamoda.ru/')
-        # proxies = None
+        # proxies = get_proxy('https://www.lamoda.ru/')
+        proxies = None
 
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
@@ -163,15 +163,19 @@ class LamodaHandler():
                 try:
                     # time.sleep(3)
                     if proxies is not None:
-                        r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)  # CRITICAL
+                        r = requests.get(href_i, proxies=proxies, headers=header, timeout=60)  # CRITICAL
                     else:
-                        r = requests.get(href_i, headers=header, timeout=10)
+                        r = requests.get(href_i, headers=header, timeout=60)
                 except:
-                    r = requests.get(href_i, headers=header, timeout=10)
-                    while r.status_code != 200:
+                    while True:
                         proxies = get_proxy(href_i)
                         time.sleep(3)
-                        r = requests.get(href_i, proxies=proxies, headers=header)
+                        try:
+                            r = requests.get(href_i, proxies=proxies, headers=header)
+                            if r.status_code == 200:
+                                break
+                        except:
+                            continue
 
                 html = r.content
 

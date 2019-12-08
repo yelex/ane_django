@@ -92,25 +92,39 @@ def find_float_number(str):
         return None
 
 
-def get_proxy(link):
+def get_proxy(link, get_new=False, get_list=False):
+    soup = None
+    # print('Global.proxies:', Global().proxies)
     while True:
-        options = webdriver.ChromeOptions()
-        # options.add_argument('--headless')
-        driver = webdriver.Chrome(executable_path = Global().path_chromedriver, options=options)
-        driver.get("https://hidemyna.me/ru/proxy-list/?maxtime=300&ports=3128..")
-        while True:
-            time.sleep(1)
-            if "maxtime" in driver.page_source:
-                ip_list = re.findall(r'\d{2,3}[.]\d{2,3}[.]\d{2,3}[.]\d{2,3}', driver.page_source)
-                # print ('ip_list: ',ip_list)
-                break
+        if get_new is True:
+            options = webdriver.ChromeOptions()
+            # options.add_argument('--headless')
+            driver = webdriver.Chrome(executable_path=Global().path_chromedriver, options=options)
+            driver.get("https://hidemy.name/ru/proxy-list/?maxtime=300&ports=3128#list")
+            while True:
+                time.sleep(1)
+                if "IP адрес" in driver.page_source:
+                    ip_list = re.findall(r'\d+[.]\d+[.]\d+[.]\d+', driver.page_source)
+                    print('ip_list: ', ip_list)
+                    break
+            # print('ip_list2: ', ip_list)
+            Global().proxies = [i + ":3128" for i in ip_list[1:]]
+
+            driver.quit()
+        if get_list:
+            # print('Global.proxies2:', Global().proxies)
+            break
+
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
-        driver.quit()
+
         html = None
-        for it in range(5):
+        print('Global.succ:{}\nGlobal.proxies:{}'.format(Global().succ_proxies, Global().proxies))
+        proxy_list = Global().succ_proxies + Global().proxies
+        # print('proxy_list:', proxy_list)
+        for it in range(len(proxy_list)):
             print('it =', it)
-            proxy = random.choice(ip_list[1:]) + ":3128"
+            proxy = proxy_list[it]
             proxies = {
               'https': 'https://{}'.format(proxy),
             }
@@ -139,23 +153,46 @@ def get_proxy(link):
                         'Accept-Encoding': 'gzip, deflate, br',
                         'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
                         'Cache-Control': 'max-age=0'}
-                    html = requests.get(link, headers=headers, proxies=proxies).content
+                    html = requests.get(link, headers=headers, proxies=proxies, timeout=20).content
                 else:
-                    html = requests.get(link, proxies=proxies, headers=header).content
+                    html = requests.get(link, proxies=proxies, headers=header, timeout=20).content
                 soup = BeautifulSoup(html, 'lxml')
-
-                if html is not None and 'We have detected' not in soup.text:
+                if 'utkonos' in link:
+                    print('utkonos detected!')
+                    if soup.find('div', {'class': re.compile('goods_view_item-action_header')}) is not None and \
+                            soup.find('div', {'class': re.compile('goods_view_item-action')}) is not None:
+                        print('break!')
+                        time.sleep(3)
+                        break
+                elif 'perekrestok' in link and soup.find('a', {'class': 'xfnew-user-category__link'}) is not None:
+                    print('good proxy for perekrestok')
                     break
-            except:
+                else:
+                    if html is not None and 'We have detected' not in soup.text:
+                        break
+            except Exception as e:
+                print(e)
                 continue
 
-        if html is not None:
-            break
+        if soup is not None:
+            if 'utkonos' in link and soup.find('div', {'class': re.compile('goods_view_item-action')}) is not None:
+                print('good proxy for utkonos')
+                break
+            elif 'utkonos' not in link and html is not None and 'We have detected' not in soup.text:
+                break
+            else:
+                get_new = True
+                continue
         else:
+            get_new = True
             continue
-    print('good proxy: {}'.format(proxy))
-    driver.quit()
-    return proxies
+    if not get_list:
+
+        print('good proxy: {}'.format(proxy))
+        if proxy not in Global().succ_proxies:
+            Global().succ_proxies = [proxy] + Global().succ_proxies
+            print('G.succ.proxies:', Global().succ_proxies)
+        return proxies
 
 
 def strsim(a, b):
@@ -180,23 +217,22 @@ def fill_df(df):
     df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index().reset_index().drop(
         columns='id').rename(columns={'index': 'id'}).set_index('id')
 
-    df.loc[:,'price_new'] = df.price_new.astype(float)
+    df.price_new = df.price_new.astype(float)
     start_date = df.date.values.min()
     end_date = df.date.values.max()
     daterange = pd.date_range(start=start_date, end=end_date)
-    pvt_before = df.pivot_table(columns='site_link', index='date', values='price_new')
+    df.loc[:, 'unq'] = df.category_id.astype(str) + df.site_link
+    pvt_before = pd.pivot_table(df, columns='unq', index='date', values='price_new')
     n_days_limit = 150
     pvt_after = pvt_before.merge(pd.Series(index=daterange, data=np.nan, name=1), left_index=True, \
                                  right_index=True, how='right').iloc[:, :-1].apply(
         lambda x: x.fillna(method='ffill', limit=n_days_limit))
 
     df = df.drop('price_new', axis=1).merge(pvt_after.transpose().stack().rename('price_new'), \
-                                            left_on=['site_link', 'date'], right_index=True, how='right')
-
+                                            left_on=['unq', 'date'], right_index=True, how='right')
     df.loc[:, 'miss'] = df.loc[:, 'site_title'].isna().astype(int)
-    df = df.sort_values(['category_id', 'site_link', 'date'])
-    df.loc[:, 'URL'] = df.loc[:, 'site_link']
-    df = df.groupby('URL').transform(lambda x: x.fillna(method='ffill'))
+    df = df.sort_values(['unq', 'date'])
+    df = df.groupby('unq').transform(lambda x: x.fillna(method='ffill'))
     df = df.reset_index().drop('id', axis=1).reset_index().rename(columns={'index': 'id'}).set_index('id')
     df.loc[:, 'category_id'] = df.category_id.astype(int)
     df.loc[:, 'price_old'] = df.price_old.astype(float)
@@ -204,6 +240,7 @@ def fill_df(df):
         lambda x: np.nan if x == 0 else x)
     df = df.groupby('site_link').apply(lambda x: x.fillna(method='ffill', limit=n_days_limit))
     df.loc[df.nsprice_f.isna(), 'nsprice_f'] = df[df.nsprice_f.isna()].price_old
+    # df = df.drop('unq', axis=1)
     return df
 
 
@@ -262,7 +299,7 @@ def percentile(n):
 
 
 def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
-    print('get basket df...')
+    # print('get basket df...')
     df_gks.loc[:, 'nsprice_f'] = df_gks.loc[:,'price_new']
     df_gks.loc[:, 'date'] = pd.to_datetime(df_gks.loc[:, 'date'], format='%Y-%m-%d')
     df_gks = df_gks.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)

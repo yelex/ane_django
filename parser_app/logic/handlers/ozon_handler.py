@@ -228,6 +228,11 @@ class OzonHandler():
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         proxies = None
+
+        h1_class = 'a4g5'
+        price_new_class_sale = 'a4k4 a4m'
+        price_new_class = 'a4k4'
+        price_old_class = 'a4k9'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
 
@@ -252,8 +257,15 @@ class OzonHandler():
                         else:
                             r = requests.get(href_i, headers=header)
                     except:
-                        proxies = get_proxy(href_i)
-                        r = requests.get(href_i, proxies=proxies, headers=header)
+                        while True:
+                            try:
+                                proxies = get_proxy(href_i)
+                                time.sleep(3)
+                                r = requests.get(href_i, proxies=proxies, headers=header)
+                                if r.status_code == 200:
+                                    break
+                            except:
+                                continue
                     html = r.content
                     soup = BeautifulSoup(html, 'lxml')
 
@@ -266,12 +278,12 @@ class OzonHandler():
                 price_dict['category_id'] = cat_id
                 price_dict['category_title'] = category_title
 
+
                 try:
+                    if soup.find('h1', {'class': h1_class}) is not None:
+                        price_dict['site_title'] = wspex_space(soup.find('h1', {'class': h1_class}).text)
 
-                    if soup.find('h1', {'class': 'bq4'}) is not None:
-                        price_dict['site_title'] = wspex_space(soup.find('h1', {'class': 'bq4'}).text)
-
-                    print('site_title: ', price_dict['site_title'])
+                    print('site_title:', price_dict['site_title'])
                 except:
                     print('except sitetitle not found')
                     if 'Такой страницы не существует' in soup.text:
@@ -293,26 +305,21 @@ class OzonHandler():
                 # print('Товар закончился!')
                 # continue
 
-                div_new = soup.find('span', {'class': 'b0a1 b0b6'})
+                div_new = soup.find('span', {'class': price_new_class_sale})
 
                 if div_new is None:
-                    div_new = soup.find('span', {'class': 'b0a1'})
+                    div_new = soup.find('span', {'class': price_new_class})
 
                 if div_new is None:
                     print('Товар закончился!')
                     continue
                 # print('din_new:\n', div_new)
                 '''
-
                 soup.find('span', {
                 'class': 'price-number'})
                 '''
 
-                # div_old = soup.find('span', {'class': 'price-number cross'})
-                # div_old = soup.find('div', {'class': 'ce6b47'})
-
-                # div_old = soup.find('span', {'class': 'a4c5'})
-                div_old = soup.find('span', {'class': 'b0a5'})
+                div_old = soup.find('span', {'class': price_old_class})
 
                 if div_old is not None:
                     price_dict['price_old'] = int(re.search('\d+', wspex(div_old.text))[0])

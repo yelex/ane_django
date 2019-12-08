@@ -219,15 +219,19 @@ class OkeyHandler:
                     try:
                         # time.sleep(3)
                         if proxies is not None:
-                            r = requests.get(href_i, proxies=proxies, headers=headers, timeout=10)  # CRITICAL
+                            r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
                         else:
-                            r = requests.get(href_i, headers=headers, timeout=10)
+                            r = requests.get(href_i, headers=headers, timeout=60)
                     except:
-                        r = requests.get(href_i, headers=headers, timeout=10)
-                        while r.status_code != 200:
-                            proxies = get_proxy(href_i)
-                            time.sleep(3)
-                            r = requests.get(href_i, headers=headers, proxies=proxies, timeout=10)
+                        while True:
+                            try:
+                                proxies = get_proxy(href_i)
+                                time.sleep(3)
+                                r = requests.get(href_i, headers=headers, proxies=proxies, timeout=60)
+                                if r.status_code == 200:
+                                    break
+                            except:
+                                continue
 
                     html = r.content
                     soup = BeautifulSoup(html, 'lxml')

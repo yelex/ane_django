@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from . import views
-
+from parser_app.logic.global_status import Global
 urlpatterns = [
     path('', views.index, name='index'),
     re_path(r'^\w*/getNewSnap$', views.get_snap, name='getSnap'),
@@ -8,4 +8,6 @@ urlpatterns = [
     path('dynamics/', views.dynamics, name='dynamics'),
     path('snaps/', views.snaps, name='snaps')
 ]
+
+Global().getproxies()
 # path('getNewSnap/', views.get_snap, name='getSnap'),

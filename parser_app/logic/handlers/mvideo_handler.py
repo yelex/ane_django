@@ -49,7 +49,7 @@ class MvideoHandler:
                 # print('soup:\n', soup)
                 price_dict = dict()
 
-                price_dict['date'] = datetime.now().date()
+                price_dict['date'] = Global().date
                 price_dict['site_code'] = site_code
                 price_dict['category_id'] = int(cat_id)
                 price_dict['category_title'] = category_title

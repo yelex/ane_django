@@ -12,12 +12,12 @@ import sqlite3
 
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # test_ane
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # test_ane
+
 
 class Total:
 
     def printer_test(self):
-
 
             print('Timer call : start making snapshots')
             start = datetime.now()
@@ -27,11 +27,9 @@ class Total:
                                        'site_title', 'price_new', 'price_old', 'site_unit',
                                        'site_link', 'site_code'])
 
-            df = df.append(TotalNongrocery().get_df_page())
             df = df.append(TotalGrocery().get_df_page())
+            df = df.append(TotalNongrocery().get_df_page())
             df = df.append(Services().get_df())
-
-
 
             df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
@@ -72,8 +70,10 @@ class Total:
             PricesRaw.objects.bulk_create(cached_list)
             print('Storing complete!')
 
+            print('Filling df...')
             filled_df = fill_df(pd.DataFrame(list(PricesRaw.objects.all().values())))
-
+            filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
+            print('Filling complete!')
 
             '''
             cached_list = []
@@ -123,27 +123,29 @@ class Total:
 
                 # m.save()
             Gks.objects.bulk_create(cached_list)
-            print('Storing raw prices to db...')
-            filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
+            print('Storing complete!')
 
+
+            print('Getting basket df...')
             basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food',:])
+            print('Getting complete!')
+
             # basket_df.to_csv('basket_df.csv')
-            basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
+            # basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
             cached_list = []
-            print(basket_df.tail())
+
             print('Storing basket to db...')
             Basket.objects.all().delete()
-            print('Storing completed!')
+
             for _, row in basket_df.iterrows():
 
                 prod = Basket(date=row['date'],
                            gks_price=row['gks_price'],
                            online_price=row['online_price'])
                 cached_list.append(prod)
-
                 # m.save()
             Basket.objects.bulk_create(cached_list)
-
+            print('Storing completed!')
             end = datetime.now()
             time_execution = str(end - start)
             # send_mail(message='Снапшот успешно создан {}'.format(end))
@@ -152,7 +154,6 @@ class Total:
 
             # if Global().is_shutdown is True:
             #    os.system('shutdown /p /f')
-
 
 
     def get_new_snap_threaded(self):

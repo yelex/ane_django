@@ -176,11 +176,15 @@ class GlobusHandler:
                     else:
                         r = requests.get(url, headers=header, timeout=10)
                 except:
-                    r = requests.get(url, headers=header, timeout=10)
-                    while r.status_code != 200:
-                        proxies = get_proxy(url)
-                        time.sleep(3)
-                        r = requests.get(url, proxies=proxies, headers=header)
+                    while True:
+                        try:
+                            proxies = get_proxy(url)
+                            time.sleep(3)
+                            r = requests.get(url, proxies=proxies, headers=header)
+                            if r.status_code == 200:
+                                break
+                        except:
+                            continue
                 html = r.content
                 soup = BeautifulSoup(html, 'lxml')
                 products_div = soup.find('div', {'class': 'item-card__content--right'})

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from parser_app.models import PricesRaw
+from parser_app.models import PricesRaw, Gks
 from parser_app.logic.total import Total
 import pandas as pd
 import django_tables2 as tables
@@ -38,8 +38,9 @@ def index(request):
     df = pd.DataFrame(list(PricesRaw.objects.filter(date=fresh_snapshot_date).all().values()))
     # print(df.head())
     df.date = pd.to_datetime(df.date)
-    conn = sqlite3.connect('D:\ANE_django\db.sqlite3')
-    df_gks = pd.read_sql('SELECT * FROM parser_app_gks', conn)
+    # conn = sqlite3.connect('D:\ANE_django\db.sqlite3')
+    df_gks = pd.DataFrame(list(Gks.objects.filter(date=fresh_snapshot_date).all().values())) # pd.read_sql('SELECT * FROM parser_app_gks', conn)
+    df_gks.date = pd.to_datetime(df_gks.date)
     df = pd.concat([df, df_gks], join='inner')
     pivot_food = df[df.type=='food'].pivot_table(index=['type', 'category_title'],
                            columns='site_code', values='price_new', aggfunc=lambda x: round(x.mean(), 1)).reset_index()
