@@ -1,8 +1,7 @@
 body {
 	color: #8f8f8f;
 	font: 12px Tahoma, sans-serif;
-	background: #f8f8f8 url(../images/bg.png);
-	border-top: 5px solid #7e7e7e;
+	background: url(../images/bg.png);*/ /*ОБЯЗАТЕЛЬНО ДОБАВЛЯТЬ ; В КОНЦЕ СТРОКИ!*/
 	margin: 0;
 }
 
