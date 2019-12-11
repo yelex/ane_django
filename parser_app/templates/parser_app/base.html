@@ -7,34 +7,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <title>{% block title %}{% endblock %}</title>
 
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300" type="text/css">
-    <link rel="stylesheet" href="{% static "css/styles.css" %}" type="text/css">
-    <!--[if lt IE 9]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'materialize/css/materialize.css' %}"  media="screen,projection"/>
+
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300" type="text/css">
+    <!--Import styles.css-->
+    <!--<link type="text/css" rel="stylesheet" href="{% static 'css/styles.css' %}"  media="screen,projection"/>-->
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
-<body>
-<div id="wrapper">
-    <header>
-        <a href="/"><img src="{% static "images/ane home logo.png" %}" alt="Ane home logo"></a>
-    </header>
-    <nav>
-        <ul class="top-menu">
+<body class="grey lighten-4">
+	<div class="container">
+		<header>
+			<a href="/"><img src="{% static "images/ane home logo.png" %}" alt="Ane home logo"></a>
+		</header>
+		<nav>
+			<div class="nav-wrapper red darken-4">
+			  <ul id="nav-mobile" class="left hide-on-med-and-down">
             <li class="{% block classhome     %}{% endblock %}"><a href="/">Средние цены</a></li>
             <li class="{% block classdynamics       %}{% endblock %}"><a href="/dynamics/">Динамика цен</a></li>
             <li class="{% block classcp       %}{% endblock %}"><a href="/cp/">Контрольная панель</a></li>
         </ul>
-    </nav>
-
-    <section>
-        {% block real_content %}
-        {% endblock %}
-    </section>
-</div>
-<footer>
-    <div id="footer">
-        <p>Выполнено Эдуардом Поконечным, 2019 &#169</p>
-    </div>
-</footer>
+			</div>
+		</nav>
+	<section>
+		{% block real_content %}
+		{% endblock %}
+	</section>
+	<!--Import jQuery before materialize.js-->
+    {% block footer %}
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="{% static 'materialize/bin/materialize.js' %}"></script>
+    {% endblock %}
+	<div class="footer-copyright">
+		© Выполнено Эдуардом Поконечным, 2018
+	</div>
+	</div>
 </body>
 </html>

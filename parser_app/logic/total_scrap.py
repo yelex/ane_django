@@ -51,7 +51,7 @@ class TotalGrocery():
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        site_handlers = [OkeyHandler(), UtkonosHandler(), PerekrestokHandler(), GlobusHandler(), ]  #
+        site_handlers = [UtkonosHandler(), OkeyHandler(), PerekrestokHandler(), GlobusHandler(), ]  #
 
         for handler in site_handlers:
             df = df.append(handler.extract_product_page())

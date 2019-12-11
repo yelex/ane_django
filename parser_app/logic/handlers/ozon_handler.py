@@ -229,10 +229,10 @@ class OzonHandler():
         header = {'User-Agent': str(ua.chrome)}
         proxies = None
 
-        h1_class = 'b2w2'
-        price_new_class_sale = 'b3c9 b3e4'
-        price_new_class = 'b3c9'
-        price_old_class = 'b3d3'
+        h1_class = 'a8d1'
+        price_new_class_sale = 'a8j1 a8k7'
+        price_new_class = 'a8j1'
+        price_old_class = 'a8j6'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
 

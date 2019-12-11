@@ -161,6 +161,7 @@ def get_proxy(link, get_new=False, get_list=False):
                     print('utkonos detected!')
                     if soup.find('div', {'class': re.compile('goods_view_item-action_header')}) is not None and \
                             soup.find('div', {'class': re.compile('goods_view_item-action')}) is not None:
+                        print('goods_view_item-action:', soup.find('div', {'class': re.compile('goods_view_item-action_header')}).text)
                         print('break!')
                         time.sleep(3)
                         break

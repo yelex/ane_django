@@ -184,8 +184,8 @@ class UtkonosHandler():
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
         check_url = links_df[links_df.category_id == 1].site_link.values[0]
-        proxies = get_proxy(check_url) #
-        # proxies = None
+        # proxies = get_proxy(check_url) #
+        proxies = None
 
         time.sleep(5)
         # selenium
