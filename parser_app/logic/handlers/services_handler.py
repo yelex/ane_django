@@ -163,7 +163,7 @@ class Services():
 
         final_df=final_df.append(price_dict,ignore_index=True)
 
-        '''
+
         #Постановка набоек, пара	https://masterskaya-obuvi.ru/tseny
         n=6
         price_dict=dict()
@@ -186,7 +186,7 @@ class Services():
                 price_dict['site_link']=url
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
-        '''
+
 
         #Билет на 1 поездку - мосгортранс
         n=7
@@ -217,16 +217,16 @@ class Services():
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
 
-        #стрижка
-        n=8
-        price_dict=dict()
-        price_dict['site_code']='services'
-        price_dict['date']=Global().date
-        url=list_url[n]
-        html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
-        soup=BeautifulSoup(html, 'lxml')
+        # стрижка
+        n = 8
+        price_dict = dict()
+        price_dict['site_code'] = 'services'
+        price_dict['date'] = Global().date
+        url = list_url[n]
+        html = requests.get(url).content  # , headers={'User-Agent': UserAgent().chrome}
+        soup = BeautifulSoup(html, 'lxml')
 
-        #soup.findAll('td')#,{'class':'text-center'})[0]
+        # soup.findAll('td')#,{'class':'text-center'})[0]
         for elem in soup.findAll('tr'):
             if re.findall('(любой длины)',elem.text)!=[]:
                 price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[-1])
@@ -242,7 +242,7 @@ class Services():
         final_df=final_df.append(price_dict,ignore_index=True)
 
         #стрижка
-        n=9
+        n = 9
         price_dict=dict()
         price_dict['site_code']='services'
         price_dict['date']=Global().date
