@@ -34,9 +34,7 @@ class PriceTableServices(tables.Table):
 def index(request):
 
     fresh_snapshot_date = SnapshotManager().last_succ_date
-    # print(fresh_snapshot_date)
     df = pd.DataFrame(list(PricesRaw.objects.filter(date=fresh_snapshot_date).all().values()))
-    # print(df.head())
     df.date = pd.to_datetime(df.date)
     # conn = sqlite3.connect('D:\ANE_django\db.sqlite3')
     df_gks = pd.DataFrame(list(Gks.objects.filter(date=fresh_snapshot_date).all().values())) # pd.read_sql('SELECT * FROM parser_app_gks', conn)
@@ -53,9 +51,9 @@ def index(request):
                                                           aggfunc=lambda x: round(x.mean(), 1)).reset_index()
     pivot_nonfood = pivot_nonfood.reset_index()
     pivot_services = pivot_services.reset_index()
-    pivot_food = pivot_food.reset_index()#[['index', 'type', 'category_title', 'globus',
-                                # 'okey', 'perekrestok', 'utkonos', 'lamoda', 'ozon',
-                               #  'piluli', 'mvideo', 'services']]
+    pivot_food = pivot_food.reset_index()  # [['index', 'type', 'category_title', 'globus',
+                                           # 'okey', 'perekrestok', 'utkonos', 'lamoda', 'ozon',
+                                           #  'piluli', 'mvideo', 'services']]
 
     return render(request, 'parser_app/index.html', {'snapstable_food': PriceTableFood(pivot_food.to_dict('records')),
                                                      'snapstable_nonfood': PriceTableNonfood(pivot_nonfood.to_dict('records')),

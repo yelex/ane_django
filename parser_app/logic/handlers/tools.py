@@ -16,6 +16,7 @@ from datetime import date
 import numpy as np
 from tqdm import tqdm
 import difflib
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class perpetualTimer():
@@ -38,7 +39,7 @@ class perpetualTimer():
 
 
 def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=True если учитывать слова "за", False - иначе
-    path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+    path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
     sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
     row = sfb_df.loc[[id_n]]
     keyword = row['keyword'].values[0]
@@ -97,9 +98,8 @@ def get_proxy(link, get_new=False, get_list=False):
     # print('Global.proxies:', Global().proxies)
     while True:
         if get_new is True:
-            options = webdriver.ChromeOptions()
-            # options.add_argument('--headless')
-            driver = webdriver.Chrome(executable_path=Global().path_chromedriver, options=options)
+
+            driver = webdriver.Chrome(executable_path=Global().path_chromedriver, options=Global().chrome_options)
             driver.get("https://hidemy.name/ru/proxy-list/?maxtime=300&ports=3128#list")
             while True:
                 time.sleep(1)
@@ -266,7 +266,7 @@ def pack_to_gramm(string):  # перевод в граммы для (50×2г)
 
 # price_in_basket
 
-sfb = pd.read_csv(r'C:\anehome_test\anehome\logic\sfb.csv', sep=';')
+sfb = pd.read_csv(Global().path_sfb, sep=';')
 
 
 def price_coef(id_n, string_unit):  # основано на весах 33 категорий условного минимального набора товаров и услуг

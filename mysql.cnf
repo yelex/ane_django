@@ -1,7 +1,6 @@
-y
 [client]
 database = ane_base
-user = root
-password = Fokina12!
+user = ane
+password = ane_coworking
 default-character-set = utf8
 wait_timeout = 10800

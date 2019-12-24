@@ -15,10 +15,10 @@ import requests
 
 
 class OzonHandler():
-    def option_chrome(self, proxy):
-        chromeOptions = webdriver.ChromeOptions()
-        chromeOptions.add_argument('--proxy-server=%s' % proxy)
-        return chromeOptions
+    # def option_chrome(self, proxy):
+        # chromeOptions = webdriver.ChromeOptions()
+        # chromeOptions.add_argument('--proxy-server=%s' % proxy)
+        # return chromeOptions
 
     def get_proxy(self):  # опционально, если понадобится прокси
         success = False
@@ -38,7 +38,7 @@ class OzonHandler():
                 success = False
 
                 driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                          chrome_options=self.option_chrome(proxy))
+                                          chrome_options=Global().chrome_options)
                 driver.get("https://ozon.ru")
                 try:
                     WebDriverWait(driver, 10).until(
@@ -65,7 +65,7 @@ class OzonHandler():
         return a
 
     def extract_products(self, max_prod=200):
-        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')]['URL'].values
@@ -75,14 +75,14 @@ class OzonHandler():
                                     'site_link', 'site_code'])
 
         # proxy = self.get_proxy()
-        options = webdriver.ChromeOptions()
+        # options = webdriver.ChromeOptions()
         # proxy = get_proxy('http://ozon.ru') # если понадобится прокси
         # options.add_argument('--headless')
         # options.add_argument('--disable-gpu')
         # options.add_argument('--proxy-server=%s' % proxy)
 
         driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                  chrome_options=options)  # , chrome_options=self.option_chrome(proxy))
+                                  chrome_options=Global().chrome_options)  # , chrome_options=self.option_chrome(proxy))
 
         store = 'ozon'
         driver.implicitly_wait(30)
@@ -218,21 +218,22 @@ class OzonHandler():
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        options = webdriver.ChromeOptions()
+        # options = webdriver.ChromeOptions()
         # proxies = get_proxy('https://www.ozon.ru/')
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         # options.add_argument('--proxy-server=%s' % proxy)
-        driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                  chrome_options=options)  # , chrome_options=self.option_chrome(proxy))
+        if Global().is_selenium_ozon is True:
+            driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
+                                      chrome_options=Global().chrome_options) # , chrome_options=self.option_chrome(proxy))
         #
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         proxies = None
 
-        h1_class = 'a9l'
-        price_new_class_sale = 'a9r3 a9s9'
-        price_new_class = 'a9r3'
-        price_old_class = 'a9r8'
+        h1_class = 'b1j8'
+        price_new_class_sale = 'b2b3 b2c9'
+        price_new_class = 'b2b3'
+        price_old_class = 'b2b8'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']

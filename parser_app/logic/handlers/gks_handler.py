@@ -104,7 +104,7 @@ class SiteHandlerGks:
 
     def get_qry_weekly(self, year):
 
-        df = pd.read_csv(r'D:\test_ane\description\gks_weekly_links.csv', sep=';', index_col=0)
+        df = pd.read_csv(Global().gks_links, sep=';', index_col=0)
 
         list_grtov = df['site_link'].values
 
@@ -168,7 +168,7 @@ class SiteHandlerGks:
 
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
         df.loc[:, 'type'] = 'food'
-        df1 = pd.read_csv('D:\ANE_2\parsed_content\data_2019-10-02.csv', index_col=0)
+        df1 = pd.read_csv(Global().example_shot, index_col=0)
         df = df.merge(df1[['category_id', 'category_title']].drop_duplicates(), left_on='category_id',
                       right_on='category_id')
         keys = list(range(1, 34))
@@ -177,7 +177,7 @@ class SiteHandlerGks:
         df = df.merge(pd.Series(dictionary).rename('site_link'), left_on='category_id', right_index=True)
         df.loc[:, 'site_title'] = df.loc[:, 'category_title']
         df.loc[:, 'site_code'] = 'gks'
-        df2 = pd.read_csv(r'D:\ANE\django\anehome_test\anehome\logic\sfb.csv', sep=';')
+        df2 = pd.read_csv(Global().path_sfb, sep=';')
         df = df.merge(df2[['id', 'unit']], left_on='category_id', right_on='id').drop('id', axis=1).rename(
             columns={'unit': 'site_unit'})
         df.loc[:, 'price_old'] = -1.0
@@ -204,7 +204,7 @@ class SiteHandlerGks:
             how='right').fillna(method='ffill')
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
         df.loc[:, 'type'] = 'food'
-        df1 = pd.read_csv('D:\ANE_2\parsed_content\data_2019-10-02.csv', index_col=0)
+        df1 = pd.read_csv(Global().example_shot, index_col=0)
         df = df.merge(df1[['category_id', 'category_title']].drop_duplicates(), left_on='category_id',
                       right_on='category_id')
         keys = list(range(1, 34))
@@ -213,7 +213,7 @@ class SiteHandlerGks:
         df = df.merge(pd.Series(dictionary).rename('site_link'), left_on='category_id', right_index=True)
         df.loc[:, 'site_title'] = df.loc[:, 'category_title']
         df.loc[:, 'site_code'] = 'gks'
-        df2 = pd.read_csv(r'D:\ANE\django\anehome_test\anehome\logic\sfb.csv', sep=';')
+        df2 = pd.read_csv(Global().path_sfb, sep=';')
         df = df.merge(df2[['id', 'unit']], left_on='category_id', right_on='id').drop('id', axis=1).rename(
             columns={'unit': 'site_unit'})
         df.loc[:, 'price_old'] = -1.0

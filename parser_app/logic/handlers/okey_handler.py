@@ -26,7 +26,7 @@ class OkeyHandler:
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
-        path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('okeydostavka')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]
@@ -162,8 +162,8 @@ class OkeyHandler:
 
         if Global().is_selenium_okey:
             path = Global().path_chromedriver
-            options = webdriver.ChromeOptions()
-            driver = webdriver.Chrome(executable_path=path, chrome_options=options)
+            # options = webdriver.ChromeOptions()
+            driver = webdriver.Chrome(executable_path=path, chrome_options=Global().chrome_options)
 
         category_ids = links_df.category_id.unique()
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',

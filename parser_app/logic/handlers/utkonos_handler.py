@@ -32,7 +32,7 @@ class UtkonosHandler():
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
 
-        path_sfb = r'description\urls.csv'
+        path_sfb = r'description/urls.csv'
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         hrefs = [href for href in hrefs if type(href) is not float]  # испр
@@ -191,9 +191,9 @@ class UtkonosHandler():
         # selenium
         if Global().is_selenium_utkonos:
             path = Global().path_chromedriver
-            options = webdriver.ChromeOptions()
+            # options = webdriver.ChromeOptions()
             # options.add_argument('--headless')
-            driver = webdriver.Chrome(executable_path=path, chrome_options=options)
+            driver = webdriver.Chrome(executable_path=path, chrome_options=Global().chrome_options)
 
         #
         for cat_id in tqdm(category_ids):  # испр

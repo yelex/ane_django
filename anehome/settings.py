@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # ane_django
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -53,21 +52,23 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'anehome.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+           'context_processors': [
+               'django.template.context_processors.debug',
+               'django.template.context_processors.request',
+               'django.contrib.auth.context_processors.auth',
+               'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'anehome.wsgi.application'
 
@@ -123,14 +124,13 @@ USE_TZ = False
 '''
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),  # ANE_django/static
-    os.path.join(BASE_DIR, 'parser_app/static'),
 )
-
+'''
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
-'''
+
 STATIC_URL = '/static/'
 STATIC_ROOT = ''

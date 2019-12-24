@@ -11,7 +11,7 @@ class PiluliHandler():
 
         path = Global().path_chromedriver  # здесь вставить путь к chomedriver
 
-        path_sfb = os.path.join(Global().base_dir, r'description\urls.csv')
+        path_sfb = os.path.join(Global().base_dir, r'description/urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         #keywords = df_desc.loc[['7', '18', '21']]['Ключевы слова, которые должны присутствовать'].values
@@ -25,11 +25,11 @@ class PiluliHandler():
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
 
-        options = webdriver.ChromeOptions()
+        # options = webdriver.ChromeOptions()
         #options.add_argument('--headless')
         #options.add_argument('--disable-gpu')
 
-        driver = webdriver.Chrome(executable_path=path, chrome_options=options)
+        driver = webdriver.Chrome(executable_path=path, chrome_options=Global().chrome_options)
 
         for index, link in enumerate(urls):
             price_dict = dict()
