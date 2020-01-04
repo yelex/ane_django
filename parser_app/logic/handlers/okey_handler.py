@@ -9,7 +9,7 @@ from parser_app.logic.global_status import Global
 from tqdm import tqdm
 from selenium import webdriver
 import time
-
+import os
 
 class OkeyHandler:
 
@@ -71,6 +71,7 @@ class OkeyHandler:
 
                 try:
                     r = requests.get(url_full, headers=headers)  # CRITICAL
+                    time.sleep(3)
                 except:
                     r = 404
                     while r.status_code != 200:
@@ -242,6 +243,7 @@ class OkeyHandler:
                 # print(products_div)
                 if products_div is None:
                     print('no products_div!')
+
                     # proxies = get_proxy('https://okeydostavka.ru/')
                     if n_err == 0:
                         n_err += 1
@@ -249,6 +251,7 @@ class OkeyHandler:
                         proxies = get_proxy('https://okeydostavka.ru/')
                     else:
                         n_err = 0
+
                     continue
 
 

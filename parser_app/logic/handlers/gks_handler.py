@@ -44,6 +44,30 @@ class SiteHandlerGks:
     def extract_products(self, html):
         soup = BeautifulSoup(html, 'lxml')
         # print('soup', soup)
+        product_table = soup.find('table', {'class': 'OutTbl'})
+        price_list_divs = product_table.find_all('tr')[2:]
+        table_dict = dict()
+        i = 0
+
+        for price_elem in price_list_divs:
+            i += 1
+
+            tds = price_elem.find_all('td')[1:]
+            # # print('tds()=', type(tds), tds[0], "&&&", tds[1])
+            # if tds[0].get('class') != 'TblShap' and tds[1].text!='' and wspex_space(tds[0].text):
+
+            # price_dict['gks_total'] = price_dict['gks_unit'] *
+            res = [float(i.text.replace(',', '.')) for i in tds]
+            table_dict[i] = res
+
+        # print("End extract")
+        # print # str(x) for x in gks_id_list
+
+        return table_dict
+
+    def extract_products_monthly(self, html):
+        soup = BeautifulSoup(html, 'lxml')
+        # print('soup', soup)
         products_tables = soup.findAll('table', {'class': 'OutTbl'})
         table_dict = dict()
         i = 0
@@ -75,6 +99,9 @@ class SiteHandlerGks:
     def process_table(self, year, month):
         url = 'https://www.gks.ru/dbscripts/cbsd/DBInet.cgi?pl=1921001'
         # print('qry = ', self.get_qry(year, month))
+        if datetime.now().date().isocalendar()[1] == 1:
+            year = 2019
+            month = 12
         values = {
             'rdLayoutType': 'Au',
             '_Pokazateli': 'on',
@@ -98,26 +125,39 @@ class SiteHandlerGks:
         r.encoding = 'cp1251'
         html = r.text
 
-        # # print(html)
+        # print(html)
 
-        return self.extract_products(html)
+        return self.extract_products_monthly(html)
 
     def get_qry_weekly(self, year):
 
-        df = pd.read_csv(Global().gks_links, sep=';', index_col=0)
+        df = pd.read_csv(Global().gks_links,
+                         sep=';', index_col=0)
 
         list_grtov = df['site_link'].values
 
-        list_period = [str(i) + str(datetime.now().year) for i in range(date(2019, 2, 1).isocalendar()[1] - 1,
-                                                                        datetime.now().date().isocalendar()[1])]
+        list_2019 = [str(i) + str(2019) for i in range(date(2019, 2, 1).isocalendar()[1] - 1,
+                                                       53)]
+        full_year_list = list_2019
+        '''
+        if datetime.now().year != 2019:
+            list_another_year = [str(i) + str(datetime.now().year) for i in range(date(datetime.now().year, 1, 1).isocalendar()[1],
+                                                                                datetime.now().date().isocalendar()[1]+1)]
+            full_year_list = list_2019 + list_another_year
+        else:
+            full_year_list = list_2019
+        '''
+        # print('list_period:', list_period)
         return 'Pokazateli:1921002;okato:45000000;grtov:' + \
                ','.join(str(i) for i in list_grtov) + ';' + \
-               'god:' + year + ';' + \
-               'period:' + ','.join(list_period) + ';'  #
+               'god:' + str(year) + ';' + \
+               'period:' + ','.join(full_year_list) + ';'  #
 
     def process_table_weekly(self, year):
         url = 'https://www.gks.ru/dbscripts/cbsd/DBInet.cgi?pl=1921002'
         # print('qry = ', self.get_qry_weekly(year, month))
+        if datetime.now().date().isocalendar()[1] == 1:
+            year = 2019
         values = {
             'rdLayoutType': 'Au',
             '_Pokazateli': 'on',
@@ -130,45 +170,59 @@ class SiteHandlerGks:
             'a_period': '1',
             'a_grtov': '2',
             'Qry': self.get_qry_weekly(year),
-            'QryGm': 'Pokazateli_z:1;okato_z:2;god_s:1;period_b:1;grtov_b:2;',  # '
+            'QryGm': 'Pokazateli_z:1;okato_z:2;grtov_s:1;god_s:1;period_b:1;',  # '
             'QryFootNotes': ';',
-            'YearsList': ';'.join(list(str(i) for i in range(2008, datetime.now().year + 1))) + ';',
+            'YearsList': ';'.join(list(str(i) for i in range(2008, year + 1))) + ';',
             'tbl': 'Показать таблицу'
         }
         data = urllib.parse.urlencode(values, encoding='cp1251')
-        # print(data)
+        # print('data', data)
         time.sleep(3)
         r = requests.post(url, data=data)
         r.encoding = 'cp1251'
         html = r.text
 
-        # # print(html)
+        # print('html', self.extract_products(html))
 
         return self.extract_products(html)
 
     def get_df_weekly(self):
-        print('get data from GKS...')
         year = str(datetime.now().year)
 
-        table = self.process_table_weekly(year)
-        df_map = pd.read_csv(Global().gks_links, sep=';', index_col=0)[['cat_title']]
+        table_dict = self.process_table_weekly(year)
+        df = pd.DataFrame().from_dict(table_dict, orient='index')
+        # print(table)
+        df_map = \
+        pd.read_csv(Global().gks_links,
+                    sep=';', index_col=0)[['cat_title']]
+        if len(df) <= len(range(date(2019, 2, 1).isocalendar()[1] - 1, 53)):
+            index_y_full = [datetime.strptime('{}-W{}-1'.format(str(2019), i), "%Y-W%W-%w") for i in
+                            range(date(2019, 2, 1).isocalendar()[1] - 1,
+                                  date(2019, 2, 1).isocalendar()[1] - 1 + len(df))]
 
-        df = pd.DataFrame(np.reshape(table[1], (len(table[1]) // 29, 29)),
-                          index=[datetime.strptime('{}-W{}-1'.format(str(datetime.now().year), i), "%Y-W%W-%w") for i in
-                                 range(date(2019, 2, 1).isocalendar()[1] - 1,
-                                       date(2019, 2, 1).isocalendar()[1] - 1 + len(table[1]) // 29)],
-                          columns=list(df_map.index))
+        else:
+            index_y_19 = [datetime.strptime('{}-W{}-1'.format(str(2019), i), "%Y-W%W-%w") for i in
+                          range(date(2019, 2, 1).isocalendar()[1] - 1, 53)]
+            index_y_another = [datetime.strptime('{}-W{}-1'.format(str(datetime.now().year), i), "%Y-W%W-%w") for i in
+                               range(date(datetime.now().year, 1, 1).isocalendar()[1],
+                                     datetime.now().date().isocalendar()[1])]
+            index_y_full = index_y_19.append(index_y_another)
+        # print(index_y_full)
+
+        df.columns = list(df_map.index)
+        df.index = index_y_full
 
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
         df = df.pivot_table(index='date', columns='category_id', values='price_new').merge(
             pd.DataFrame(index=pd.date_range(start='2/1/2019',
-                                             end=Global().date.strftime('%m/%d/%Y'))), left_index=True,
+                                             end=datetime.now().date().strftime('%m/%d/%Y'))), left_index=True,
             right_index=True,
             how='right').fillna(method='ffill')
 
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
         df.loc[:, 'type'] = 'food'
-        df1 = pd.read_csv(Global().example_shot, index_col=0)
+        df1 = pd.read_csv(Global().example_shot,
+                          index_col=0)
         df = df.merge(df1[['category_id', 'category_title']].drop_duplicates(), left_on='category_id',
                       right_on='category_id')
         keys = list(range(1, 34))
@@ -182,29 +236,31 @@ class SiteHandlerGks:
             columns={'unit': 'site_unit'})
         df.loc[:, 'price_old'] = -1.0
         df.loc[:, 'miss'] = 0
-        print('completed!')
         return df
 
     def get_df_monthly(self):
         year = datetime.now().year
         month = datetime.now().month
         table = SiteHandlerGks().process_table(year, month)
-
+        # print(table)
         df = pd.DataFrame.from_dict(table)
         df = df.set_index(df.index + 1)
 
         df.loc[:, 'date'] = [date(day=1, month=i, year=2019) for i in range(1, len(df) + 1)]
         df.set_index('date', inplace=True)
+
         df = df.stack().reset_index()
         df = df.rename(columns={'level_1': 'category_id', 0: 'price_new'})
         df = df.pivot_table(index='date', columns='category_id', values='price_new').merge(
             pd.DataFrame(index=pd.date_range(start='2/1/2019',
-                                             end=Global().date.strftime('%m/%d/%Y'))), left_index=True,
+                                             end=datetime.now().date().strftime('%m/%d/%Y'))), left_index=True,
             right_index=True,
             how='right').fillna(method='ffill')
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
+        # print(df)
         df.loc[:, 'type'] = 'food'
-        df1 = pd.read_csv(Global().example_shot, index_col=0)
+        df1 = pd.read_csv(Global().example_shot,
+                          index_col=0)
         df = df.merge(df1[['category_id', 'category_title']].drop_duplicates(), left_on='category_id',
                       right_on='category_id')
         keys = list(range(1, 34))

@@ -4,6 +4,7 @@ from parser_app.logic.total import Total
 import pandas as pd
 import django_tables2 as tables
 from startup_routine import SnapshotManager
+from anehome.tasks import snap_get
 import sqlite3
 # from startup_routine import
 
@@ -17,6 +18,7 @@ class PriceTableFood(tables.Table):
     perekrestok = tables.Column(verbose_name='Перекресток (руб.)')
     utkonos = tables.Column(verbose_name='Утконос (руб.)')
 
+
 class PriceTableNonfood(tables.Table):
     index = tables.Column(verbose_name='ID')
     category_title = tables.Column(verbose_name='Категория')
@@ -24,6 +26,7 @@ class PriceTableNonfood(tables.Table):
     mvideo = tables.Column(verbose_name='м.Видео (руб.)')
     lamoda = tables.Column(verbose_name='Ламода (руб.)')
     piluli = tables.Column(verbose_name='Piluli.ru (руб.)')
+
 
 class PriceTableServices(tables.Table):
     index = tables.Column(verbose_name='ID')
@@ -58,11 +61,12 @@ def index(request):
     return render(request, 'parser_app/index.html', {'snapstable_food': PriceTableFood(pivot_food.to_dict('records')),
                                                      'snapstable_nonfood': PriceTableNonfood(pivot_nonfood.to_dict('records')),
                                                      'snapstable_services': PriceTableServices(pivot_services.to_dict('records')),
-                                                     'last_succ_snap_date' : fresh_snapshot_date})
+                                                     'last_succ_snap_date': fresh_snapshot_date})
 
 
 def get_snap(request):
-    Total().get_new_snap_threaded()
+    # Total().get_new_snap_threaded()
+    snap_get.delay()
     return render(request, 'parser_app/cp.html', {})
 
 
@@ -70,9 +74,11 @@ def cp(request):
     if request.method == 'GET':
         return render(request, 'parser_app/cp.html', {})
 
+
 def snaps(request):
     if request.method == 'GET':
         return render(request, 'parser_app/cp.html', {})
+
 
 def dynamics(request):
     return render(request, 'parser_app/dynamics.html',
