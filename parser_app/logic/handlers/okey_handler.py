@@ -10,6 +10,8 @@ from tqdm import tqdm
 from selenium import webdriver
 import time
 import os
+from fake_useragent import UserAgent
+
 
 class OkeyHandler:
 
@@ -172,6 +174,7 @@ class OkeyHandler:
                                     'site_link', 'site_code'])
         # proxies = get_proxy('https://okeydostavka.ru/')
         proxies = None
+        ua = UserAgent()
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
 
@@ -189,33 +192,45 @@ class OkeyHandler:
                 i += 1
                 # if i % 10 == 0 and i != 0:
                     # proxies = get_proxy(href_i)
-                cookie = \
-                    r"_ga=GA1.2.1743913103.1529597174; _ym_uid=1529597174997115265; _gac_UA-58508147-1=1.1529607077.EAIaIQobChMItoj" + \
-                    r"f2rLl2wIVjIeyCh2stAAuEAAYASAAEgLCdvD_BwE; _gid=GA1.2.654182099.1529924428; _ym_d=1529924428; _ym_isad=1; _ym_" + \
-                    r"visorc_27891822=w; storeGroup=msk1; ffcId=13151; WC_SESSION" + \
-                    r"_ESTABLISHED=true; WC_PERSISTENT=3EJGXVtLqH2nPYh%2FBwXZCgqDdro%3D%0A%3B2018-06-26+21%3A22%3A20.903_1530037336" + \
-                    r"387-297473_10151; WC_AUTHENTICATION_-1002=-1002%2CshqcDFo2KYvSQjMlws143PZaUdk%3D; WC_ACTIVEPOINTER=-20%2C10151;" + \
-                    r"WC_GENERIC_ACTIVITYDATA=[876474606%3Atrue%3Afalse%3A0%3ACLFoHnycXg06Qmg4qmgtx7v6u%2Bc%3D][com.ibm.commerce" + \
-                    r".context.audit.AuditContext|1530037336387-297473][com.ibm.commerce.store.facade.server.context.StoreGeoCodeContext" + \
-                    r"|null%26null%26null%26null%26null%26null][CTXSETNAME|Store][com.ibm.commerce.context.globalization.Globalization" + \
-                    r"Context|-20%26RUB%26-20%26RUB][com.ibm.commerce.catalog.businesscontext.CatalogContext|12051%26null%26false%26false" + \
-                    r"%26false][com.ibm.commerce.context.ExternalCartContext|null][com.ibm.commerce.context.base.BaseContext|10151%26-" + \
-                    r"1002%26-1002%26-1][com.ibm.commerce.context.experiment.ExperimentContext|null][com.ibm.commerce.context.entitlement" + \
-                    r".EntitlementContext|4000000000000000003%264000000000000000003%26null%26-2000%26null%26null%26null][com.ibm." + \
-                    r"commerce.giftcenter.context.GiftCenterContext|null%26null%26null]; isNative=1; searchTermHistory=%7C%D1%81%D0%" + \
-                    r"BC%D0%B5%D1%82%D0%B0%D0%BD%D0%B0; gtmListKey=GTM_LIST_SEARCH; tmr_detect=1%7C1530037350771"
+                cookie = r'_ga=GA1.2.1325218443.1577886613; gtmListKey=GTM_LIST_RECOMENDATIONS; _ym_' + \
+                         r'uid=15778866221036907447; _ym_d=1577886622; isNative=1; selectedCity=%D0%9C%D0%' + \
+                         r'BE%D1%81%D0%BA%D0%B2%D0%B0; selectedStore=10151_13151; acceptCookie=1; storeGroup=msk1;' + \
+                         r'ffcId=13151; WC_SESSION_ESTABLISHED=true; WC_AUTHENTICATION_-1002=-1002%2CzZHlyRjQcgW' + \
+                         r'KqNcfDjyX4iZ02zjcQoyDurbFiQxFNVk%3D; WC_ACTIVEPOINTER=-20%2C10151; WC_USERACTIVITY_-1' + \
+                         r'002=-1002%2C10151%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C1877362032%2C' + \
+                         r'ver_null%2CDg2tDaIGqtvlUd7GeVDIZu1DtkcjFvj1SdTgnMiPwCmRMdhqBYKQ9oMgiku72VhoL3OKnTP2aV5k8V' + \
+                         r'zF6ztiaJ508J0SZkHyBJdFQodkOMqqwSEr%2Bg%2B0C1rETa4auryIDSq4FP7c1urrNfoJqDzAkdVBlG8NuO0KAfb' + \
+                         r'PocosaJL1o7xK78QvuQz25bWv8w%2BzRoaWagOu7%2BQUD%2B%2FGPrl94xaDOHhYYdgsXrofcc04xzx0c%2BlK6F' + \
+                         r'FHANLAGseWFGCm; WC_GENERIC_ACTIVITYDATA=[1996034293%3Atrue%3Afalse%3A0%3AaSne5YGZoxA4Mpz2' + \
+                         r'j8qE86%2FndHXVreuwTKmYZIVqRY4%3D][com.ibm.commerce.context.entitlement.EntitlementContext' + \
+                         r'|4000000000000000003%264000000000000000003%26null%26-2000%26null%26null%26null][com.ibm' + \
+                         r'.commerce.context.audit.AuditContext|null][com.ibm.commerce.context.globalization.Global' + \
+                         r'izationContext|-20%26RUB%26-20%26RUB][com.ibm.commerce.store.facade.server.context.StoreG' + \
+                         r'eoCodeContext|null%26null%26null%26null%26null%26null][com.ibm.commerce.catalog.businessc' + \
+                         r'ontext.CatalogContext|12051%26null%26false%26false%26false][com.ibm.commerce.context.exp' + \
+                         r'eriment.ExperimentContext|null][com.ibm.commerce.context.ExternalCartContext|null][com.ib' + \
+                         r'm.commerce.context.bcsversion.BusinessContextVersionContext|null][CTXSETNAME|Store][com.ib' + \
+                         r'm.commerce.context.base.BaseContext|10151%26-1002%26-1002%26-1][com.ibm.commerce.giftcenter.context.GiftCenterContext|null%26null%26null]; solarfri=6a3c99192124a2fe; _gid=GA1.2.311834681.1579169412; _ym_isad=1; JSESSIONID=0000LPiEiWXPfA6ejMPrOUxMf90:-1; _gat_UA-58508147-1=1; _ym_visorc_27891822=w'
+
 
                 headers = {
-                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
-                    'Cookie': cookie,
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
                     'Accept-Encoding': 'gzip, deflate, br',
-                    'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
-                    'Cache-Control': 'max-age=0'}
+                    'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                    'Cache-Control': 'max-age=0',
+                    'Connection': 'keep-alive',
+                    'Cookie': cookie,
+                    'Host': 'www.okeydostavka.ru',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Sec-Fetch-User': '?1',
+                    'Upgrade-Insecure-Requests': '1',
+                    'User-Agent': str(ua.chrome),
+                }
                 if Global().is_selenium_okey:
                     driver.get(href_i)
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    driver.close()
+                    # driver.close()
                 else:
                     try:
                         # time.sleep(3)
@@ -223,7 +238,8 @@ class OkeyHandler:
                             r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
                         else:
                             r = requests.get(href_i, headers=headers, timeout=60)
-                    except:
+                    except Exception as e:
+                        print(str(e) + '!')
                         while True:
                             try:
                                 proxies = get_proxy(href_i)
@@ -231,7 +247,8 @@ class OkeyHandler:
                                 r = requests.get(href_i, headers=headers, proxies=proxies, timeout=60)
                                 if r.status_code == 200:
                                     break
-                            except:
+                            except Exception as e:
+                                print(str(e) + '!')
                                 continue
 
                     html = r.content
@@ -240,17 +257,21 @@ class OkeyHandler:
                 # print(soup)
                 products_div = soup.find('div', {'class': re.compile('col-8\s+col-lg-7\s+col-md-6\s+'
                                                           'col-sm-12\s+product-information')})  #col4 product-information
+                # if soup.find('ul', {'class': 'categoryList catalog-menu__category-list'}) is not None:
+                    # print('yes, catalog is here!')
+                # else:
+                    # print('no')
                 # print(products_div)
                 if products_div is None:
                     print('no products_div!')
 
                     # proxies = get_proxy('https://okeydostavka.ru/')
-                    if n_err == 0:
-                        n_err += 1
+                    if soup.find('ul', {'class': 'categoryList catalog-menu__category-list'}) is None:
+
+                        print('OOPS, it seems that we have been blocked!')
+                        print(soup.text)
                         i -= 1
                         proxies = get_proxy('https://okeydostavka.ru/')
-                    else:
-                        n_err = 0
 
                     continue
 

@@ -96,11 +96,12 @@ def find_float_number(str):
 def get_proxy(link, get_new=False, get_list=False):
     soup = None
     # print('Global.proxies:', Global().proxies)
+
     while True:
         if get_new is True:
 
             driver = webdriver.Chrome(executable_path=Global().path_chromedriver, options=Global().chrome_options)
-            driver.get("https://hidemy.name/ru/proxy-list/?maxtime=400&ports=3128#list")
+            driver.get("https://hidemy.name/ru/proxy-list/?maxtime=300&ports=3128#list")
             while True:
                 time.sleep(1)
                 if "IP адрес" in driver.page_source:
@@ -130,29 +131,22 @@ def get_proxy(link, get_new=False, get_list=False):
             }
             try:
                 if 'okey' in link:
-                    cookie = \
-                        r"_ga=GA1.2.1743913103.1529597174; _ym_uid=1529597174997115265; _gac_UA-58508147-1=1.1529607077.EAIaIQobChMItoj" + \
-                        r"f2rLl2wIVjIeyCh2stAAuEAAYASAAEgLCdvD_BwE; _gid=GA1.2.654182099.1529924428; _ym_d=1529924428; _ym_isad=1; _ym_" + \
-                        r"visorc_27891822=w; storeGroup=msk1; ffcId=13151; WC_SESSION" + \
-                        r"_ESTABLISHED=true; WC_PERSISTENT=3EJGXVtLqH2nPYh%2FBwXZCgqDdro%3D%0A%3B2018-06-26+21%3A22%3A20.903_1530037336" + \
-                        r"387-297473_10151; WC_AUTHENTICATION_-1002=-1002%2CshqcDFo2KYvSQjMlws143PZaUdk%3D; WC_ACTIVEPOINTER=-20%2C10151;" + \
-                        r"WC_GENERIC_ACTIVITYDATA=[876474606%3Atrue%3Afalse%3A0%3ACLFoHnycXg06Qmg4qmgtx7v6u%2Bc%3D][com.ibm.commerce" + \
-                        r".context.audit.AuditContext|1530037336387-297473][com.ibm.commerce.store.facade.server.context.StoreGeoCodeContext" + \
-                        r"|null%26null%26null%26null%26null%26null][CTXSETNAME|Store][com.ibm.commerce.context.globalization.Globalization" + \
-                        r"Context|-20%26RUB%26-20%26RUB][com.ibm.commerce.catalog.businesscontext.CatalogContext|12051%26null%26false%26false" + \
-                        r"%26false][com.ibm.commerce.context.ExternalCartContext|null][com.ibm.commerce.context.base.BaseContext|10151%26-" + \
-                        r"1002%26-1002%26-1][com.ibm.commerce.context.experiment.ExperimentContext|null][com.ibm.commerce.context.entitlement" + \
-                        r".EntitlementContext|4000000000000000003%264000000000000000003%26null%26-2000%26null%26null%26null][com.ibm." + \
-                        r"commerce.giftcenter.context.GiftCenterContext|null%26null%26null]; isNative=1; searchTermHistory=%7C%D1%81%D0%" + \
-                        r"BC%D0%B5%D1%82%D0%B0%D0%BD%D0%B0; gtmListKey=GTM_LIST_SEARCH; tmr_detect=1%7C1530037350771"
+                    cookie = r'_ga=GA1.2.1325218443.1577886613; gtmListKey=GTM_LIST_RECOMENDATIONS; _ym_uid=15778866221036907447; _ym_d=1577886622; isNative=1; selectedCity=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0; selectedStore=10151_13151; acceptCookie=1; storeGroup=msk1; ffcId=13151; WC_SESSION_ESTABLISHED=true; WC_AUTHENTICATION_-1002=-1002%2CzZHlyRjQcgWKqNcfDjyX4iZ02zjcQoyDurbFiQxFNVk%3D; WC_ACTIVEPOINTER=-20%2C10151; WC_USERACTIVITY_-1002=-1002%2C10151%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C1877362032%2Cver_null%2CDg2tDaIGqtvlUd7GeVDIZu1DtkcjFvj1SdTgnMiPwCmRMdhqBYKQ9oMgiku72VhoL3OKnTP2aV5k8VzF6ztiaJ508J0SZkHyBJdFQodkOMqqwSEr%2Bg%2B0C1rETa4auryIDSq4FP7c1urrNfoJqDzAkdVBlG8NuO0KAfbPocosaJL1o7xK78QvuQz25bWv8w%2BzRoaWagOu7%2BQUD%2B%2FGPrl94xaDOHhYYdgsXrofcc04xzx0c%2BlK6FFHANLAGseWFGCm; WC_GENERIC_ACTIVITYDATA=[1996034293%3Atrue%3Afalse%3A0%3AaSne5YGZoxA4Mpz2j8qE86%2FndHXVreuwTKmYZIVqRY4%3D][com.ibm.commerce.context.entitlement.EntitlementContext|4000000000000000003%264000000000000000003%26null%26-2000%26null%26null%26null][com.ibm.commerce.context.audit.AuditContext|null][com.ibm.commerce.context.globalization.GlobalizationContext|-20%26RUB%26-20%26RUB][com.ibm.commerce.store.facade.server.context.StoreGeoCodeContext|null%26null%26null%26null%26null%26null][com.ibm.commerce.catalog.businesscontext.CatalogContext|12051%26null%26false%26false%26false][com.ibm.commerce.context.experiment.ExperimentContext|null][com.ibm.commerce.context.ExternalCartContext|null][com.ibm.commerce.context.bcsversion.BusinessContextVersionContext|null][CTXSETNAME|Store][com.ibm.commerce.context.base.BaseContext|10151%26-1002%26-1002%26-1][com.ibm.commerce.giftcenter.context.GiftCenterContext|null%26null%26null]; solarfri=6a3c99192124a2fe; _gid=GA1.2.311834681.1579169412; _ym_isad=1; JSESSIONID=0000LPiEiWXPfA6ejMPrOUxMf90:-1; _gat_UA-58508147-1=1; _ym_visorc_27891822=w'
 
                     headers = {
-                        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
-                        'Cookie': cookie,
-                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
                         'Accept-Encoding': 'gzip, deflate, br',
-                        'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
-                        'Cache-Control': 'max-age=0'}
+                        'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                        'Cache-Control': 'max-age=0',
+                        'Connection': 'keep-alive',
+                        'Cookie': cookie,
+                        'Host': 'www.okeydostavka.ru',
+                        'Sec-Fetch-Mode': 'navigate',
+                        'Sec-Fetch-Site': 'none',
+                        'Sec-Fetch-User': '?1',
+                        'Upgrade-Insecure-Requests': '1',
+                        'User-Agent': str(ua.chrome),
+                        }
                     html = requests.get(link, headers=headers, proxies=proxies, timeout=20).content
                 else:
                     html = requests.get(link, proxies=proxies, headers=header, timeout=20).content

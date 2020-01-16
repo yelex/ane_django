@@ -15,7 +15,7 @@ class TotalNongrocery():
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
 
-        site_handlers = [OzonHandler(), MvideoHandler(), LamodaHandler(), PiluliHandler()]  #
+        site_handlers = [OzonHandler()]  # , MvideoHandler(), LamodaHandler(), PiluliHandler()
 
         max_n = 200
 
@@ -37,7 +37,7 @@ class TotalNongrocery():
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        site_handlers = [OzonHandler(), LamodaHandler(), MvideoHandler(), ]  #
+        site_handlers = [OzonHandler()]  # , LamodaHandler(), MvideoHandler(),
 
         for handler in site_handlers:
 

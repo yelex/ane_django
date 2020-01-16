@@ -40,9 +40,12 @@ def index(request):
     df = pd.DataFrame(list(PricesRaw.objects.filter(date=fresh_snapshot_date).all().values()))
     df.date = pd.to_datetime(df.date)
     # conn = sqlite3.connect('D:\ANE_django\db.sqlite3')
+
     df_gks = pd.DataFrame(list(Gks.objects.filter(date=fresh_snapshot_date).all().values())) # pd.read_sql('SELECT * FROM parser_app_gks', conn)
     df_gks.date = pd.to_datetime(df_gks.date)
+    
     df = pd.concat([df, df_gks], join='inner')
+
     pivot_food = df[df.type=='food'].pivot_table(index=['type', 'category_title'],
                            columns='site_code', values='price_new', aggfunc=lambda x: round(x.mean(), 1)).reset_index()
     # print(pivot.reset_index().columns)
@@ -65,19 +68,17 @@ def index(request):
 
 
 def get_snap(request):
-    # Total().get_new_snap_threaded()
-    snap_get.delay()
+    Total().get_new_snap_threaded()
+    # snap_get.delay()
     return render(request, 'parser_app/cp.html', {})
 
 
 def cp(request):
-    if request.method == 'GET':
-        return render(request, 'parser_app/cp.html', {})
+    return render(request, 'parser_app/cp.html', {})
 
 
 def snaps(request):
-    if request.method == 'GET':
-        return render(request, 'parser_app/cp.html', {})
+    return render(request, 'parser_app/cp.html', {})
 
 
 def dynamics(request):

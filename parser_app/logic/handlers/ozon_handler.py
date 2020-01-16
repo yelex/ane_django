@@ -224,16 +224,15 @@ class OzonHandler():
         # options.add_argument('--proxy-server=%s' % proxy)
         if Global().is_selenium_ozon is True:
             driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                      chrome_options=Global().chrome_options) # , chrome_options=self.option_chrome(proxy))
-        #
+                                      chrome_options=Global().chrome_options)  #, chrome_options=self.option_chrome(proxy))
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         proxies = None
 
-        h1_class = 'b6i0'
-        price_new_class_sale = 'b6w7 b6y2'
-        price_new_class = 'b6w7'
-        price_old_class = 'b6x1'
+        h1_class = 'a4r'
+        price_new_class_sale = 'a4z8 a5b3'
+        price_new_class = 'a4z8'
+        price_old_class = 'a5a2'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']

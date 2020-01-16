@@ -99,7 +99,7 @@ class SiteHandlerGks:
     def process_table(self, year, month):
         url = 'https://www.gks.ru/dbscripts/cbsd/DBInet.cgi?pl=1921001'
         # print('qry = ', self.get_qry(year, month))
-        if datetime.now().date().isocalendar()[1] == 1:
+        if datetime.now().date().month == 1:
             year = 2019
             month = 12
         values = {
@@ -156,7 +156,7 @@ class SiteHandlerGks:
     def process_table_weekly(self, year):
         url = 'https://www.gks.ru/dbscripts/cbsd/DBInet.cgi?pl=1921002'
         # print('qry = ', self.get_qry_weekly(year, month))
-        if datetime.now().date().isocalendar()[1] == 1:
+        if datetime.now().date().month == 1:
             year = 2019
         values = {
             'rdLayoutType': 'Au',
