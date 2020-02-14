@@ -5,6 +5,7 @@ from anehome.settings import BASE_DIR
 import os
 from selenium import webdriver
 
+
 class Singleton(object):
     _instance = None
 
@@ -18,7 +19,6 @@ class Global(Singleton):
 
     succ_proxies = []
 
-
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__file__))  # handlers/
         self.links = pd.read_csv(os.path.join(self.base_dir, r'description/final_links.csv'), sep=';', index_col=0)
@@ -26,12 +26,12 @@ class Global(Singleton):
         self.path_desc = os.path.join(self.base_dir, r'description/categories.csv')
         self.example_shot = os.path.join(self.base_dir, r'description/data_2019-10-02.csv')
         self.desc_df = pd.read_csv(self.path_desc, sep=';', index_col='id')
-        self.date = datetime.now().date()-timedelta(days=0)  # date(year=2019, month=12, day=7)
+        self.date = datetime.now().date()-timedelta(days=0)  # date(year=2020, month=2, day=13)
         self.max_links = None
         self.is_selenium_ozon = False
         self.is_selenium_okey = False
         self.is_selenium_utkonos = False
-        self.is_shutdown = False
+        self.is_shutdown = True
         self.path_chromedriver = os.path.join(BASE_DIR, 'chromedriver')  # '/home/yelex/PycharmProjects/ane_django/chromedriver'
         self.path_parsedcontent = os.path.join(BASE_DIR, 'parsed_content')
         options = webdriver.ChromeOptions()
@@ -50,6 +50,8 @@ class Global(Singleton):
 
     def setstatus(self, status):
         self.status = status
+
+
 
 
 

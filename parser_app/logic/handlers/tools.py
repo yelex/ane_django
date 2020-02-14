@@ -387,6 +387,7 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
 
     basket_df = pd.DataFrame()
     basket_df.loc[:, 'gks_price'] = df_new[df_new.site_code == 'gks'].groupby(['date']).sum()['price_bsk']
+
     basket_df.loc[:, 'online_price'] = \
         df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
             'price_bsk']

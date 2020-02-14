@@ -229,10 +229,10 @@ class OzonHandler():
         header = {'User-Agent': str(ua.chrome)}
         proxies = None
 
-        h1_class = 'a4r'
-        price_new_class_sale = 'a4z8 a5b3'
-        price_new_class = 'a4z8'
-        price_old_class = 'a5a2'
+        h1_class = 'a9r0'
+        price_new_class_sale = 'a9u3 a9v6'
+        price_new_class = 'a9u3'
+        price_old_class = 'a9u8'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -256,6 +256,7 @@ class OzonHandler():
                             r = requests.get(href_i, headers=header)
                     except:
                         while True:
+                            print('im here!')
                             try:
                                 proxies = get_proxy(href_i)
                                 time.sleep(3)
@@ -286,15 +287,17 @@ class OzonHandler():
                     print('except sitetitle not found')
                     if 'Такой страницы не существует' in soup.text:
                         print('Такой страницы не существует!')
+                        continue
                     # i -= 1
                     if soup.find('li', {'class': 'links-item'}) is None:
-                        proxies = get_proxy(href_i)
-                        time.sleep(3)
-                        r = requests.get(href_i, proxies=proxies, headers=header)
-                        while r.status_code != 200:
+                        while True:
                             proxies = get_proxy(href_i)
                             time.sleep(3)
                             r = requests.get(href_i, proxies=proxies, headers=header)
+                            if r.status_code == 200:
+                                break
+                            else:
+                                print('r.status_code:', r.status_code)
                     continue
 
                 # div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
@@ -309,7 +312,7 @@ class OzonHandler():
                     div_new = soup.find('span', {'class': price_new_class})
 
                 if div_new is None:
-                    print('Товар закончился!')
+                    print('Товар закончился!\n')
                     continue
                 # print('din_new:\n', div_new)
                 '''
@@ -329,7 +332,7 @@ class OzonHandler():
                 price_dict['site_unit'] = 'шт.'
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него
                 price_dict['type'] = 'non-food'
-                print('price_new: {}\nprice_old: {}\nunit: {}\n\n'.format(
+                print('price_new: {}\nprice_old: {}\nunit: {}\n'.format(
                     price_dict['price_new'],
                     price_dict['price_old'],
                     price_dict['site_unit']))
