@@ -16,7 +16,7 @@ from datetime import date
 import numpy as np
 from tqdm import tqdm
 import difflib
-from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.chrome import ChromeDriverManager
 
 
 class perpetualTimer():
