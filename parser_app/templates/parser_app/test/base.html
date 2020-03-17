@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>{% block title %}{% endblock %}</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+     <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap&subset=cyrillic" rel="stylesheet">
+    <!--Import styles.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'css/base.css' %}"  media="screen,projection"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+    <body>
+
+        <main>
+            <nav class="light-blue lighten-1" role="navigation">
+                <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Test</a>
+                  <ul class="right hide-on-med-and-down">
+                      <li class="{% block nav_index %}{% endblock %}"><a href="/">Домашняя страница</a></li>
+                      <li class="{% block nav_mean_prices %}{% endblock %}"><a href="/mean_prices/">Средние цены</a></li>
+                      <li class="{% block nav_dynamics %}{% endblock %}"><a href="/dynamics/">Динамика цен</a></li>
+                      <li class="{% block nav_cp %}{% endblock %}"><a href="/cp/">Контрольная панель</a></li>
+                  </ul>
+            <!--      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>-->
+                </div>
+            </nav>
+
+            <div class="container">
+
+                {% block real_content %}
+
+                {% endblock %}
+            </div>
+        </main>
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>`
+
+  </body>
+
+    {% include 'parser_app/test/footer.html' %}
+</html>
+

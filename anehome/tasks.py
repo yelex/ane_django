@@ -3,15 +3,15 @@ import logging
 from django.urls import reverse
 from parser_app.logic.total import Total
 # from django.core.mail import send_mail
-from anehome.celery import app
+from anehome.celery import celery_app
 
 
-@app.task
+@celery_app.task
 def send_verification_email(user_id):
     pass
 
 
-@app.task
+@celery_app.task
 def snap_get():
     try:
         Total().printer_test()

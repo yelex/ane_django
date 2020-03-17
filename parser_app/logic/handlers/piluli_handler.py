@@ -3,7 +3,9 @@ import pandas as pd
 from selenium import webdriver
 from parser_app.logic.global_status import Global
 import os
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class PiluliHandler():
 

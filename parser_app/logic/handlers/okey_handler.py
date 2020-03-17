@@ -11,7 +11,9 @@ from selenium import webdriver
 import time
 import os
 from fake_useragent import UserAgent
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class OkeyHandler:
 

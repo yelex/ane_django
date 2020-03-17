@@ -9,6 +9,9 @@ from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space,
 from tqdm import tqdm
 import time
 from fake_useragent import UserAgent
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class GlobusHandler:
 
@@ -26,7 +29,7 @@ class GlobusHandler:
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
-        proxies = None
+        proxies = get_proxy(hrefs[0])
         header = UserAgent().chrome
         for href in tqdm(hrefs): #испр
             id_n += 1

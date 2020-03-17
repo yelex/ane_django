@@ -17,7 +17,9 @@ import numpy as np
 from tqdm import tqdm
 import difflib
 # from webdriver_manager.chrome import ChromeDriverManager
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class perpetualTimer():
 
@@ -101,7 +103,7 @@ def get_proxy(link, get_new=False, get_list=False):
         if get_new is True:
 
             driver = webdriver.Chrome(executable_path=Global().path_chromedriver, options=Global().chrome_options)
-            driver.get("https://hidemy.name/ru/proxy-list/?maxtime=300&ports=3128#list")
+            driver.get("https://hidemy.name/ru/proxy-list/?maxtime=400&ports=3128#list")
             while True:
                 time.sleep(1)
                 if "IP адрес" in driver.page_source:

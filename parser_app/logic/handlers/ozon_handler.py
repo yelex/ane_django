@@ -12,7 +12,9 @@ from parser_app.logic.handlers.tools import wspex, wspex_space, get_proxy
 from parser_app.logic.global_status import Global
 from fake_useragent import UserAgent
 import requests
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class OzonHandler():
     # def option_chrome(self, proxy):
@@ -212,6 +214,7 @@ class OzonHandler():
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
+
         if Global().max_links != None:
             links_df = links_df.iloc[:Global().max_links]
         category_ids = links_df.category_id.unique()
@@ -229,10 +232,10 @@ class OzonHandler():
         header = {'User-Agent': str(ua.chrome)}
         proxies = None
 
-        h1_class = 'a9r0'
-        price_new_class_sale = 'a9u3 a9v6'
-        price_new_class = 'a9u3'
-        price_old_class = 'a9u8'
+        h1_class = 'b5b'
+        price_new_class_sale = 'b5v0 b5w3'
+        price_new_class = 'b5v0'
+        price_old_class = 'b5v5'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -312,6 +315,10 @@ class OzonHandler():
                     div_new = soup.find('span', {'class': price_new_class})
 
                 if div_new is None:
+                    print('Товар закончился!\n')
+                    continue
+
+                if re.search('\d+', wspex(div_new.text)) is None:
                     print('Товар закончился!\n')
                     continue
                 # print('din_new:\n', div_new)

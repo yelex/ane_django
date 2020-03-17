@@ -9,7 +9,9 @@ from parser_app.logic.global_status import Global
 import demjson
 import os
 import time
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class LamodaHandler():
 

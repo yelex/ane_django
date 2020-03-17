@@ -34,7 +34,11 @@ class PriceTableServices(tables.Table):
     services = tables.Column(verbose_name='Услуги')
 
 
-def index(request):
+def home(request):
+    return render(request, 'parser_app/test/home.html', locals())
+
+
+def mean_prices(request):
 
     fresh_snapshot_date = SnapshotManager().last_succ_date
     df = pd.DataFrame(list(PricesRaw.objects.filter(date=fresh_snapshot_date).all().values()))
@@ -61,7 +65,7 @@ def index(request):
                                            # 'okey', 'perekrestok', 'utkonos', 'lamoda', 'ozon',
                                            #  'piluli', 'mvideo', 'services']]
 
-    return render(request, 'parser_app/index.html', {'snapstable_food': PriceTableFood(pivot_food.to_dict('records')),
+    return render(request, 'parser_app/test/mean_prices.html', {'snapstable_food': PriceTableFood(pivot_food.to_dict('records')),
                                                      'snapstable_nonfood': PriceTableNonfood(pivot_nonfood.to_dict('records')),
                                                      'snapstable_services': PriceTableServices(pivot_services.to_dict('records')),
                                                      'last_succ_snap_date': fresh_snapshot_date})
@@ -70,18 +74,18 @@ def index(request):
 def get_snap(request):
     Total().get_new_snap_threaded()
     # snap_get.delay()
-    return render(request, 'parser_app/cp.html', {})
+    return render(request, 'parser_app/test/cp.html', {})
 
 
 def cp(request):
-    return render(request, 'parser_app/cp.html', {})
+    return render(request, 'parser_app/test/cp.html', {})
 
 
 def snaps(request):
-    return render(request, 'parser_app/cp.html', {})
+    return render(request, 'parser_app/test/cp.html', {})
 
 
 def dynamics(request):
-    return render(request, 'parser_app/dynamics.html',
+    return render(request, 'parser_app/test/dynamics.html',
                   {'graph': SnapshotManager().update_plot()})
 # Create your views here.

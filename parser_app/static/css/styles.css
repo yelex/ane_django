@@ -1,6 +1,9 @@
+html {
+	font-family: 'Roboto Condensed', ;
+}
+
 body {
 	color: #8f8f8f;
-	font: 12px Tahoma, sans-serif;
 	background: url(../images/bg.png);*/ /*ОБЯЗАТЕЛЬНО ДОБАВЛЯТЬ ; В КОНЦЕ СТРОКИ!*/
 	margin: 0;
 }
@@ -38,7 +41,7 @@ nav ul {
 
 nav li {
 	list-style-position: inside;
-	font: 20px 'Oswald';
+	font: 20px 'Roboto Condensed';
 	padding: 10px;
 }
 

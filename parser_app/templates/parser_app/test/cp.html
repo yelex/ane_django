@@ -1,0 +1,37 @@
+{% extends "parser_app/test/base.html" %}
+
+{% block title %}Создание нового снапшота{% endblock %}
+
+{% block nav_cp %}active{% endblock %}
+
+{% block real_content %}
+
+<script>
+function getNewSnapshot() {
+var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<h1></h1>
+
+
+<form action="getNewSnap">
+  <button onclick="getNewSnapshot()"><div>Сделать снапшот прямо сейчас</div></button> <!--class="submit" -->
+</form>
+
+
+
+<!--
+<form method="get" action="getNewSnap">
+  <button type="submit" onclick="getNewSnapshot()">Сделать снапшот прямо сейчас</button>
+</form>
+<h3><a href="{% url 'getSnap' %}">Сделать новый снапшот</a></h3>
+-->
+
+
+{% endblock %}
