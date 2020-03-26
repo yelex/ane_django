@@ -11,15 +11,15 @@ import os
 import time
 
 
-class LamodaHandler():
+class LamodaHandler:
 
     def extract_products(self, max_prod=200):
 
-        # proxies = get_proxy('https://www.lamoda.ru/')
+        # proxies = get_proxy('https://www.lamoda.ru/'
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         # количество страниц
-        path_sfb = path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+        path_sfb = path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df[sfb_df.fillna('')['URL'].str.contains('lamoda')]['URL'].values  # ссылки на URL lamoda
@@ -56,9 +56,9 @@ class LamodaHandler():
             html = r.content
 
             soup = BeautifulSoup(html, 'lxml')
-            if soup.find('span', {'class': 'products-catalog__head-counter'})!=None:
+            if soup.find('span', {'class': 'products-catalog__head-counter'}) is not None:
                 total_amount = int(
-                    re.search('\d+', wspex(soup.find('span', {'class': 'products-catalog__head-counter'}).text)).group())
+                    re.search(r'\d+', wspex(soup.find('span', {'class': 'products-catalog__head-counter'}).text)).group())
                 # print('total_amount: ', total_amount)
             else:
                 print('total_amount HAS NOT BEEN FOUND! ', total_amount)

@@ -1,3 +1,4 @@
+import sys
 
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
@@ -40,10 +41,21 @@ class Total:
             df.reset_index(drop=True, inplace=True)
             df.loc[:, 'miss'] = 0
 
-            df.to_csv(r'D:\ANE_2\parsed_content\data_test_{}.csv'.format(date_now))
+            df_path = os.path.join('parsed_content', 'data_test_{}.csv'.format(date_now))
+            pivot_path = os.path.join('parsed_content', 'pivot_test_{}.csv'.format(date_now))
+
             pivot = df.pivot_table(index='category_id', columns=['type', 'site_code'],
                                    values='site_link', aggfunc='nunique')
-            pivot.to_csv(r'D:\ANE_2\parsed_content\pivot_test_{}.csv'.format(date_now))
+
+            if sys.platform.startswith('linux'):
+                df.to_csv(df_path)
+                pivot.to_csv(pivot_path)
+            elif sys.platform.contain('win'):
+                df.to_csv(os.path.join(r'D:\ANE_2', df_path))
+                pivot.to_csv(os.path.join(r'D:\ANE_2', pivot_path))
+            else:
+                raise ValueError("your operation system not found")
+
             df.loc[:, 'price_old'] = df.loc[:, 'price_old'].replace('', -1.0)
             df.loc[:, 'price_old'] = df.loc[:, 'price_old'].fillna(-1.0)
 
@@ -72,7 +84,14 @@ class Total:
 
             print('Filling df...')
             filled_df = fill_df(pd.DataFrame(list(PricesRaw.objects.all().values())))
-            filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
+
+            if sys.platform.startswith('linux'):
+                filled_df.to_csv(os.path.join('parsed_content', 'filled_df.csv'))
+            elif sys.platform.contain('win'):
+                filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
+            else:
+                raise ValueError("your operation system not found")
+
             print('Filling complete!')
 
             '''
@@ -155,9 +174,8 @@ class Total:
             # if Global().is_shutdown is True:
             #    os.system('shutdown /p /f')
 
-
     def get_new_snap_threaded(self):
-        tim = perpetualTimer(86400, self.printer_test)
+        tim = perpetualTimer(24 * 60 * 60, self.printer_test)
         tim.start()
 
 

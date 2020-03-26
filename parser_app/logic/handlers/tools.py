@@ -1,4 +1,3 @@
-
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
@@ -18,27 +17,27 @@ from tqdm import tqdm
 import difflib
 
 
-class perpetualTimer():
+class perpetualTimer:
 
-   def __init__(self, t, hFunction):
-      self.t = t  # t
-      self.hFunction = hFunction
-      self.thread = Timer(0, self.handle_function)
+    def __init__(self, t, hFunction):
+        self.t = t  # t
+        self.hFunction = hFunction
+        self.thread = Timer(0, self.handle_function)
 
-   def handle_function(self):
-      self.hFunction()
-      self.thread = Timer(self.t,self.handle_function)
-      self.thread.start()
+    def handle_function(self):
+        self.hFunction()
+        self.thread = Timer(self.t, self.handle_function)
+        self.thread.start()
 
-   def start(self):
-      self.thread.start()
+    def start(self):
+        self.thread.start()
 
-   def cancel(self):
-      self.thread.cancel()
+    def cancel(self):
+        self.thread.cancel()
 
 
 def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=True если учитывать слова "за", False - иначе
-    path_sfb = os.path.join(Global.base_dir, r'description\urls.csv')
+    path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
     sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
     row = sfb_df.loc[[id_n]]
     keyword = row['keyword'].values[0]
@@ -49,7 +48,7 @@ def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=
     match_pro = re.search(str(pattern_pro), text, flags=re.IGNORECASE)
     match_cons = re.search(str(pattern_cons), text, flags=re.IGNORECASE)
 
-    if match_kwrd or keyword in ['хлеб','рыба']:
+    if match_kwrd or keyword in ['хлеб', 'рыба']:
         if type(pattern_pro) is float and type(pattern_cons) is float:
             flag = True
         elif type(pattern_pro) is float and type(pattern_cons) is not float:
@@ -83,7 +82,6 @@ def tofloat(s):
 
 
 def find_float_number(str):
-
     str = wspex(str)
     sr = re.findall(r"[-+]?\d*[.,]\d+|\d+", str)
     if sr:
@@ -126,7 +124,7 @@ def get_proxy(link, get_new=False, get_list=False):
             print('it =', it)
             proxy = proxy_list[it]
             proxies = {
-              'https': 'https://{}'.format(proxy),
+                'https': 'https://{}'.format(proxy),
             }
             try:
                 if 'okey' in link:
@@ -161,7 +159,8 @@ def get_proxy(link, get_new=False, get_list=False):
                     print('utkonos detected!')
                     if soup.find('div', {'class': re.compile('goods_view_item-action_header')}) is not None and \
                             soup.find('div', {'class': re.compile('goods_view_item-action')}) is not None:
-                        print('goods_view_item-action:', soup.find('div', {'class': re.compile('goods_view_item-action_header')}).text)
+                        print('goods_view_item-action:',
+                              soup.find('div', {'class': re.compile('goods_view_item-action_header')}).text)
                         print('break!')
                         time.sleep(3)
                         break
@@ -213,7 +212,6 @@ def send_mail(message, sender='ane_debug@mail.ru', to='evseev_alexey94@bk.ru'):
 
 
 def fill_df(df):
-
     df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'], format='%Y-%m-%d')
     df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index().reset_index().drop(
         columns='id').rename(columns={'index': 'id'}).set_index('id')
@@ -264,9 +262,15 @@ def pack_to_gramm(string):  # перевод в граммы для (50×2г)
         return str(int(wspex(re.search('\d+', ((re.search(pattern_4, string)[0])))[0])) * tofloat(
             wspex(re.search(pattern_3, string)[0])[:-2])) + 'г'
 
+
 # price_in_basket
 
-sfb = pd.read_csv(r'C:\anehome_test\anehome\logic\sfb.csv', sep=';')
+# sfb = pd.read_csv(r'C:\anehome_test\anehome\logic\sfb.csv', sep=';')
+import os
+
+# print(os.path.abspath(os.path.curdir))
+# print(os.listdir(os.path.curdir))
+sfb = pd.read_csv('./sfb.csv', sep=';')
 
 
 def price_coef(id_n, string_unit):  # основано на весах 33 категорий условного минимального набора товаров и услуг
@@ -295,13 +299,14 @@ def price_coef(id_n, string_unit):  # основано на весах 33 кат
 def percentile(n):
     def percentile_(x):
         return np.percentile(x, n)
+
     percentile_.__name__ = 'percentile_%s' % n
     return percentile_
 
 
 def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     # print('get basket df...')
-    df_gks.loc[:, 'nsprice_f'] = df_gks.loc[:,'price_new']
+    df_gks.loc[:, 'nsprice_f'] = df_gks.loc[:, 'price_new']
     df_gks.loc[:, 'date'] = pd.to_datetime(df_gks.loc[:, 'date'], format='%Y-%m-%d')
     df_gks = df_gks.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
     # онлайн-проды
@@ -350,12 +355,12 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
 
     # weight only
 
-    df_new.loc[:,'weight'] = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
+    df_new.loc[:, 'weight'] = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
 
-    df_new.loc[:,'weight']  = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
+    df_new.loc[:, 'weight'] = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
     pattern1 = re.compile('\d+\s{0,1}(пак){0,1}\s{0,1}(?:\*|×|x|х)\s{0,1}\d+\,{0,1}\d*\s*г')
     pattern2 = re.compile('\d+(?:\,|\.){0,1}\d*\s*г(?:\*|×|x|х)\s{0,1}\d+\s{0,1}(пак){0,1}')
-    df_new.loc[:,'weight']  = df_new.apply(
+    df_new.loc[:, 'weight'] = df_new.apply(
         lambda x: pack_to_gramm(x['site_title']) if re.search(pattern1, x['site_title']) != None or re.search(pattern2,
                                                                                                               x[
                                                                                                                   'site_title']) is not None
@@ -364,7 +369,7 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     dict_pack = {'25пак': '50г', '20пак': '80г', '100пак': '200г', 'л': '1л', '010шт': '10шт.',
                  '2019кг': '1кг', '110шт': '10шт', '210шт': '10шт'}
 
-    df_new.loc[:,'weight']  = df_new.weight.replace(dict_pack)
+    df_new.loc[:, 'weight'] = df_new.weight.replace(dict_pack)
     df_new.loc[(df_new.weight == '4l') & (df_new.type == 'food'), 'weight'] = df_new.loc[
         (df_new.weight == '4l') & (df_new.type == 'food'), 'site_unit'].apply(lambda x: wspex(x).replace(',', '.'))
     df_new.loc[df_new.site_title == 'Соль поваренная пищевая каменная помол №1', 'weight'] = '1кг'
@@ -372,7 +377,7 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     df_new = df_new[df_new.weight != '1шт']
     non_sht = df_new.loc[
         (df_new.site_title.str.contains(re.compile('Яйц(?:о|а)')) == False) & (df_new.weight.str.contains('шт')) & (
-                    df_new.type == 'food')].site_link.unique()
+                df_new.type == 'food')].site_link.unique()
     df_new = df_new[df_new.site_link.isin(non_sht) == False]
     df_new.loc[:, 'coef'] = None
     # df_new.loc[df_new.nsprice_f==-1.0,'nspices_f']=0

@@ -60,7 +60,7 @@ def index(request):
     return render(request, 'parser_app/index.html', {'snapstable_food': PriceTableFood(pivot_food.to_dict('records')),
                                                      'snapstable_nonfood': PriceTableNonfood(pivot_nonfood.to_dict('records')),
                                                      'snapstable_services': PriceTableServices(pivot_services.to_dict('records')),
-                                                     'last_succ_snap_date' : fresh_snapshot_date})
+                                                     'last_succ_snap_date': fresh_snapshot_date})
 
 
 def get_snap(request):
@@ -72,9 +72,11 @@ def cp(request):
     if request.method == 'GET':
         return render(request, 'parser_app/cp.html', {})
 
+
 def snaps(request):
     if request.method == 'GET':
         return render(request, 'parser_app/cp.html', {})
+
 
 def dynamics(request):
     return render(request, 'parser_app/dynamics.html',

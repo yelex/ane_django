@@ -10,7 +10,7 @@ from fake_useragent import UserAgent
 
 class Services():
     def __init__(self):
-        self.path_sfb = os.path.join(Global().base_dir, r'description\urls.csv')
+        self.path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
 
     def wspex(self,x):
         """
@@ -20,7 +20,7 @@ class Services():
         """
         return re.sub(u'\u200a', '', ''.join(x.split()))
 
-    def wspex_space(self,x):
+    def wspex_space(self, x):
         return re.sub(u'\u200a', '', ' '.join(str(x).split()))
 
     def get_df(self):
