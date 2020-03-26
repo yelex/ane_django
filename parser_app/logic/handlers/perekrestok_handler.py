@@ -12,7 +12,7 @@ import time
 from fake_useragent import UserAgent
 
 
-class PerekrestokHandler():
+class PerekrestokHandler:
 
     def extract_products(self, is_proxy = True):
         if is_proxy == True:
@@ -29,7 +29,7 @@ class PerekrestokHandler():
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('perekrestok')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]
         # print(hrefs)
-        id_n=0
+        id_n = 0
 
         for href in tqdm(hrefs):
 
