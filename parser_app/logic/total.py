@@ -1,6 +1,6 @@
 import sys
 
-from parser_app.logic.handlers.lenta_handler import LentaSpbHandler
+from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
@@ -21,9 +21,6 @@ class Total:
 
     def printer_test(self):
 
-        LentaSpbHandler().extract_products()
-        return
-
         print('Timer call : start making snapshots')
         start = datetime.now()
         date_now = Global().date
@@ -31,6 +28,8 @@ class Total:
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
+
+        df = df.append(OkeySpbHandler().extract_products())
 
         df = df.append(Services().get_df())
         df = df.append(TotalGrocery().get_df_page())

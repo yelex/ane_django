@@ -69,6 +69,16 @@ def wspex(x):
     return re.sub(u'\u200a', '', ''.join(x.split()))
 
 
+def remove_odd_space(x):
+    _x = re.sub(r'"', " ", x)
+    _x = re.sub(r"\s\s+", " ", _x)
+    if _x[0] == ' ':
+        _x = _x[1:]
+    if _x[-1] == ' ':
+        _x = _x[:-1]
+    return _x
+
+
 def list_html(text):
     return (text.split())
 
