@@ -1,13 +1,17 @@
+import os
 
 import pandas as pd
 from datetime import datetime
+
+from anehome.path_utils import OS_dep_path_join
 from parser_app.logic.handlers.perekrestok_handler import PerekrestokHandler
 from parser_app.logic.handlers.okey_handler import OkeyHandler
 from parser_app.logic.handlers.globus_handler import GlobusHandler
 from parser_app.logic.handlers.utkonos_handler import UtkonosHandler
 import math
 
-class TotalGrocery():
+
+class TotalGrocery:
 
     def get_df(self):
         start = datetime.now()
@@ -37,7 +41,7 @@ class TotalGrocery():
                     srs = pd.Series(int(index), name=column)
                     bad_df = bad_df.append(srs)
 
-        bad_df.to_csv(r'D:\ANE_2\parsed_content\bad_grocery_{}.csv'.format(date_now))
+        bad_df.to_csv(OS_dep_path_join('parsed_content', 'bad_grocery_{}.csv'.format(date_now)))
 
         end = datetime.now()
         time_execution = str(end-start)

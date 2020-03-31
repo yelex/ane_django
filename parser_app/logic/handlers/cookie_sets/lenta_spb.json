@@ -1,0 +1,38 @@
+[
+    {
+        "domain": "lenta.com",
+        "expirationDate": 2216456946.463381,
+        "hostOnly": true,
+        "httpOnly": true,
+        "name": "CityCookie",
+        "path": "/",
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "spb"
+    },
+    {
+        "domain": "lenta.com",
+        "expirationDate": 2216456946.463414,
+        "hostOnly": true,
+        "httpOnly": true,
+        "name": "Store",
+        "path": "/",
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "0011"
+    },
+    {
+        "domain": ".lenta.com",
+        "expirationDate": 1616840946.463308,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "lentaT2",
+        "path": "/",
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "spb"
+    }
+]
