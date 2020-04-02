@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 /venv/*
 /parsed_content/
 /.vscode/
+=======
+dj_env/*
+__pycache__/
+.idea/
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d

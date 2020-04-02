@@ -1,4 +1,6 @@
+import sys
 
+from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
@@ -18,19 +20,32 @@ class Total:
 
     def printer_test(self):
 
+<<<<<<< HEAD
         Global().getproxies()
         print('Timer call : start making snapshots')
         start = datetime.now()
 
+=======
+        print('Timer call : start making snapshots')
+        start = datetime.now()
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         date_now = Global().date
 
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
+<<<<<<< HEAD
         df = df.append(TotalGrocery().get_df_page())
         df = df.append(TotalNongrocery().get_df_page())
         df = df.append(Services().get_df())
+=======
+        df = df.append(OkeySpbHandler().extract_products())
+
+        df = df.append(Services().get_df())
+        df = df.append(TotalGrocery().get_df_page())
+        df = df.append(TotalNongrocery().get_df_page())
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
 
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
@@ -41,10 +56,28 @@ class Total:
         df.reset_index(drop=True, inplace=True)
         df.loc[:, 'miss'] = 0
 
+<<<<<<< HEAD
         # df.to_csv(os.path.join(Global().path_parsedcontent, 'data_test_{}.csv').format(date_now))
         # pivot = df.pivot_table(index='category_id', columns=['type', 'site_code'],
         #                        values='site_link', aggfunc='nunique')
         # pivot.to_csv(os.path.join(Global().path_parsedcontent, 'pivot_test_{}.csv').format(date_now))
+=======
+        df_path = os.path.join('parsed_content', 'data_test_{}.csv'.format(date_now))
+        pivot_path = os.path.join('parsed_content', 'pivot_test_{}.csv'.format(date_now))
+
+        pivot = df.pivot_table(index='category_id', columns=['type', 'site_code'],
+                               values='site_link', aggfunc='nunique')
+
+        if sys.platform.startswith('linux'):
+            df.to_csv(df_path)
+            pivot.to_csv(pivot_path)
+        elif sys.platform.contain('win'):
+            df.to_csv(os.path.join(r'D:\ANE_2', df_path))
+            pivot.to_csv(os.path.join(r'D:\ANE_2', pivot_path))
+        else:
+            raise ValueError("your operation system not found")
+
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         df.loc[:, 'price_old'] = df.loc[:, 'price_old'].replace('', -1.0)
         df.loc[:, 'price_old'] = df.loc[:, 'price_old'].fillna(-1.0)
 
@@ -71,6 +104,7 @@ class Total:
         PricesRaw.objects.bulk_create(cached_list)
         print('Storing complete!')
 
+<<<<<<< HEAD
 
         print('Filling df...')
         filled_df = fill_df(pd.DataFrame(list(PricesRaw.objects.all().values())))
@@ -108,6 +142,51 @@ class Total:
 
         print('Storing gks prices to db...')
 
+=======
+        print('Filling df...')
+        filled_df = fill_df(pd.DataFrame(list(PricesRaw.objects.all().values())))
+
+        if sys.platform.startswith('linux'):
+            filled_df.to_csv(os.path.join('parsed_content', 'filled_df.csv'))
+        elif sys.platform.contain('win'):
+            filled_df.to_csv(r'D:\ANE_2\parsed_content\filled_df.csv')
+        else:
+            raise ValueError("your operation system not found")
+
+        print('Filling complete!')
+
+        '''
+            cached_list = []
+    
+            PricesProcessed.objects.all().delete()
+            for _, row in filled_df.iterrows():
+                # product = ProductHandler(**dict(row))
+                # cached_list.append(product)
+                # Person.objects.bulk_create(person_list)
+                prod = PricesProcessed(date=row['date'],
+                                       type=row['type'],
+                                       category_id=row['category_id'],
+                                       category_title=row['category_title'],
+                                       site_title=row['site_title'],
+                                       price_new=row['price_new'],
+                                       price_old=row['price_old'],
+                                       nsprice_f=row['nsprice_f'],
+                                       site_unit=row['site_unit'],
+                                       site_link=row['site_link'],
+                                       site_code=row['site_code'],
+                                       miss=row['miss'])
+                cached_list.append(prod)
+    
+                # m.save()
+            PricesProcessed.objects.bulk_create(cached_list)
+            '''
+
+        df_gks = SiteHandlerGks().get_df()
+        cached_list = []
+
+        Gks.objects.all().delete()
+        print('Storing gks prices to db...')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         for _, row in df_gks.iterrows():
             prod = Gks(date=row['date'],
                        type=row['type'],
@@ -123,11 +202,19 @@ class Total:
             cached_list.append(prod)
 
             # m.save()
+<<<<<<< HEAD
         Gks.objects.all().delete()
         Gks.objects.bulk_create(cached_list)
         print('Storing complete!')
         print('Getting basket df...')
         basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food',:])
+=======
+        Gks.objects.bulk_create(cached_list)
+        print('Storing complete!')
+
+        print('Getting basket df...')
+        basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food', :])
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         print('Getting complete!')
 
         # basket_df.to_csv('basket_df.csv')
@@ -138,10 +225,16 @@ class Total:
         Basket.objects.all().delete()
 
         for _, row in basket_df.iterrows():
+<<<<<<< HEAD
 
             prod = Basket(date=row['date'],
                        gks_price=row['gks_price'],
                        online_price=row['online_price'])
+=======
+            prod = Basket(date=row['date'],
+                          gks_price=row['gks_price'],
+                          online_price=row['online_price'])
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
             cached_list.append(prod)
             # m.save()
         Basket.objects.bulk_create(cached_list)
@@ -150,14 +243,21 @@ class Total:
         time_execution = str(end - start)
         # send_mail(message='Снапшот успешно создан {}'.format(end))
 
+<<<<<<< HEAD
         print('PARSING ENDED!\ntotal time of all execution: {}'.format(time_execution))
 
         if Global().is_shutdown is True:
         #    os.system('shutdown /p /f') # windows
             os.system('systemctl poweroff') # linux
+=======
+        print('PARSING ENDED!\ntotal time of execution: {}'.format(time_execution))
+
+        # if Global().is_shutdown is True:
+        #    os.system('shutdown /p /f')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
 
     def get_new_snap_threaded(self):
-        tim = perpetualTimer(86400, self.printer_test)
+        tim = perpetualTimer(24 * 60 * 60, self.printer_test)
         tim.start()
 
 
@@ -203,4 +303,3 @@ def printer():
 tim = perpetualTimer(86400, printer)
 tim.start()
 """
-

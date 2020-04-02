@@ -1,3 +1,5 @@
+import os
+
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
@@ -18,20 +20,24 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 class OkeyHandler:
 
-    def construct_html(self,start_html,begin_index):
-        if start_html[-3:]=='-20':
-            end_html='#facet:&productBeginIndex:{}&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&'.format(begin_index)
+    def construct_html(self, start_html, begin_index):
+        if start_html[-3:] == '-20':
+            end_html = '#facet:&productBeginIndex:{}&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&'.format(begin_index)
         else:
-            end_html='&productBeginIndex:{}&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&'.format(begin_index)
-        html=start_html+end_html
-        return(html)
+            end_html = '&productBeginIndex:{}&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&'.format(begin_index)
+        html = start_html+end_html
+        return html
 
     def extract_products(self):
         start_time = datetime.now().minute
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
+<<<<<<< HEAD
         path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+=======
+        path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('okeydostavka')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]

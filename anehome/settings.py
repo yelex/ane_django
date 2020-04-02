@@ -134,6 +134,7 @@ STATICFILES_FINDERS = (
 
 STATIC_URL = '/static/'
 STATIC_ROOT = ''
+<<<<<<< HEAD
 
 # celery
 CELERY_BROKER_URL = 'redis://localhost:6379'
@@ -142,3 +143,5 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
+=======
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
