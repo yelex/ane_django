@@ -5,13 +5,14 @@ import requests
 import re
 from parser_app.logic.global_status import Global
 import os
-from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space, get_proxy
+from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space, get_proxy, clever_sleep
 from tqdm import tqdm
 import time
 from fake_useragent import UserAgent
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
+
 
 class GlobusHandler:
 
@@ -54,6 +55,7 @@ class GlobusHandler:
                     href_i = self.construct_html(url, page)
                     # print('loading {} ...'.format(href_i))
                     try:
+                        clever_sleep()
                         if proxies != None:
                             r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)
                         else:

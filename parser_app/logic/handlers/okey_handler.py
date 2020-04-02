@@ -4,7 +4,7 @@ import requests
 import re
 import demjson
 from datetime import datetime, timedelta
-from parser_app.logic.handlers.tools import filter_flag, wspex_space, tofloat, get_proxy, wspex
+from parser_app.logic.handlers.tools import filter_flag, wspex_space, tofloat, get_proxy, wspex, clever_sleep
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 from selenium import webdriver
@@ -14,6 +14,7 @@ from fake_useragent import UserAgent
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
+
 
 class OkeyHandler:
 
@@ -75,7 +76,7 @@ class OkeyHandler:
 
                 try:
                     r = requests.get(url_full, headers=headers)  # CRITICAL
-                    time.sleep(3)
+                    clever_sleep()
                 except:
                     r = 404
                     while r.status_code != 200:
@@ -235,7 +236,7 @@ class OkeyHandler:
                     # driver.close()
                 else:
                     try:
-                        # time.sleep(3)
+                        # clever_sleep()
                         if proxies is not None:
                             r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
                         else:

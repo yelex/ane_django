@@ -22,39 +22,15 @@ class Total:
         print('Timer call : start making snapshots')
         start = datetime.now()
 
-        df_gks = SiteHandlerGks().get_df()
-        cached_list = []
-
-        print('Storing gks prices to db...')
-
-        for _, row in df_gks.iterrows():
-            prod = Gks(date=row['date'],
-                       type=row['type'],
-                       category_id=row['category_id'],
-                       category_title=row['category_title'],
-                       site_title=row['site_title'],
-                       price_new=row['price_new'],
-                       price_old=row['price_old'],
-                       site_unit=row['site_unit'],
-                       site_link=row['site_link'],
-                       site_code=row['site_code'],
-                       miss=row['miss'])
-            cached_list.append(prod)
-
-            # m.save()
-        Gks.objects.all().delete()
-        Gks.objects.bulk_create(cached_list)
-        print('Storing complete!')
-
         date_now = Global().date
 
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        df = df.append(Services().get_df())
-        df = df.append(TotalNongrocery().get_df_page())
         df = df.append(TotalGrocery().get_df_page())
+        df = df.append(TotalNongrocery().get_df_page())
+        df = df.append(Services().get_df())
 
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
@@ -127,7 +103,29 @@ class Total:
             # m.save()
         PricesProcessed.objects.bulk_create(cached_list)
         '''
+        df_gks = SiteHandlerGks().get_df()
+        cached_list = []
 
+        print('Storing gks prices to db...')
+
+        for _, row in df_gks.iterrows():
+            prod = Gks(date=row['date'],
+                       type=row['type'],
+                       category_id=row['category_id'],
+                       category_title=row['category_title'],
+                       site_title=row['site_title'],
+                       price_new=row['price_new'],
+                       price_old=row['price_old'],
+                       site_unit=row['site_unit'],
+                       site_link=row['site_link'],
+                       site_code=row['site_code'],
+                       miss=row['miss'])
+            cached_list.append(prod)
+
+            # m.save()
+        Gks.objects.all().delete()
+        Gks.objects.bulk_create(cached_list)
+        print('Storing complete!')
         print('Getting basket df...')
         basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food',:])
         print('Getting complete!')

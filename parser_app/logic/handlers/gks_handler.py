@@ -1,33 +1,14 @@
 import pandas as pd
 import urllib
 import requests
-import re
 from bs4 import BeautifulSoup
 from datetime import datetime, date
 import time
 from parser_app.logic.global_status import Global
+from parser_app.logic.handlers.tools import tofloat
 
 df = Global().links
 gks_id_list = df[df.site_code=='gks']['site_link'].values
-
-
-# необходимые функции
-
-def wspex(x):
-    """
-    White SPace EXclude
-    :param x: string
-    :return: string x without any whitespaces
-    """
-    return re.sub(u'\u200a', '', ''.join(x.split()))
-
-
-def wspex_space(x):
-    return re.sub(u'\u200a', '', ' '.join(str(x).split()))
-
-
-def tofloat(s):
-    return float(wspex(s.replace(',', '.')))
 
 
 class SiteHandlerGks:
@@ -145,11 +126,12 @@ class SiteHandlerGks:
         df.index = index_y_full[:len(df.index)]
 
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
-        df = df.pivot_table(index='date', columns='category_id', values='price_new').merge(
-            pd.DataFrame(index=pd.date_range(start='2/1/2019',
-                                             end=Global().date.strftime('%m/%d/%Y'))), left_index=True,
-            right_index=True,
-            how='right').fillna(method='ffill')
+        df = df.pivot_table(index='date', columns='category_id',
+                            values='price_new').merge(pd.DataFrame(index=pd.date_range(start='2/1/2019',
+                                                                                       end=Global().date.strftime(
+                                                                                           '%m/%d/%Y'))),
+                                                      left_index=True, right_index=True, how='right').fillna(
+            method='ffill')
 
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
         df.loc[:, 'type'] = 'food'
@@ -230,18 +212,20 @@ class SiteHandlerGks:
         # print # str(x) for x in gks_id_list
         return table_dict
 
-    def get_df_monthly(self):
-        year = datetime.now().year
-        month = datetime.now().month
-        if year == 2020 and month == 2:
-            year = 2019
+    def get_df_monthly(self, year):
+
+        if year != datetime.now().year or datetime.now().month == 1:
             month = 12
+            end_date = f'12/31/{year}'
+        else:
+            month = datetime.now().month - 1
+            end_date = Global().date.strftime('%m/%d/%Y')
 
         table = SiteHandlerGks().process_table_monthly(year, month)
         # print(table)
         df = pd.DataFrame.from_dict(table).transpose()
         df.columns = list(range(1, len(df.columns) + 1))
-        # print(df)
+        #         print(df)
         df = df.set_index(df.index + 1)
 
         df.loc[:, 'date'] = [date(day=1, month=i, year=year) for i in range(1, len(df) + 1)]
@@ -249,11 +233,11 @@ class SiteHandlerGks:
 
         df = df.stack().reset_index()
         df = df.rename(columns={'level_1': 'category_id', 0: 'price_new'})
-        df = df.pivot_table(index='date', columns='category_id', values='price_new').merge(
-            pd.DataFrame(index=pd.date_range(start='2/1/2019',
-                                             end=Global().date.strftime('%m/%d/%Y'))), left_index=True,
-            right_index=True,
-            how='right').fillna(method='ffill')
+        df_time = pd.DataFrame(index=pd.date_range(start='2/1/2019', end=end_date))
+        df = df.pivot_table(index='date', columns='category_id', values='price_new').merge(df_time, left_index=True,
+                                                                                           right_index=True,
+                                                                                           how='right').fillna(
+            method='ffill')
         df = df.stack().reset_index().rename(columns={'level_0': 'date', 'level_1': 'category_id', 0: 'price_new'})
         # print(df)
         df.loc[:, 'type'] = 'food'
@@ -275,9 +259,12 @@ class SiteHandlerGks:
         return df
 
     def get_df(self):
-        df1 = SiteHandlerGks().get_df_weekly()
-        df2 = SiteHandlerGks().get_df_monthly()
-        df2 = df2[df2.date.isin(df1.date)]
-        df = pd.concat([df1, df2])
+        df_week = SiteHandlerGks().get_df_weekly()
+        df_month = pd.DataFrame()
+        years = list(range(2019, datetime.now().year + 1))
+        for year in years:
+            temp_df = SiteHandlerGks().get_df_monthly(year)
+            df_month = df_month.append(temp_df)
+        df_month = df_month[df_month.date.isin(df_week.date)]
+        df = pd.concat([df_week, df_month])
         return df
-
