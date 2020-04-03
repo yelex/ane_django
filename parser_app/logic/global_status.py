@@ -2,6 +2,9 @@ import sys
 
 import pandas as pd
 from datetime import datetime, timedelta, date
+
+from selenium import webdriver
+
 import parser_app
 import os
 
@@ -32,15 +35,7 @@ class Global(Singleton):
         self.is_selenium_utkonos = False
         self.is_shutdown = False
 
-        # chose chrome driver appropriate for current operation system
-        print(f'Use chrome driver for you operation system : {sys.platform}')
-        if sys.platform.startswith('linux'):
-            self.path_chromedriver = os.path.join('ChromeDriver', 'chromedriver_Linux')
-        elif sys.platform.contain('win'):
-            self.path_chromedriver = os.path.join('ChromeDriver', 'chromedriver.exe')
-        else:
-            raise ValueError("find chrome driver for your OS on site:\n"
-                             "https://chromedriver.chromium.org/downloads")
+        self.path_chromedriver = get_path_to_webdriver()
 
     def getproxies(self):
         parser_app.logic.handlers.tools.get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
@@ -48,3 +43,33 @@ class Global(Singleton):
 
     def setstatus(self, status):
         self.status = status
+
+
+def get_path_to_webdriver() -> str:
+    # chose chrome driver appropriate for current operation system
+    if sys.platform.startswith('linux'):
+        path_to_chrome_driver = os.path.join('ChromeDriver', 'chromedriver_Linux')
+    elif sys.platform.contain('win'):
+        path_to_chrome_driver = os.path.join('ChromeDriver', 'chromedriver.exe')
+    else:
+        raise ValueError(
+            "find chrome driver for your OS on site:\n"
+            "https://chromedriver.chromium.org/downloads"
+        )
+
+    return path_to_chrome_driver
+
+
+def get_usual_webdriver() -> webdriver.Chrome:
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Chrome(executable_path=get_path_to_webdriver(), options=options)
+
+    return driver
+
+
+def create_webdriver_with_proxy(proxy_ip_with_port: str) -> webdriver.Chrome:
+    options = webdriver.ChromeOptions()
+    options.add_argument(f'--proxy-server={proxy_ip_with_port}')
+    driver = webdriver.Chrome(executable_path=get_path_to_webdriver(), options=options)
+
+    return driver

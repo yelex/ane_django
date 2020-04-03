@@ -14,7 +14,7 @@ class LentaHandler(HandlerInterface):
     def __init__(self):
         super().__init__()
 
-    def _get_handler_name(self) -> str:
+    def get_handler_name(self) -> str:
         return 'lenta'
 
     def _create_serch_url_for_category(self, cat_title: str):
@@ -33,7 +33,7 @@ class LentaHandler(HandlerInterface):
         url = self._create_serch_url_for_category(
             str(categoty_row['cat_title'])
         )
-        print(f"{self._get_handler_name()} -> {categoty_row['cat_title']}")
+        print(f"{self.get_handler_name()} -> {categoty_row['cat_title']}")
         self._driver.get(url)
 
         time.sleep(3.0)
