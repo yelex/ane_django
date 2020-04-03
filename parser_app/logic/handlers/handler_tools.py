@@ -65,7 +65,7 @@ def postprocess_parsed_product(parsed_product: ParsedProduct) -> ParsedProduct:
 
 
     if parsed_product['unit_title'] is None:
-
+        pass
 
     return parsed_product
 

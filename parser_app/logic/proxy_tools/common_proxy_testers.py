@@ -7,7 +7,7 @@ from parser_app.logic.global_status import create_webdriver_with_proxy
 
 
 GOOGLE_CHROME_ERROR_LIST = json.load(
-    open(os.path.join('.', 'parser_app', 'logic', 'proxy_tools', 'google_chrome_error_list.txt'))
+    open(os.path.join('.', 'parser_app', 'logic', 'proxy_tools', 'google_chrome_error_list.json'))
 )
 
 
