@@ -72,6 +72,7 @@ def wspex(x):
 def remove_odd_space(x):
     _x = re.sub(r'"', " ", x)
     _x = re.sub(r"\s\s+", " ", _x)
+    _x = _x.replace(r'\xa0', '')  # FIXME
     if _x[0] == ' ':
         _x = _x[1:]
     if _x[-1] == ' ':

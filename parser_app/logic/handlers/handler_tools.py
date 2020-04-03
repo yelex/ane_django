@@ -54,15 +54,19 @@ def validate_ParsedProduct(parsed_product: ParsedProduct):
 
 
 def postprocess_parsed_product(parsed_product: ParsedProduct) -> ParsedProduct:
-    validate_ParsedProduct(parsed_product)
-
     # title to loser case
     parsed_product['title'] = remove_odd_space(parsed_product['title'].lower())
+    if parsed_product['title'][0] in {'"', "'"}:
+        parsed_product['title'] = parsed_product['title'][1:]
+    if parsed_product['title'][-1] in {'"', "'"}:
+        parsed_product['title'] = parsed_product['title'][:-1]
+
+    if isinstance(parsed_product['price_new'], str):
+        parsed_product['price_new'] = float(remove_odd_space(parsed_product['price_new']).lower().replace(',', '.'))
 
     # set unit title
     if parsed_product['unit_title'] is not None:
         parsed_product['unit_title'] = remove_odd_space(parsed_product['unit_title'].lower())
-
 
     if parsed_product['unit_title'] is None:
         pass

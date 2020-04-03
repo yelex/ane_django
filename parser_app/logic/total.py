@@ -1,5 +1,6 @@
 import sys
 
+from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK
 from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
@@ -28,6 +29,8 @@ class Total:
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
+
+        df = df.append(LentaHandlerMSK().extract_products())
 
         df = df.append(OkeySpbHandler().extract_products())
 

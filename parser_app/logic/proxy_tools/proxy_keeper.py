@@ -7,11 +7,13 @@ from selenium import webdriver
 
 from parser_app.logic.global_status import create_webdriver_with_proxy
 from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_is_proxy_suit
-from parser_app.logic.proxy_tools.proxy_habdler_HIDEMY import HidemyProxyHandler
+
 from parser_app.logic.proxy_tools.proxy_habdler_interface import ProxyHandlerInterface
+from parser_app.logic.proxy_tools.proxy_handler_PROXYNOVA import ProxynovaProxyHandler
+from parser_app.logic.proxy_tools.proxy_habdler_HIDEMY import HidemyProxyHandler
 
 
-USED_PROXY_HANDLERS: List[ProxyHandlerInterface] = [HidemyProxyHandler]
+USED_PROXY_HANDLERS: List[ProxyHandlerInterface] = [HidemyProxyHandler(), ]  # ProxynovaProxyHandler()]
 
 
 class ProxyKeeper:

@@ -177,9 +177,7 @@ class HandlerInterface:
             :param row: row from old urls file, contain 'category' - str, 'title' - str, 'url' - str
             :return: bool
             """
-            return (
-                    parsed_product['title'] == row['title']
-            )
+            return parsed_product['title'] == row['title']
 
     def _update_category(self, parsed_item: ParsedProduct, category_row):
         # try to update some old ones
@@ -196,6 +194,7 @@ class HandlerInterface:
 
         # if we have too few items in current category, add this item
         if len(self._old_urls[self._old_urls['cat_title'] == category_row['cat_title']]) <= 15:
+            print(f"add new Item to category {category_row['cat_title']}, it is {parsed_item['title']}")
             self._old_urls = self._old_urls.append({
                     'cat_title': category_row['cat_title'],
                     'title': parsed_item['title'],
@@ -208,23 +207,30 @@ class HandlerInterface:
     def _update_url_list_from_search(self):
         for _, category_row in self._full_category_table.iterrows():
 
-            parsed_list = self._get_parsed_product_from_search(category_row)
+            try:
+                parsed_list = self._get_parsed_product_from_search(category_row)
+            except:
+                # FIXME fatal log
+                print(f'Error while handling search result for:\n'
+                      f'handler : {self.get_handler_name()};\n'
+                      f'category : {category_row["cat_title"]}')
+                continue
 
             for item in parsed_list:
+                postprocess_parsed_product(item)
                 validate_ParsedProduct(item)
-
-            for item in parsed_list:
-                item = postprocess_parsed_product(item)
 
                 try:
                     if isinstance(category_row['keywords_cons'], str) and\
                             len(category_row['keywords_cons']) > 0:
                         if re.search(category_row['keywords_cons'], item['title']) is not None:
+                            # print(f'del item due to  keywords_cons {item["title"]}')
                             del item
                             continue
                     if isinstance(category_row['keywords_pro'], str) and\
                             len(category_row['keywords_pro']) > 0:
                         if re.search(category_row['keywords_pro'], item['title']) is None:
+                            # print(f'del item due to  keywords_pro {item["title"]}')
                             del item
                             continue
                 except Exception as e:
@@ -251,6 +257,7 @@ class HandlerInterface:
 
             try:
                 parsed_product: ParsedProduct = self._get_parsed_product_from_url(url_row['url'])
+                postprocess_parsed_product(parsed_product)
                 validate_ParsedProduct(parsed_product)
             except:
                 print(f'in parser {self.get_handler_name()} Error during parsing single item:')
