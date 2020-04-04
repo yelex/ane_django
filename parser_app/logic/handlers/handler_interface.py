@@ -62,7 +62,6 @@ class HandlerInterface:
         proxy_keeper = ProxyKeeper()
         try:
             driver = proxy_keeper.get_proxy_for_site(self)
-
         except:
             # FIXME fatal log
             print(f"can't create proxy for {self.get_handler_name()}")
@@ -70,6 +69,7 @@ class HandlerInterface:
             if not self.test_web_driver(driver) or not simple_test_driver_with_url(driver, self.get_test_ulr()):
                 # FIXME fatal log
                 print(f"can't create usual driver for {self.get_handler_name()}")
+                driver.quit()
                 raise ValueError(f"can't use any driver for {self.get_handler_name()}")
 
         self._driver = driver
@@ -120,6 +120,7 @@ class HandlerInterface:
             self._update_url_list_from_search()
         except Exception as e:
             print(f"Some exception occur during searching for new urs in {self.get_handler_name()}")
+            self._driver.quit()
             raise e
 
         try:
@@ -127,6 +128,7 @@ class HandlerInterface:
             self._get_df_from_url_list()
         except Exception as e:
             print(f"Some exception occur during handling individual urls in {self.get_handler_name()}")
+            self._driver.quit()
             raise e
 
         self._driver.quit()
@@ -145,7 +147,7 @@ class HandlerInterface:
                 'site_title': parsed_product['title'],
                 'price_new': parsed_product['price_new'],
                 'price_old': parsed_product['price_old'],
-                'site_unit': None,
+                'site_unit': '1кг',
                 'site_link': parsed_product['url'],
                 'site_code': self.get_handler_name(),
             },
@@ -248,7 +250,7 @@ class HandlerInterface:
         self._old_urls.to_csv(self._get_path_to_old_urls(), index=False)
 
     def _get_df_from_url_list(self) -> None:
-        for _, url_row in self._old_urls.iterrows():
+        for index, url_row in self._old_urls.iterrows():
             # have columns : 'cat_title', 'title', 'url'
 
             if url_row['title'] in self._title_done:

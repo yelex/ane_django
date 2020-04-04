@@ -1,4 +1,8 @@
+import json
 import os
+import pickle
+import time
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
@@ -13,7 +17,12 @@ from parser_app.logic.proxy_tools.proxy_handler_PROXYNOVA import ProxynovaProxyH
 from parser_app.logic.proxy_tools.proxy_habdler_HIDEMY import HidemyProxyHandler
 
 
-USED_PROXY_HANDLERS: List[ProxyHandlerInterface] = [HidemyProxyHandler(), ]  # ProxynovaProxyHandler()]
+# UNCOMMENT ProxynovaProxyHandler TO GET MORE PROXIES,
+# but these proxy not so stable as HidemyProxyHandler and may work slowly
+USED_PROXY_HANDLERS: List[ProxyHandlerInterface] = [
+    HidemyProxyHandler(),
+#    ProxynovaProxyHandler(),
+]
 
 
 class ProxyKeeper:
@@ -27,6 +36,12 @@ class ProxyKeeper:
         self._not_suit_proxy: pd.DataFrame
 
         self._reload_from_disk()
+        ProxyKeeper._create_file_if_not_exist()
+        last_update_date = json.load(open(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json'), 'r'))
+        print(f'last update date : {last_update_date}, current time : {ProxyKeeper._get_time_in_hours()}')
+
+        if last_update_date['last_update'] != ProxyKeeper._get_time_in_hours():
+            self.update_proxy_list()
 
     def get_proxy_for_site(self, site_handler) -> webdriver.Chrome:
         """
@@ -93,6 +108,9 @@ class ProxyKeeper:
         self._proxy_list.drop(proxy_to_del, inplace=True)
 
     def update_proxy_list(self, port: int = 3128) -> None:
+        # FIXME routine log
+        print('start to update proxy list')
+
         add_ip_stats = {'proxy_fails': 0, 'new_ip_added': 0, 'handlers_fails': []}
         ip_list: List[str] = []
         for proxy_handler in USED_PROXY_HANDLERS:
@@ -113,20 +131,28 @@ class ProxyKeeper:
 
         self.remove_not_suited_proxy()
         self._save_to_disk()
+        json.dump(
+            {'last_update': ProxyKeeper._get_time_in_hours()},
+            open(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json'), 'w'),
+        )
+
+    @staticmethod
+    def get_base_dir_path() -> str:
+        return os.path.join('.', 'parser_app', 'logic', 'proxy_tools', 'store')
 
     @staticmethod
     def get_path_to_proxy_list() -> str:
-        return os.path.join('.', 'parser_app', 'logic', 'proxy_tools', 'proxy_list.csv')
+        return os.path.join(ProxyKeeper.get_base_dir_path(), 'proxy_list.csv')
 
     @staticmethod
     def get_path_to_not_suited_list() -> str:
-        return os.path.join('.', 'parser_app', 'logic', 'proxy_tools', 'not_suit_list.csv')
+        return os.path.join(ProxyKeeper.get_base_dir_path(), 'not_suit_list.csv')
 
 
     @staticmethod
     def _create_file_if_not_exist() -> None:
         # make sure that folder exist
-        if not os.path.exists(os.path.dirname(ProxyKeeper.get_path_to_proxy_list())):
+        if not os.path.exists(ProxyKeeper.get_base_dir_path()):
             os.makedirs(os.path.dirname(ProxyKeeper.get_path_to_proxy_list()))
 
         # load proxy list
@@ -139,6 +165,15 @@ class ProxyKeeper:
             df = pd.DataFrame(columns=['proxy', 'handler'])
             df.to_csv(ProxyKeeper.get_path_to_not_suited_list(), index=False)
 
+        if not os.path.exists(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json')):
+            json.dump(
+                {'last_update': ProxyKeeper._get_time_in_hours() - 1000},
+                open(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json'), 'w+'),
+            )
+
+    @staticmethod
+    def _get_time_in_hours() -> int:
+        return int(int(round(time.time())) / 60 / 60)
 
     def _reload_from_disk(self) -> None:
         ProxyKeeper._create_file_if_not_exist()

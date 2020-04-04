@@ -36,10 +36,16 @@ class Global(Singleton):
         self.is_shutdown = False
 
         self.path_chromedriver = get_path_to_webdriver()
+        self._make_proxy = False
+
+        if not hasattr(self, 'already_make_proxy'):
+            self.getproxies()
 
     def getproxies(self):
-        parser_app.logic.handlers.tools.get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
-        # print('self.proxies:', self.proxies)
+        if not hasattr(self, 'already_make_proxy'):
+            self.already_make_proxy = True
+            parser_app.logic.handlers.tools.get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
+
 
     def setstatus(self, status):
         self.status = status

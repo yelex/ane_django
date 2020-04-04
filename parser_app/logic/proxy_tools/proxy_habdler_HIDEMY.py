@@ -31,5 +31,6 @@ class HidemyProxyHandler(ProxyHandlerInterface):
         except:
             print('smt wrong with parsing proxy page')
             print(soup.find('div', class_='table_block'))
-
-        return ips
+        finally:
+            driver.quit()
+            return ips

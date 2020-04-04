@@ -69,15 +69,21 @@ def wspex(x):
     return re.sub(u'\u200a', '', ''.join(x.split()))
 
 
-def remove_odd_space(x):
+def remove_odd_space(x: str) -> str:
     _x = re.sub(r'"', " ", x)
+    _x = _x.replace(u'\xa0', ' ')
     _x = re.sub(r"\s\s+", " ", _x)
-    _x = _x.replace(r'\xa0', '')  # FIXME
     if _x[0] == ' ':
         _x = _x[1:]
     if _x[-1] == ' ':
         _x = _x[:-1]
-    return _x
+    return str(_x)
+
+
+def remove_ALL_spaces(x: str) -> str:
+    _x = remove_odd_space(x)
+    _x = _x.replace(' ', '')
+    return str(_x)
 
 
 def list_html(text):

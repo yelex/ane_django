@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import urllib
 import requests
@@ -8,6 +10,7 @@ import numpy as np
 from datetime import datetime
 import time
 from parser_app.logic.global_status import Global
+from parser_app.logic.handlers.handler_tools import get_empty_handler_DF
 
 df = Global().links
 gks_id_list = df[df.site_code=='gks']['site_link'].values
@@ -104,7 +107,11 @@ class SiteHandlerGks:
 
     def get_qry_weekly(self, year):
 
-        df = pd.read_csv(r'D:\test_ane\description\gks_weekly_links.csv', sep=';', index_col=0)
+        df = pd.read_csv(
+            os.path.join('.', 'parser_app', 'logic', 'description', 'gks_weekly_links.csv'),
+            sep=';',
+            index_col=0,
+        )
 
         list_grtov = df['site_link'].values
 
@@ -222,8 +229,19 @@ class SiteHandlerGks:
         return df
 
     def get_df(self):
-        df1 = SiteHandlerGks().get_df_weekly()
-        df2 = SiteHandlerGks().get_df_monthly()
-        df2 = df2[df2.date.isin(df1.date)]
-        df = pd.concat([df1, df2])
-        return df
+        try:
+            df1 = SiteHandlerGks().get_df_weekly()
+        except:
+            print("fail to make 'SiteHandlerGks().get_df_weekly()'")
+
+        try:
+            df2 = SiteHandlerGks().get_df_monthly()
+        except:
+            print("fail to make 'SiteHandlerGks().get_df_monthly()'")
+
+        try:
+            df2 = df2[df2.date.isin(df1.date)]
+            df = pd.concat([df1, df2])
+            return df
+        except:
+            return get_empty_handler_DF()

@@ -8,7 +8,7 @@ import numpy as np
 from selenium import webdriver
 
 from parser_app.logic.global_status import Global
-from parser_app.logic.handlers.tools import remove_odd_space
+from parser_app.logic.handlers.tools import remove_odd_space, remove_ALL_spaces
 
 ParsedProduct = Dict[str, Union[str, float, None]]
 
@@ -62,11 +62,11 @@ def postprocess_parsed_product(parsed_product: ParsedProduct) -> ParsedProduct:
         parsed_product['title'] = parsed_product['title'][:-1]
 
     if isinstance(parsed_product['price_new'], str):
-        parsed_product['price_new'] = float(remove_odd_space(parsed_product['price_new']).lower().replace(',', '.'))
+        parsed_product['price_new'] = float(remove_ALL_spaces(parsed_product['price_new']).lower().replace(',', '.'))
 
     # set unit title
     if parsed_product['unit_title'] is not None:
-        parsed_product['unit_title'] = remove_odd_space(parsed_product['unit_title'].lower())
+        parsed_product['unit_title'] = remove_ALL_spaces(parsed_product['unit_title'].lower())
 
     if parsed_product['unit_title'] is None:
         pass

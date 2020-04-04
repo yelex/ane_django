@@ -72,8 +72,6 @@ class LentaHandlerInterface(HandlerInterface):
                 price_new = page_item.find('dd', class_='price__regular').text
                 parsed_product['price_new'] = price_new
 
-                float(remove_odd_space(parsed_product['price_new']).lower().replace(',', '.'))
-
                 parsed_product['price_old'] = None
             except:
                 print('ERROR! in parsing page_item')

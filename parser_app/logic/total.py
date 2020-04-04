@@ -1,6 +1,6 @@
 import sys
 
-from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK
+from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK, LentaHandlerSPB
 from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
@@ -31,24 +31,27 @@ class Total:
                                    'site_link', 'site_code'])
 
         df = df.append(LentaHandlerMSK().extract_products())
-
+        df = df.append(LentaHandlerSPB().extract_products())
         df = df.append(OkeySpbHandler().extract_products())
 
-        df = df.append(Services().get_df())
-        df = df.append(TotalGrocery().get_df_page())
+        # df = df.append(Services().get_df())
+        # df = df.append(TotalGrocery().get_df_page())
         df = df.append(TotalNongrocery().get_df_page())
 
-        df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
+        df['date'] = pd.to_datetime(datetime.now().strftime("%Y-%m-%d"))
 
         # df = df.drop_duplicates(subset=['date', 'category_id', 'site_link'])
         df = df.sort_values(['category_id', 'site_link'])
 
         # conn = sqlite3.connect(os.path.join(BASE_DIR, 'db.sqlite3'))
+        df['miss'] = 0
         df.reset_index(drop=True, inplace=True)
-        df.loc[:, 'miss'] = 0
 
-        df_path = os.path.join('parsed_content', 'data_test_{}.csv'.format(date_now))
-        pivot_path = os.path.join('parsed_content', 'pivot_test_{}.csv'.format(date_now))
+        path_to_parsed_content_folder = 'parsed_content'
+        if not os.path.exists(path_to_parsed_content_folder):
+            os.makedirs(path_to_parsed_content_folder)
+        df_path = os.path.join(path_to_parsed_content_folder, 'data_test_{}.csv'.format(date_now))
+        pivot_path = os.path.join(path_to_parsed_content_folder, 'pivot_test_{}.csv'.format(date_now))
 
         pivot = df.pivot_table(index='category_id', columns=['type', 'site_code'],
                                values='site_link', aggfunc='nunique')
@@ -71,6 +74,8 @@ class Total:
             # product = ProductHandler(**dict(row))
             # cached_list.append(product)
             # Person.objects.bulk_create(person_list)
+            print(row['category_title'])
+            print(type(row['category_title']))
             prod = PricesRaw(date=row['date'],
                              type=row['type'],
                              category_id=row['category_id'],
@@ -158,16 +163,19 @@ class Total:
         cached_list = []
 
         print('Storing basket to db...')
-        Basket.objects.all().delete()
 
-        for _, row in basket_df.iterrows():
-            prod = Basket(date=row['date'],
-                          gks_price=row['gks_price'],
-                          online_price=row['online_price'])
-            cached_list.append(prod)
-            # m.save()
-        Basket.objects.bulk_create(cached_list)
-        print('Storing completed!')
+        try:
+            Basket.objects.all().delete()
+            for _, row in basket_df.iterrows():
+                prod = Basket(date=row['date'],
+                              gks_price=row['gks_price'],
+                              online_price=row['online_price'])
+                cached_list.append(prod)
+                # m.save()
+            Basket.objects.bulk_create(cached_list)
+            print('Storing completed!')
+        except:
+            print('fail to create backet sql base')
         end = datetime.now()
         time_execution = str(end - start)
         # send_mail(message='Снапшот успешно создан {}'.format(end))
