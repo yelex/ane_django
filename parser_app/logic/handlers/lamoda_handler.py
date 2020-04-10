@@ -9,7 +9,9 @@ from parser_app.logic.global_status import Global
 import demjson
 import os
 import time
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class LamodaHandler:
 
@@ -19,7 +21,11 @@ class LamodaHandler:
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         # количество страниц
+<<<<<<< HEAD
+        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+=======
         path_sfb = path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df[sfb_df.fillna('')['URL'].str.contains('lamoda')]['URL'].values  # ссылки на URL lamoda

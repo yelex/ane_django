@@ -5,10 +5,14 @@ import requests
 import re
 from parser_app.logic.global_status import Global
 import os
-from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space, get_proxy
+from parser_app.logic.handlers.tools import filter_flag, list_html, wspex_space, get_proxy, clever_sleep
 from tqdm import tqdm
 import time
 from fake_useragent import UserAgent
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
 
 
 class GlobusHandler:
@@ -20,14 +24,24 @@ class GlobusHandler:
 
     def extract_products(self):
         start_time = datetime.now().minute
+<<<<<<< HEAD
+        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+=======
         path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['URL'].values
         id_n = 0
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
+<<<<<<< HEAD
+                           'site_title', 'price_new', 'price_old', 'site_unit',
+                           'site_link', 'site_code'])
+        proxies = get_proxy(hrefs[0])
+=======
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
         proxies = None
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         header = UserAgent().chrome
         for href in tqdm(hrefs):  # испр
             id_n += 1
@@ -52,6 +66,7 @@ class GlobusHandler:
                     href_i = self.construct_html(url, page)
                     # print('loading {} ...'.format(href_i))
                     try:
+                        clever_sleep()
                         if proxies != None:
                             r = requests.get(href_i, proxies=proxies, headers=header, timeout=10)
                         else:

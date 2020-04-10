@@ -19,12 +19,10 @@ class TotalGrocery:
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
 
-        site_handlers = [OkeyHandler(), UtkonosHandler(), PerekrestokHandler(), GlobusHandler()]##
+        site_handlers = [OkeyHandler(), GlobusHandler(), UtkonosHandler(), PerekrestokHandler(), ]  ##
 
         for handler in site_handlers:
             df = df.append(handler.extract_products())
-            
-
 
         date_now = datetime.now().strftime("%Y-%m-%d")
         # df.to_csv(r'D:\ANE_2\parsed_content\grocery_{}.csv'.format(date_now))
@@ -55,7 +53,7 @@ class TotalGrocery:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        site_handlers = [UtkonosHandler(), OkeyHandler(), PerekrestokHandler(), GlobusHandler(), ]  #
+        site_handlers = [OkeyHandler(), GlobusHandler(), PerekrestokHandler(), UtkonosHandler(), ]  #
 
         for handler in site_handlers:
             df = df.append(handler.extract_product_page())

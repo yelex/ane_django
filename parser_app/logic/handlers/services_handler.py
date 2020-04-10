@@ -6,11 +6,17 @@ from parser_app.logic.handlers.tools import get_proxy
 from parser_app.logic.global_status import Global
 import re
 from fake_useragent import UserAgent
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class Services():
     def __init__(self):
+<<<<<<< HEAD
+        self.path_sfb = os.path.join(Global().base_dir, r'description/urls.csv')
+=======
         self.path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
 
     def wspex(self,x):
         """
@@ -36,6 +42,7 @@ class Services():
         #mgts
         n=0
         url=list_url[n]
+        print(url)
         html=requests.get(url, headers={'User-Agent': UserAgent().chrome}).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         price_list=soup.findAll('div',{'class':'slider_slide'})#0 заменить
@@ -60,6 +67,7 @@ class Services():
         try:
             n=1
             url=list_url[n]
+            print(url)
             html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
             soup=BeautifulSoup(html, 'lxml')#Будние дни с 08:00 до 22:00
             pattern=re.compile(r'Будние дни')
@@ -85,6 +93,7 @@ class Services():
         price_dict['date']=Global().date
         price_dict['site_code']='services'
         url=list_url[n]
+        print(url)
         html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         pattern=re.compile(r'Русская общая баня')
@@ -102,6 +111,7 @@ class Services():
         n=3
         price_dict=dict()
         url=list_url[n]
+        print(url)
         html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         price_dict['price_new']=int(re.findall('\d+',soup.findAll('td',{'class':'price'})[0].text)[0])
@@ -123,6 +133,7 @@ class Services():
         price_dict['date']=Global().date
         price_dict['site_code']='services'
         url=list_url[n]
+        print(url)
         price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
         try:
             html=requests.get(url, headers={'User-Agent': UserAgent().chrome}, timeout=10).content
@@ -141,11 +152,13 @@ class Services():
         final_df=final_df.append(price_dict,ignore_index=True)
 
         #Постановка набоек, пара	https://masterskaya-obuvi.ru/tseny
+        '''
         n=5
         price_dict=dict()
         price_dict['date']=Global().date
         price_dict['site_code']='services'
         url=list_url[n]
+        print(url)
         html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
@@ -162,7 +175,7 @@ class Services():
                 break
 
         final_df=final_df.append(price_dict,ignore_index=True)
-
+        '''
 
         #Постановка набоек, пара	https://masterskaya-obuvi.ru/tseny
         n=6
@@ -170,6 +183,7 @@ class Services():
         price_dict['date']=Global().date
         price_dict['site_code']='services'
         url=list_url[n]
+        print(url)
         html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
@@ -194,6 +208,7 @@ class Services():
         price_dict['site_code']='services'
         price_dict['date']=Global().date
         url=list_url[n]
+        print(url)
         html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         #soup.findAll('td')#,{'class':'text-center'})[0]
@@ -217,52 +232,60 @@ class Services():
                 break
         final_df=final_df.append(price_dict,ignore_index=True)
 
-        # стрижка
-        n = 8
-        price_dict = dict()
-        price_dict['site_code'] = 'services'
-        price_dict['date'] = Global().date
-        url = list_url[n]
-        html = requests.get(url).content  # , headers={'User-Agent': UserAgent().chrome}
-        soup = BeautifulSoup(html, 'lxml')
+        # # стрижка
+        try:
+            n = 8
+            price_dict = dict()
+            price_dict['site_code'] = 'services'
+            price_dict['date'] = Global().date
+            url = list_url[n]
+            print(url)
+            html = requests.get(url).content  # , headers={'User-Agent': UserAgent().chrome}
+            soup = BeautifulSoup(html, 'lxml')
 
-        # soup.findAll('td')#,{'class':'text-center'})[0]
-        for elem in soup.findAll('tr'):
-            if re.findall('(любой длины)',elem.text)!=[]:
-                price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[-1])
-                price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
-                price_text=elem.text
-                price_dict['site_title']=re.findall('[А-Яа-я ()]+',price_text)[0]
-                price_dict['price_new']=re.findall('\d+',price_text)[0]
-                price_dict['price_old'] = ''
-                price_dict['type'] = 'services'
-                price_dict['site_unit']='стрижка'
-                price_dict['site_link']=url
-                break
-        final_df=final_df.append(price_dict,ignore_index=True)
+            # soup.findAll('td')#,{'class':'text-center'})[0]
+            for elem in soup.findAll('tr'):
+                if re.findall('(любой длины)',elem.text)!=[]:
+                    price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[-1])
+                    price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
+                    price_text=elem.text
+                    price_dict['site_title']=re.findall('[А-Яа-я ()]+',price_text)[0]
+                    price_dict['price_new']=re.findall('\d+',price_text)[0]
+                    price_dict['price_old'] = ''
+                    price_dict['type'] = 'services'
+                    price_dict['site_unit']='стрижка'
+                    price_dict['site_link']=url
+                    break
+            final_df=final_df.append(price_dict,ignore_index=True)
+        except:
+            print('DAMN! {} can not be parsed'.format(url))
 
         #стрижка
-        n = 9
-        price_dict=dict()
-        price_dict['site_code']='services'
-        price_dict['date']=Global().date
-        url=list_url[n]
-        html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
-        soup=BeautifulSoup(html, 'lxml')
+        try:
+            n = 9
+            price_dict=dict()
+            price_dict['site_code']='services'
+            price_dict['date']=Global().date
+            url=list_url[n]
+            print(url)
+            html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
+            soup=BeautifulSoup(html, 'lxml')
 
-        for elem in soup.findAll('tr'):
-            if re.findall('Женская',elem.text)!=[]:
-                price_div=elem
-                price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
-                price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
-                price_dict['site_title']=price_div.find('td',{'class':'services-table__name'}).text
-                price_dict['price_new']=int(self.wspex(price_div.find('td',{'class':'services-table__price services-table__price-small'}).text))
-                price_dict['price_old'] = ''
-                price_dict['type'] = 'services'
-                price_dict['site_unit']='стрижка'
-                price_dict['site_link']=url
-                break
-        final_df=final_df.append(price_dict,ignore_index=True)
+            for elem in soup.findAll('tr'):
+                if re.findall('Женская',elem.text)!=[]:
+                    price_div=elem
+                    price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
+                    price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
+                    price_dict['site_title']=price_div.find('td',{'class':'services-table__name'}).text
+                    price_dict['price_new']=int(self.wspex(price_div.find('td',{'class':'services-table__price services-table__price-small'}).text))
+                    price_dict['price_old'] = ''
+                    price_dict['type'] = 'services'
+                    price_dict['site_unit']='стрижка'
+                    price_dict['site_link']=url
+                    break
+            final_df=final_df.append(price_dict,ignore_index=True)
+        except:
+            print('DAMN! {} can not be parsed'.format(url))
 
         #стрижка
         n=10
@@ -270,6 +293,7 @@ class Services():
         price_dict['site_code']='services'
         price_dict['date']=Global().date
         url=list_url[n]
+        print(url)
         html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         for elem in soup.findAll('tr'):
@@ -292,6 +316,7 @@ class Services():
         price_dict['site_code']='services'
         price_dict['date']=Global().date
         url=list_url[n]
+        print(url)
         html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
 

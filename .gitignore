@@ -1,3 +1,6 @@
+venv/*
+parsed_content/
+.vscode/
 dj_env/*
 __pycache__/
 .idea/

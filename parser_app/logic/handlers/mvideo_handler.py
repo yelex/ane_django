@@ -5,6 +5,10 @@ import requests
 import re
 
 from fake_useragent import UserAgent
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 from parser_app.logic.handlers.tools import wspex_space, wspex
@@ -66,7 +70,7 @@ class MvideoHandler:
 
                 div_sale = soup.find('div', {'class': 'c-pdp-price__old'})
                 # print('div_sale:', div_sale)
-                if div_sale is not None:
+                if div_sale is not None and div_sale.text != '':
                     # print('div_sale: ',div_sale)
                     price_dict['price_old'] = float(re.match('\d+', wspex(div_sale.text))[0])
                 else:

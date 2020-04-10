@@ -17,6 +17,7 @@ class SnapshotManager:
         self.last_succ_date = PricesRaw.objects.last().date # доделать
 
         # Global().getproxies()
+
     def update_plot(self, wdw=3):
 
         df = pd.DataFrame(list(Basket.objects.all().values()))
@@ -54,4 +55,7 @@ class SnapshotManager:
 
         div = opy.plot(fig, auto_open=False, output_type='div')
         return div
+
+
+
 

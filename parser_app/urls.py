@@ -3,7 +3,8 @@ from . import views
 from parser_app.logic.global_status import Global
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.home, name='home'),
+    path('mean_prices/', views.mean_prices, name='mean_prices'),
     re_path(r'^\w*/getNewSnap$', views.get_snap, name='getSnap'),
     path('cp/', views.cp, name='cp'),
     path('dynamics/', views.dynamics, name='dynamics'),

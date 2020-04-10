@@ -14,13 +14,15 @@ from parser_app.logic.handlers.tools import wspex, wspex_space, get_proxy
 from parser_app.logic.global_status import Global
 from fake_useragent import UserAgent
 import requests
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class OzonHandler():
-    def option_chrome(self, proxy):
-        chromeOptions = webdriver.ChromeOptions()
-        chromeOptions.add_argument('--proxy-server=%s' % proxy)
-        return chromeOptions
+    # def option_chrome(self, proxy):
+        # chromeOptions = webdriver.ChromeOptions()
+        # chromeOptions.add_argument('--proxy-server=%s' % proxy)
+        # return chromeOptions
 
     def get_proxy(self):  # опционально, если понадобится прокси
         success = False
@@ -40,7 +42,7 @@ class OzonHandler():
                 success = False
 
                 driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                          chrome_options=self.option_chrome(proxy))
+                                          chrome_options=Global().chrome_options)
                 driver.get("https://ozon.ru")
                 try:
                     WebDriverWait(driver, 10).until(
@@ -67,7 +69,11 @@ class OzonHandler():
         return a
 
     def extract_products(self, max_prod=200):
+<<<<<<< HEAD
+        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+=======
         path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')]['URL'].values
@@ -77,14 +83,14 @@ class OzonHandler():
                                     'site_link', 'site_code'])
 
         # proxy = self.get_proxy()
-        options = webdriver.ChromeOptions()
+        # options = webdriver.ChromeOptions()
         # proxy = get_proxy('http://ozon.ru') # если понадобится прокси
         # options.add_argument('--headless')
         # options.add_argument('--disable-gpu')
         # options.add_argument('--proxy-server=%s' % proxy)
 
         driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                  chrome_options=options)  # , chrome_options=self.option_chrome(proxy))
+                                  chrome_options=Global().chrome_options)  # , chrome_options=self.option_chrome(proxy))
 
         store = 'ozon'
         driver.implicitly_wait(30)
@@ -214,27 +220,28 @@ class OzonHandler():
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
+
         if Global().max_links != None:
             links_df = links_df.iloc[:Global().max_links]
         category_ids = links_df.category_id.unique()
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        options = webdriver.ChromeOptions()
+        # options = webdriver.ChromeOptions()
         # proxies = get_proxy('https://www.ozon.ru/')
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         # options.add_argument('--proxy-server=%s' % proxy)
-        driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                  chrome_options=options)  # , chrome_options=self.option_chrome(proxy))
-        #
+        if Global().is_selenium_ozon is True:
+            driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
+                                      chrome_options=Global().chrome_options)  #, chrome_options=self.option_chrome(proxy))
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
         proxies = None
 
-        h1_class = 'a9l'
-        price_new_class_sale = 'a9r3 a9s9'
-        price_new_class = 'a9r3'
-        price_old_class = 'a9r8'
+        h1_class = 'b4j'
+        price_new_class_sale = 'b4u8 b4w0'
+        price_new_class = 'b4u8'
+        price_old_class = 'b4v2'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -258,6 +265,7 @@ class OzonHandler():
                             r = requests.get(href_i, headers=header)
                     except:
                         while True:
+                            print('im here!')
                             try:
                                 proxies = get_proxy(href_i)
                                 time.sleep(3)
@@ -288,15 +296,17 @@ class OzonHandler():
                     print('except sitetitle not found')
                     if 'Такой страницы не существует' in soup.text:
                         print('Такой страницы не существует!')
+                        continue
                     # i -= 1
                     if soup.find('li', {'class': 'links-item'}) is None:
-                        proxies = get_proxy(href_i)
-                        time.sleep(3)
-                        r = requests.get(href_i, proxies=proxies, headers=header)
-                        while r.status_code != 200:
+                        while True:
                             proxies = get_proxy(href_i)
                             time.sleep(3)
                             r = requests.get(href_i, proxies=proxies, headers=header)
+                            if r.status_code == 200:
+                                break
+                            else:
+                                print('r.status_code:', r.status_code)
                     continue
 
                 # div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
@@ -311,7 +321,11 @@ class OzonHandler():
                     div_new = soup.find('span', {'class': price_new_class})
 
                 if div_new is None:
-                    print('Товар закончился!')
+                    print('Товар закончился!\n')
+                    continue
+
+                if re.search('\d+', wspex(div_new.text)) is None:
+                    print('Товар закончился!\n')
                     continue
                 # print('din_new:\n', div_new)
                 '''
@@ -331,7 +345,7 @@ class OzonHandler():
                 price_dict['site_unit'] = 'шт.'
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него
                 price_dict['type'] = 'non-food'
-                print('price_new: {}\nprice_old: {}\nunit: {}\n\n'.format(
+                print('price_new: {}\nprice_old: {}\nunit: {}\n'.format(
                     price_dict['price_new'],
                     price_dict['price_old'],
                     price_dict['site_unit']))

@@ -11,6 +11,9 @@ from parser_app.logic.handlers.tools import list_html, wspex_space, find_float_n
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 import time
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 class UtkonosHandler:
@@ -35,7 +38,11 @@ class UtkonosHandler:
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
 
+<<<<<<< HEAD
+        path_sfb = r'description/urls.csv'
+=======
         path_sfb = os.path.join('description', 'urls.csv')
+>>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         hrefs = [href for href in hrefs if type(href) is not float]  # испр
@@ -175,9 +182,11 @@ class UtkonosHandler:
 
     def extract_product_page(self):
         site_code = 'utkonos'
-        ua = UserAgent()
-        header = {'User-Agent': str(ua.chrome)}
-
+        # ua = UserAgent()
+        # header = {'User-Agent': str(ua.chrome)}
+        header = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                                'Chrome/51.0.2704.103 Safari/537.36'}
+        # print(header)
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)].iloc[:Global().max_links]
@@ -194,9 +203,9 @@ class UtkonosHandler:
         # selenium
         if Global().is_selenium_utkonos:
             path = Global().path_chromedriver
-            options = webdriver.ChromeOptions()
+            # options = webdriver.ChromeOptions()
             # options.add_argument('--headless')
-            driver = webdriver.Chrome(executable_path=path, chrome_options=options)
+            driver = webdriver.Chrome(executable_path=path, chrome_options=Global().chrome_options)
 
         #
         for cat_id in tqdm(category_ids):  # испр
@@ -241,7 +250,11 @@ class UtkonosHandler:
 
                     soup = BeautifulSoup(html, 'html.parser')
                     # print('soup:\n', soup)
+
                 products_div = soup.find('div', {'class': 'goods_view_item-action'})
+                if products_div is None:
+                    print('soup:\n', soup)
+                # print(products_div)
                 # products_div = soup.find('div', {'class': 'b-section--bg i-pb30 js-product-item js-product-main'})
                 # print('\n\nproducts_div:\n', products_div)
                 price_dict = dict()
@@ -251,8 +264,12 @@ class UtkonosHandler:
                 price_dict['category_id'] = cat_id
                 price_dict['category_title'] = category_title
 
+                # try:
                 price_dict['site_title'] = wspex_space(
-                    products_div.find('div', {'class': 'goods_view_item-action_header'}).text)
+                products_div.find('div', {'class': 'goods_view_item-action_header'}).text)
+                # except:
+                #     print('url %s is broken' % href_i)
+                #     continue
                 price_dict['site_link'] = href_i
                 # print(price_dict['site_link'])
 
