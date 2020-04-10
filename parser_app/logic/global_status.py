@@ -25,14 +25,8 @@ class Global(Singleton):
     succ_proxies = []
 
     def __init__(self):
-
-        self.base_dir = os.path.dirname(os.path.abspath(__file__))  # handlers/
-        self.links = pd.read_csv(os.path.join(self.base_dir, r'description/final_links.csv'), sep=';', index_col=0)
-        self.gks_links = os.path.join(self.base_dir, r'description/gks_weekly_links.csv')
-        self.path_desc = os.path.join(self.base_dir, r'description/categories.csv')
-        self.example_shot = os.path.join(self.base_dir, r'description/data_2019-10-02.csv')
-
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.example_shot = os.path.join(self.base_dir, 'description', 'data_2019-10-02.csv')
         self.links = pd.read_csv(os.path.join(self.base_dir, os.path.join('description', 'final_links.csv')), sep=';', index_col=0)
         self.gks_links = os.path.join(self.base_dir, os.path.join('description', 'gks_weekly_links.csv'))
         self.path_desc = os.path.join(self.base_dir, os.path.join('description', 'categories.csv'))

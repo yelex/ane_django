@@ -24,24 +24,16 @@ class GlobusHandler:
 
     def extract_products(self):
         start_time = datetime.now().minute
-<<<<<<< HEAD
-        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
-=======
-        path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
->>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
+
+        path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['URL'].values
         id_n = 0
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
-<<<<<<< HEAD
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
         proxies = get_proxy(hrefs[0])
-=======
-                                    'site_title', 'price_new', 'price_old', 'site_unit',
-                                    'site_link', 'site_code'])
-        proxies = None
->>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
+
         header = UserAgent().chrome
         for href in tqdm(hrefs):  # испр
             id_n += 1

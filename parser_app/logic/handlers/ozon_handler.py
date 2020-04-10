@@ -69,11 +69,8 @@ class OzonHandler():
         return a
 
     def extract_products(self, max_prod=200):
-<<<<<<< HEAD
-        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
-=======
-        path_sfb = os.path.join(Global.base_dir, 'description', 'urls.csv')
->>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
+
+        path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')]['URL'].values

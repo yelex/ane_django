@@ -10,15 +10,12 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
+
 class Services():
     def __init__(self):
-<<<<<<< HEAD
-        self.path_sfb = os.path.join(Global().base_dir, r'description/urls.csv')
-=======
         self.path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
->>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
 
-    def wspex(self,x):
+    def wspex(self, x):
         """
         White SPace EXclude
         :param x: string

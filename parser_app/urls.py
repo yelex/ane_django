@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from . import views
-from parser_app.logic.global_status import Global
+
 
 urlpatterns = [
     path('', views.home, name='home'),

@@ -1,12 +1,10 @@
-
 from parser_app.models import PricesRaw, Basket
 import plotly.graph_objects as go
 import plotly.offline as opy
 import pandas as pd
 import numpy as np
-import sqlite3
 import os
-from parser_app.logic.global_status import Global
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
