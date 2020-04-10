@@ -20,3 +20,12 @@ def get_path_prefix() -> str:
 
 def OS_dep_path_join(*args) -> str:
     return os.path.join(get_path_prefix(), *args)
+
+
+def get_os_short_name() -> str:
+    if sys.platform.startswith('linux'):
+        return 'linux'
+    elif sys.platform.contain('win'):
+        return 'win'
+    else:
+        return 'other'
