@@ -76,6 +76,7 @@ def wspex(x):
 
 def remove_odd_space(x: str) -> str:
     _x = re.sub(r'"', " ", x)
+    _x = re.sub(r'\n', " ", x)
     _x = _x.replace(u'\xa0', ' ')
     _x = re.sub(r"\s\s+", " ", _x)
     if _x[0] == ' ':

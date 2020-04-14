@@ -1,7 +1,9 @@
 import sys
 
+from parser_app.logic.handlers.NewEldoradoHandler import EldoradoHandlerMSK
 from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK, LentaHandlerSPB
 from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
+from parser_app.logic.handlers.NewPerekrestok_handler import PerekrestokSPBHandler
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
@@ -32,13 +34,16 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        df = df.append(LentaHandlerMSK().extract_products())
-        df = df.append(LentaHandlerSPB().extract_products())
-        df = df.append(OkeySpbHandler().extract_products())
+        df = df.append(EldoradoHandlerMSK().extract_products())
+        # df = df.append(PerekrestokSPBHandler().extract_products())
 
-        df = df.append(TotalGrocery().get_df_page())
-        df = df.append(TotalNongrocery().get_df_page())
-        df = df.append(Services().get_df())
+        # df = df.append(LentaHandlerMSK().extract_products())
+        # df = df.append(LentaHandlerSPB().extract_products())
+        # df = df.append(OkeySpbHandler().extract_products())
+        #
+        # df = df.append(TotalGrocery().get_df_page())
+        # df = df.append(TotalNongrocery().get_df_page())
+        # df = df.append(Services().get_df())
 
         df['date'] = pd.to_datetime(datetime.now().strftime("%Y-%m-%d"))
 
