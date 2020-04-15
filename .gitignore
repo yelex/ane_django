@@ -1,9 +1,8 @@
-<<<<<<< HEAD
-/venv/*
-/parsed_content/
-/.vscode/
-=======
+venv/
+parsed_content/
+.vscode/
 dj_env/*
 __pycache__/
 .idea/
->>>>>>> 9eefd47475e69e97ff29e40ef3c0e1dc4aaf992d
+develop_mode_flag_file
+parser_app/logic/proxy_tools/store/

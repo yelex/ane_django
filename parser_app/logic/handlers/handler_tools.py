@@ -8,7 +8,7 @@ import numpy as np
 from selenium import webdriver
 
 from parser_app.logic.global_status import Global
-from parser_app.logic.handlers.tools import remove_odd_space
+from parser_app.logic.handlers.tools import remove_odd_space, remove_ALL_spaces
 
 ParsedProduct = Dict[str, Union[str, float, None]]
 
@@ -35,36 +35,6 @@ def get_empty_parsed_product_dict() -> ParsedProduct:
     }
 
 
-def get_simple_proxy(just_one=False, port=3128) -> Union[List[str], str]:
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(executable_path=Global().path_chromedriver, options=options)
-    driver.get(f"https://hidemy.name/ru/proxy-list/?maxtime=300&ports={port}#list")
-    time.sleep(7.5)
-    page = driver.page_source
-    soup = BeautifulSoup(page, 'html.parser')
-    driver.quit()
-
-    ips = []
-    try:
-        for item in soup.find('div', class_='table_block').find('tbody').find_all('tr'):
-            lst = item.find_all('td')
-
-            # ip and port
-            ips.append(f"{lst[0].text}:{lst[1].text}")
-    except:
-        print('smt wrong with parsing proxy page')
-        print(soup.find('div', class_='table_block'))
-
-    if len(ips) == 0:
-        raise ValueError("no proxy")
-
-    print(f'I fond {len(ips)} proxy:\n{ips}')
-
-    if just_one:
-        return np.random.choice(ips)
-    return ips
-
-
 def validate_ParsedProduct(parsed_product: ParsedProduct):
     assert isinstance(parsed_product, dict), "ParsedProduct must be dist"
 
@@ -84,9 +54,23 @@ def validate_ParsedProduct(parsed_product: ParsedProduct):
 
 
 def postprocess_parsed_product(parsed_product: ParsedProduct) -> ParsedProduct:
-    validate_ParsedProduct(parsed_product)
+    # title to loser case
     parsed_product['title'] = remove_odd_space(parsed_product['title'].lower())
-    parsed_product['unit_title'] = remove_odd_space(parsed_product['unit_title'].lower())
+    if parsed_product['title'][0] in {'"', "'"}:
+        parsed_product['title'] = parsed_product['title'][1:]
+    if parsed_product['title'][-1] in {'"', "'"}:
+        parsed_product['title'] = parsed_product['title'][:-1]
+
+    if isinstance(parsed_product['price_new'], str):
+        parsed_product['price_new'] = float(remove_ALL_spaces(parsed_product['price_new']).lower().replace(',', '.'))
+
+    # set unit title
+    if parsed_product['unit_title'] is not None:
+        parsed_product['unit_title'] = remove_ALL_spaces(parsed_product['unit_title'].lower())
+
+    if parsed_product['unit_title'] is None:
+        pass
+
     return parsed_product
 
 

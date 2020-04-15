@@ -3,6 +3,8 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import time
 
+from selenium import webdriver
+
 from parser_app.logic.handlers.handler_interface import \
     HandlerInterface, ParsedProduct
 from parser_app.logic.handlers.handler_tools import get_empty_parsed_product_dict
@@ -14,8 +16,14 @@ class OkeySpbHandler(HandlerInterface):
     def __init__(self):
         super().__init__()
 
-    def _get_handler_name(self) -> str:
+    def get_handler_name(self) -> str:
         return 'okey_spb'
+
+    def get_test_ulr(self) -> str:
+        return r"https://www.okeydostavka.ru/spb"
+
+    def test_web_driver(self, driver: webdriver.Chrome) -> bool:
+        return True
 
     def _create_serch_url_for_category(self, cat_title: str):
         return rf"https://www.okeydostavka.ru/webapp/wcs/stores/servlet/SearchDisplay?categoryId=&storeId=10653&catalogId=12052&langId=-20&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=72&searchTerm={cat_title}"
@@ -30,7 +38,7 @@ class OkeySpbHandler(HandlerInterface):
             str(categoty_row['cat_title']).replace(' ', '+')
         )
 
-        print(f"{self._get_handler_name()} -> {categoty_row['cat_title']}")
+        print(f"{self.get_handler_name()} -> {categoty_row['cat_title']}")
         print(f'using url:\n{url}')
 
         self._driver.get(url)
