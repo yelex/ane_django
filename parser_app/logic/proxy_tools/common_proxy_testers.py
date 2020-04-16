@@ -19,8 +19,17 @@ def simple_test_is_proxy_suit(proxy_ip_with_port: str, site_handler) -> bool:
     :param site_handler: HandlerInterface
     :return:
     """
-    driver = create_webdriver_with_proxy(proxy_ip_with_port)
-    return simple_test_driver_with_url(driver, site_handler.get_test_ulr())
+    try:
+        driver = create_webdriver_with_proxy(proxy_ip_with_port)
+        test_result = simple_test_driver_with_url(driver, site_handler.get_test_ulr())
+        return test_result
+    except:
+        return False
+    finally:
+        try:
+            driver.quit()
+        except:
+            pass
 
 
 def simple_test_driver_with_url(driver: webdriver.Chrome, url: str) -> bool:

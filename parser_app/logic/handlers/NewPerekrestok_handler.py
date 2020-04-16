@@ -4,6 +4,7 @@ from typing import List
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
+from anehome.settings import DEVELOP_MODE
 from parser_app.logic.handlers.handler_interface import HandlerInterface
 from parser_app.logic.handlers.handler_tools import ParsedProduct, get_empty_parsed_product_dict
 from parser_app.logic.handlers.tools import remove_odd_space
@@ -16,6 +17,9 @@ class PerekrestokInterfaceHandler(HandlerInterface):
 
     # implement in every real handler
     def get_handler_name(self) -> str:
+        raise NotImplemented
+
+    def _get_cookie(self) -> List:
         raise NotImplemented
 
     def test_web_driver(self, driver: webdriver.Chrome) -> bool:
@@ -94,22 +98,25 @@ class PerekrestokInterfaceHandler(HandlerInterface):
 
         soup = BeautifulSoup(page, 'html.parser')
 
-        # title
-        title = remove_odd_space(soup.find('h1', class_='xf-product-card__title').text)
-        parsed_product['title'] = title
-
-        # price
-        price_item = soup.find('div', class_='xf-product-card__product-buy')
         try:
-            price = price_item.find('div', class_='js-product__old-cost')['data-cost']
+            # title
+            title = remove_odd_space(soup.find('h1', class_='xf-product-card__title').text)
+            parsed_product['title'] = title
+
+            # price
+            price_item = soup.find('div', class_='xf-product-card__product-buy')
+            try:
+                price = price_item.find('div', class_='js-product__old-cost')['data-cost']
+            except:
+                price = price_item.find('div', class_='xf-product-cost__current')['data-cost']
+            parsed_product['price_new'] = price
+
         except:
-            price = price_item.find('div', class_='xf-product-cost__current')['data-cost']
-        parsed_product['price_new'] = price
+            pass
+            # with open(f"_{self.get_handler_name()}_{category_row['cat_title']}_{time.time()}.page_source", 'w+') as file:
+            #     file.write(self._driver.page_source)
 
         return parsed_product
-
-    def _get_cookie(self) -> List:
-        raise NotImplemented
 
 
 class PerekrestokSPBHandler(PerekrestokInterfaceHandler):

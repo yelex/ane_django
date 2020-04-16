@@ -67,12 +67,20 @@ class ProxyKeeper:
                 # FIXME event log
                 print(f"proxy did not pass simple tests : {ip_to_test}")
                 self._mark_proxy_not_suit_handler(ip_to_test, site_handler.get_handler_name())
+                # try:
+                #     driver.quit()
+                # except:
+                #     pass
                 continue
 
             if not site_handler.test_web_driver(driver):
                 # FIXME event log
                 print(f"proxy did not pass handler ({site_handler.get_handler_name}) tests : {ip_to_test}")
                 self._mark_proxy_not_suit_handler(ip_to_test, site_handler.get_handler_name())
+                # try:
+                #     driver.quit()
+                # except:
+                #     pass
                 continue
 
             # FIXME success log
@@ -127,14 +135,19 @@ class ProxyKeeper:
             self._proxy_list = self._proxy_list.append({'proxy': ip_item}, ignore_index=True)
             add_ip_stats['new_ip_added'] += 1
 
-        print(f'proxy update stats\n: {add_ip_stats}')
+        try:
+            # self.remove_not_suited_proxy()
+            self._save_to_disk()
+            json.dump(
+                {'last_update': ProxyKeeper._get_time_in_hours()},
+                open(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json'), 'w'),
+            )
+        except:
+            # FIXME log fatal
+            print("error in saving proxy after update")
+            print("probably, nothing was saved")
 
-        self.remove_not_suited_proxy()
-        self._save_to_disk()
-        json.dump(
-            {'last_update': ProxyKeeper._get_time_in_hours()},
-            open(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json'), 'w'),
-        )
+        print(f'proxy update stats\n: {add_ip_stats}')
 
     @staticmethod
     def get_base_dir_path() -> str:

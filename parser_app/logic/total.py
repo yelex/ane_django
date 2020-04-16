@@ -4,6 +4,8 @@ from parser_app.logic.handlers.NewEldoradoHandler import EldoradoHandlerMSK
 from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK, LentaHandlerSPB
 from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
 from parser_app.logic.handlers.NewPerekrestok_handler import PerekrestokSPBHandler
+from parser_app.logic.handlers.NewRigla_handler import RiglaHandlerSPB
+from parser_app.logic.handlers.NewIKEA_handler import IkeaHandlerMSK
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
@@ -34,8 +36,10 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        df = df.append(EldoradoHandlerMSK().extract_products())
-        # df = df.append(PerekrestokSPBHandler().extract_products())
+        # df = df.append(IkeaHandlerMSK().extract_products())
+        # df = df.append(RiglaHandlerSPB().extract_products())
+        # df = df.append(EldoradoHandlerMSK().extract_products())
+        df = df.append(PerekrestokSPBHandler().extract_products())
 
         # df = df.append(LentaHandlerMSK().extract_products())
         # df = df.append(LentaHandlerSPB().extract_products())

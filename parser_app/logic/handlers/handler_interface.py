@@ -76,6 +76,7 @@ class HandlerInterface:
 
         if len(self._get_cookie()) != 0:
             # need to make single load
+            print(f'Start to add cookie for {self.get_handler_name()}')
 
             self._driver.get(self.get_test_ulr())
 
@@ -115,13 +116,13 @@ class HandlerInterface:
             print(f"can't create driver for {self.get_test_ulr()}, return empty pd.DataFrame")
             return get_empty_handler_DF()
 
-        try:
-            print(f'Start update url list for {self.get_handler_name()}')
-            self._update_url_list_from_search()
-        except Exception as e:
-            print(f"Some exception occur during searching for new urs in {self.get_handler_name()}")
-            self._driver.quit()
-            raise e
+        # try:
+        #     print(f'Start update url list for {self.get_handler_name()}')
+        #     self._update_url_list_from_search()
+        # except Exception as e:
+        #     print(f"Some exception occur during searching for new urs in {self.get_handler_name()}")
+        #     self._driver.quit()
+        #     raise e
 
         try:
             print(f'Start create df by url list {self.get_handler_name()}')
@@ -266,7 +267,7 @@ class HandlerInterface:
                 print(url_row['cat_title'])
                 print(url_row['title'])
                 print(url_row['url'], end='\n\n')
-
+                break
                 continue
 
             parsed_product = postprocess_parsed_product(parsed_product)
@@ -277,3 +278,6 @@ class HandlerInterface:
                 parsed_product,
                 self._full_category_table[self._full_category_table['cat_title'] == url_row['cat_title']].iloc[0],
             )
+
+            if index > 3:
+                break

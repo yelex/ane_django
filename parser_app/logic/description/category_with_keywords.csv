@@ -71,3 +71,9 @@ id,type,sub_type,cat_title,search_word,keywords_cons,keywords_pro
 69,services,services,Проезд в городском муниципальном автобусе,проезд,,
 70,services,services,Стрижка модельная в женском зале,стрижка,,
 71,services,services,Проезд в троллейбусе,проезд,,
+72,non-food,appliances,"Радиоприемные устройства, включая звукозаписывающую или звуковоспроизводящую аппаратуру",радио
+73,non-food,appliances,Холодильники и морозильники бытовые,холодильник,
+74,non-food,appliances,Машины стиральные,стиральная машина,
+75,non-food,appliances,Электропылесосы,электопылесос,
+76,non-food,furniture,Стол обеденный,стол обеденный,
+77,non-food,furniture,Стул с мягким сиденьем,стул мягкий,
