@@ -1,9 +1,13 @@
+import os
+
 import pandas as pd
 import urllib
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, date
 import time
+
+from anehome.settings import DEVELOP_MODE
 from parser_app.logic.global_status import Global
 from parser_app.logic.handlers.tools import tofloat
 
@@ -20,8 +24,18 @@ class SiteHandlerGks:
 
     def get_qry_weekly(self, year):
 
-        df = pd.read_csv(r'~/PycharmProjects/ane_django/parser_app/logic/description/gks_weekly_links.csv', sep=';',
-                         index_col=0)
+        if DEVELOP_MODE:
+            df = pd.read_csv(
+                os.path.join('parser_app', 'logic', 'description', 'gks_weekly_links.csv'),
+                sep=';',
+                index_col=0,
+            )
+        else:
+            df = pd.read_csv(
+                r'~/PycharmProjects/ane_django/parser_app/logic/description/gks_weekly_links.csv',
+                sep=';',
+                index_col=0,
+            )
 
         list_grtov = df['site_link'].values
 

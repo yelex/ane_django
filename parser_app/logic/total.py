@@ -1,11 +1,13 @@
 import sys
 
+from anehome.settings import DEVELOP_MODE
 from parser_app.logic.handlers.NewEldoradoHandler import EldoradoHandlerMSK
 from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK, LentaHandlerSPB
 from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
 from parser_app.logic.handlers.NewPerekrestok_handler import PerekrestokSPBHandler
 from parser_app.logic.handlers.NewRigla_handler import RiglaHandlerSPB
 from parser_app.logic.handlers.NewIKEA_handler import IkeaHandlerMSK
+from parser_app.logic.handlers.NewSvaznoy_handler import SvaznoyHandlerMSK
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
@@ -36,10 +38,13 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
+        # df = df.append(SvaznoyHandlerMSK().extract_products())
         # df = df.append(IkeaHandlerMSK().extract_products())
         # df = df.append(RiglaHandlerSPB().extract_products())
         # df = df.append(EldoradoHandlerMSK().extract_products())
-        df = df.append(PerekrestokSPBHandler().extract_products())
+        # df = df.append(PerekrestokSPBHandler().extract_products())
+
+        df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
 
         # df = df.append(LentaHandlerMSK().extract_products())
         # df = df.append(LentaHandlerSPB().extract_products())
@@ -156,22 +161,24 @@ class Total:
 
         # basket_df.to_csv('basket_df.csv')
         # basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
-        cached_list = []
 
         print('Storing basket to db...')
 
-        try:
-            Basket.objects.all().delete()
-            for _, row in basket_df.iterrows():
-                prod = Basket(date=row['date'],
-                              gks_price=row['gks_price'],
-                              online_price=row['online_price'])
-                cached_list.append(prod)
-                # m.save()
-            Basket.objects.bulk_create(cached_list)
-            print('Storing completed!')
-        except:
-            print('fail to create backet sql base')
+        # try:
+        cached_list = []
+        Basket.objects.all().delete()
+        for _, row in basket_df.iterrows():
+            prod = Basket(
+                date=row['date'],
+                gks_price=row['gks_price'],
+                online_price=row['online_price'],
+            )
+            cached_list.append(prod)
+            # m.save()
+        Basket.objects.bulk_create(cached_list)
+        print('Storing completed!')
+        # except:
+        #     print('fail to create backet sql base')
 
         end = datetime.now()
         time_execution = str(end - start)
@@ -179,7 +186,7 @@ class Total:
 
         print('PARSING ENDED!\ntotal time of all execution: {}'.format(time_execution))
 
-        if Global().is_shutdown is True:
+        if Global().is_shutdown is True and not DEVELOP_MODE:
             # os.system('shutdown /p /f') # windows
             os.system('systemctl poweroff') # linux
 
