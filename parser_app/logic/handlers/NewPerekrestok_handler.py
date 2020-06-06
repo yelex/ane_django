@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Union
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -7,7 +7,7 @@ from selenium import webdriver
 from anehome.settings import DEVELOP_MODE
 from parser_app.logic.handlers.handler_interface import HandlerInterface
 from parser_app.logic.handlers.handler_tools import ParsedProduct, get_empty_parsed_product_dict
-from parser_app.logic.handlers.tools import remove_odd_space
+from parser_app.logic.handlers.handler_tools import remove_odd_space
 
 
 class PerekrestokInterfaceHandler(HandlerInterface):
@@ -38,10 +38,9 @@ class PerekrestokInterfaceHandler(HandlerInterface):
     def _create_serch_url_for_category(self, name: str) -> str:
         return rf"https://perekrestok.ru/catalog/search?text={name}"
 
-    def _get_parsed_product_from_search(self, category_row) -> List[ParsedProduct]:
-
+    def _get_parsed_product_from_search(self, category_row) -> Union[None, List[ParsedProduct]]:
         if category_row['type'] != 'food':
-            return []
+            return None
 
         parsed_product_list = []
 
@@ -52,11 +51,13 @@ class PerekrestokInterfaceHandler(HandlerInterface):
         print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
         print(f'using url:\n{url}')
 
-        self._driver.get(url)
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        time.sleep(6.0)
-
-        soup = BeautifulSoup(self._driver.page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         for parsed_item in soup.find_all('li', class_='xf-catalog__item'):
 
@@ -85,41 +86,35 @@ class PerekrestokInterfaceHandler(HandlerInterface):
 
         return parsed_product_list
 
-    def _get_parsed_product_from_url(self, url) -> ParsedProduct:
+    def _get_parsed_product_from_url(self, url) -> Union[None, ParsedProduct]:
 
-        self._driver.get(url)
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        time.sleep(5.0)
-
-        page = self._driver.page_source
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         parsed_product = get_empty_parsed_product_dict()
         parsed_product['url'] = url
 
-        soup = BeautifulSoup(page, 'html.parser')
+        # title
+        title = remove_odd_space(soup.find('h1', class_='xf-product-card__title').text)
+        parsed_product['title'] = title
 
+        # price
+        price_item = soup.find('div', class_='xf-product-card__product-buy')
         try:
-            # title
-            title = remove_odd_space(soup.find('h1', class_='xf-product-card__title').text)
-            parsed_product['title'] = title
-
-            # price
-            price_item = soup.find('div', class_='xf-product-card__product-buy')
-            try:
-                price = price_item.find('div', class_='js-product__old-cost')['data-cost']
-            except:
-                price = price_item.find('div', class_='xf-product-cost__current')['data-cost']
-            parsed_product['price_new'] = price
-
+            price = price_item.find('div', class_='js-product__old-cost')['data-cost']
         except:
-            pass
-            # with open(f"_{self.get_handler_name()}_{category_row['cat_title']}_{time.time()}.page_source", 'w+') as file:
-            #     file.write(self._driver.page_source)
+            price = price_item.find('div', class_='xf-product-cost__current')['data-cost']
+        parsed_product['price_new'] = price
 
         return parsed_product
 
 
-class PerekrestokSPBHandler(PerekrestokInterfaceHandler):
+class PerekrestokHandlerSPB(PerekrestokInterfaceHandler):
 
     def get_handler_name(self) -> str:
         return 'perekrestok_spb'

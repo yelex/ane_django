@@ -9,8 +9,10 @@ import numpy as np
 from typing import List
 from selenium import webdriver
 
+from anehome.settings import DEVELOP_MODE
 from parser_app.logic.global_status import create_webdriver_with_proxy
-from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_is_proxy_suit
+# from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_is_proxy_suit
+from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url
 
 from parser_app.logic.proxy_tools.proxy_habdler_interface import ProxyHandlerInterface
 from parser_app.logic.proxy_tools.proxy_handler_PROXYNOVA import ProxynovaProxyHandler
@@ -25,6 +27,9 @@ USED_PROXY_HANDLERS: List[ProxyHandlerInterface] = [
 ]
 
 
+FULL_UPDATE_EVERY_HOUR: bool = DEVELOP_MODE
+
+
 class ProxyKeeper:
 
     def __init__(self):
@@ -37,10 +42,13 @@ class ProxyKeeper:
 
         self._reload_from_disk()
         ProxyKeeper._create_file_if_not_exist()
-        last_update_date = json.load(open(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json'), 'r'))
+        last_update_date = json.load(open(os.path.join(ProxyKeeper.get_base_dir_path(), 'last_update.json'), 'r'))['last_update']
         print(f'last update date : {last_update_date}, current time : {ProxyKeeper._get_time_in_hours()}')
 
-        if last_update_date['last_update'] != ProxyKeeper._get_time_in_hours():
+        if last_update_date != ProxyKeeper._get_time_in_hours():
+            if FULL_UPDATE_EVERY_HOUR:
+                os.remove(self.get_path_to_proxy_list())
+                os.remove(self.get_path_to_not_suited_list())
             self.update_proxy_list()
 
     def get_proxy_for_site(self, site_handler) -> webdriver.Chrome:
@@ -63,31 +71,31 @@ class ProxyKeeper:
             ip_to_test: str = np.random.choice(choose_from)
             driver = create_webdriver_with_proxy(ip_to_test)
 
-            if not simple_test_is_proxy_suit(ip_to_test, site_handler):
+            if not simple_test_driver_with_url(driver, site_handler.get_test_ulr()):
                 # FIXME event log
                 print(f"proxy did not pass simple tests : {ip_to_test}")
                 self._mark_proxy_not_suit_handler(ip_to_test, site_handler.get_handler_name())
-                # try:
-                #     driver.quit()
-                # except:
-                #     pass
+                try:
+                    driver.quit()
+                except:
+                    pass
                 continue
 
             if not site_handler.test_web_driver(driver):
                 # FIXME event log
                 print(f"proxy did not pass handler ({site_handler.get_handler_name}) tests : {ip_to_test}")
                 self._mark_proxy_not_suit_handler(ip_to_test, site_handler.get_handler_name())
-                # try:
-                #     driver.quit()
-                # except:
-                #     pass
+                try:
+                    driver.quit()
+                except:
+                    pass
                 continue
 
             # FIXME success log
             print(f"proxy  *{ip_to_test}* suit handler : {site_handler.get_handler_name()}")
             break
 
-        self.remove_not_suited_proxy()
+        # self.remove_not_suited_proxy()
 
         return driver
 

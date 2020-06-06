@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 import pandas as pd
 from bs4 import BeautifulSoup
 import time
@@ -11,7 +11,7 @@ from parser_app.logic.handlers.handler_tools import get_empty_parsed_product_dic
 from parser_app.logic.handlers.tools import wspex, find_float_number
 
 
-class OkeySpbHandler(HandlerInterface):
+class OkeyHandlerSPB(HandlerInterface):
 
     def __init__(self):
         super().__init__()
@@ -28,9 +28,9 @@ class OkeySpbHandler(HandlerInterface):
     def _create_serch_url_for_category(self, cat_title: str):
         return rf"https://www.okeydostavka.ru/webapp/wcs/stores/servlet/SearchDisplay?categoryId=&storeId=10653&catalogId=12052&langId=-20&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=72&searchTerm={cat_title}"
 
-    def _get_parsed_product_from_search(self, categoty_row) -> List[ParsedProduct]:
+    def _get_parsed_product_from_search(self, categoty_row) -> Union[None, List[ParsedProduct]]:
         if categoty_row['type'] != 'food':
-            return []
+            return None
 
         parsed_product_list = []
 
@@ -41,11 +41,13 @@ class OkeySpbHandler(HandlerInterface):
         print(f"{self.get_handler_name()} -> {categoty_row['cat_title']}")
         print(f'using url:\n{url}')
 
-        self._driver.get(url)
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        time.sleep(6.0)
-
-        soup = BeautifulSoup(self._driver.page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         for product_list in soup.find_all('div', class_='product_listing_container'):
             for product_item in product_list.find_all('div', class_='product'):
@@ -90,22 +92,17 @@ class OkeySpbHandler(HandlerInterface):
 
         return parsed_product_list
 
-    def _get_parsed_product_from_url(self, url) -> ParsedProduct:
-        self._driver.get(url)
+    def _get_parsed_product_from_url(self, url) -> Union[None, ParsedProduct]:
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        time.sleep(5.0)
-
-        page = self._driver.page_source
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         parsed_product = get_empty_parsed_product_dict()
         parsed_product['url'] = url
-
-        soup = BeautifulSoup(page, 'html.parser')
-
-        print(f'temp_{time.time()}.soup')
-
-        with open(f'temp_{time.time()}.soup', 'w') as file:
-            file.write(str(soup))
 
         # title
         parsed_product['title'] = soup.find('h1', class_='main_header').text
@@ -131,6 +128,8 @@ class OkeySpbHandler(HandlerInterface):
 
             unit_value = find_float_number(unit_item.find('div', class_='attributes__value').text)
             parsed_product['unit_value'] = unit_value
+
+            parsed_product['unparsed_units'] = unit_value + " " + unit_title
         except:
             pass
 

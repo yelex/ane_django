@@ -1,14 +1,14 @@
 import json
 import os
 import time
-from typing import List
+from typing import List, Union
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
 from parser_app.logic.handlers.handler_interface import HandlerInterface
 from parser_app.logic.handlers.handler_tools import ParsedProduct, get_empty_parsed_product_dict
-from parser_app.logic.handlers.tools import remove_odd_space, remove_non_digits
+from parser_app.logic.handlers.handler_tools import remove_odd_space, remove_non_digits
 
 
 class SvaznoyHandlerInterface(HandlerInterface):
@@ -26,7 +26,7 @@ class SvaznoyHandlerInterface(HandlerInterface):
         This can be not changed in real handlers, cause there are simple test to connections.
 
         :param driver: webdriver.Chrome
-        :return: True if cat use
+        :return: True if can use
         """
         return True
 
@@ -36,9 +36,9 @@ class SvaznoyHandlerInterface(HandlerInterface):
     def get_test_ulr(self) -> str:
         return r"https://www.svyaznoy.ru"
 
-    def _get_parsed_product_from_search(self, category_row) -> List[ParsedProduct]:
+    def _get_parsed_product_from_search(self, category_row) -> Union[None, List[ParsedProduct]]:
         if category_row['sub_type'] != 'appliances':
-            return []
+            return None
 
         parsed_product_list = []
 
@@ -47,13 +47,15 @@ class SvaznoyHandlerInterface(HandlerInterface):
         print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
         print(f'using url:\n{url}')
 
-        self._driver.get(url)
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        time.sleep(2.0)
+        soup = BeautifulSoup(page_source, 'html.parser')
 
-        soup = BeautifulSoup(self._driver.page_source, 'html.parser')
-
-        for parsed_item in soup.find_all('div', class_='product'):
+        for parsed_item in soup.find_all('div', class_='b-product-block'):
             try:
                 parsed_product = get_empty_parsed_product_dict()
 
@@ -61,10 +63,10 @@ class SvaznoyHandlerInterface(HandlerInterface):
                 title = remove_odd_space(parsed_item.find('div', class_='b-product-block__name').text)
                 try:
                     sub_title = remove_odd_space(parsed_item.find('div', class_='b-product-block__type').text)
-                except:
-                    sub_title = ""
-                if sub_title != "":
                     title = sub_title + ' ' + title
+                except:
+                    pass
+
                 parsed_product['title'] = title
 
                 # url
@@ -79,22 +81,23 @@ class SvaznoyHandlerInterface(HandlerInterface):
                 parsed_product_list.append(parsed_product)
             except:
                 # FIXME log fatal
-                print("can't parse rigla item")
+                print("can't parse svaznoy item")
                 print(parsed_item)
 
         return parsed_product_list
 
-    def _get_parsed_product_from_url(self, url) -> ParsedProduct:
-        self._driver.get(url)
+    def _get_parsed_product_from_url(self, url) -> Union[None, ParsedProduct]:
 
-        time.sleep(5.0)
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        page = self._driver.page_source
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         parsed_product = get_empty_parsed_product_dict()
         parsed_product['url'] = url
-
-        soup = BeautifulSoup(page, 'html.parser')
 
         # title
         title = remove_odd_space(soup.find('h1', class_='b-offer-title').text)

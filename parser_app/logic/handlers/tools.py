@@ -75,28 +75,6 @@ def wspex(x):
     return re.sub(u'\u200a', '', ''.join(x.split()))
 
 
-def remove_odd_space(x: str) -> str:
-    _x = re.sub(r'"', " ", x)
-    _x = re.sub(r'\n', " ", x)
-    _x = _x.replace(u'\xa0', ' ')
-    _x = re.sub(r"\s\s+", " ", _x)
-    if _x[0] == ' ':
-        _x = _x[1:]
-    if _x[-1] == ' ':
-        _x = _x[:-1]
-    return str(_x)
-
-
-def remove_non_digits(x: str) -> str:
-    return re.sub(r'\D', '', x)
-
-
-def remove_ALL_spaces(x: str) -> str:
-    _x = remove_odd_space(x)
-    _x = _x.replace(' ', '')
-    return str(_x)
-
-
 def list_html(text):
     return (text.split())
 

@@ -4,7 +4,7 @@ from typing import List
 from bs4 import BeautifulSoup
 
 from parser_app.logic.global_status import get_usual_webdriver
-from parser_app.logic.handlers.tools import remove_odd_space
+from parser_app.logic.handlers.handler_tools import remove_odd_space, load_page_with_TL
 
 
 class ProxynovaProxyHandler:
@@ -15,12 +15,14 @@ class ProxynovaProxyHandler:
     def get_proxy_list(self, port: int = 3128) -> List[str]:
 
         driver = get_usual_webdriver()
-        driver.get('https://www.proxynova.com/proxy-server-list/')
-        time.sleep(7.5)
+        page_source = load_page_with_TL(driver, 'https://www.proxynova.com/proxy-server-list/', 7.5)
+        if page_source is None:
+            # fixme - log - error - can't load web page
+            print(f"can't load page for {self.get_name()}")
+            return []
         ips = []
         try:
-            page = driver.page_source
-            soup = BeautifulSoup(page, 'html.parser')
+            soup = BeautifulSoup(page_source, 'html.parser')
             driver.quit()
 
             for item in soup.find('tbody').find_all('tr'):

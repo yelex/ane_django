@@ -1,12 +1,12 @@
 import time
-from typing import List
+from typing import List, Optional, Union
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
 from parser_app.logic.handlers.handler_interface import HandlerInterface
 from parser_app.logic.handlers.handler_tools import ParsedProduct, get_empty_parsed_product_dict
-from parser_app.logic.handlers.tools import remove_odd_space, remove_ALL_spaces
+from parser_app.logic.handlers.handler_tools import remove_odd_space, remove_ALL_spaces
 
 
 class EldoradoHandlerInterface(HandlerInterface):
@@ -28,63 +28,73 @@ class EldoradoHandlerInterface(HandlerInterface):
     def get_test_ulr(self) -> str:
         return rf"https://www.eldorado.ru"
 
-    def _create_serch_url_for_category(self, name: str) -> str:
-        return rf"https://www.eldorado.ru/search/catalog.php?q={name.replace(' ', '+')}&utf"
+    def _create_serch_url_for_category(self, name: str, page_number: Optional[int] = None) -> str:
+        if page_number is None or page_number == 1 or page_number == 0:
+            return rf"https://www.eldorado.ru/search/catalog.php?q={name.replace(' ', '+')}&utf"
+        return rf"https://www.eldorado.ru/search/catalog.php?" \
+               rf"PAGEN_SEARCH={page_number}&q={name.replace(' ', '+')}&utf"
 
-    def _get_parsed_product_from_search(self, category_row) -> List[ParsedProduct]:
-
+    def _get_parsed_product_from_search(self, category_row) -> Union[None, List[ParsedProduct]]:
         if category_row['sub_type'] != 'appliances':
-            return []
+            return None
 
-        parsed_product_list = []
+        full_parsed_product_list = []
 
-        url = self._create_serch_url_for_category(str(category_row['search_word']))
+        for page_num in range(1):
+            parsed_product_list = []
+            url = self._create_serch_url_for_category(str(category_row['search_word']))
 
-        print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
-        print(f'using url:\n{url}')
+            print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
+            print(f'using url:\n{url}')
 
-        self._driver.get(url)
+            page_source = self._load_page_with_TL(url)
+            if page_source is None:
+                # fixme - log - fatal - can't load page
+                print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+                return None
 
-        time.sleep(6.0)
+            soup = BeautifulSoup(page_source, 'html.parser')
 
-        soup = BeautifulSoup(self._driver.page_source, 'html.parser')
-
-        for parsed_item in soup.find_all('div', class_='item'):
-            try:
-                parsed_product = get_empty_parsed_product_dict()
-                # title
-                title = remove_odd_space(parsed_item.find('div', class_='itemTitle').text)
-                parsed_product['title'] = title
-
-                # url
-                url = remove_odd_space(parsed_item.find('div', class_='itemTitle').find('a')['href'])
-                url = f"https:{url}"
-                parsed_product['url'] = url
-
-                # price
+            for parsed_item in soup.find_all('div', class_='item'):
                 try:
-                    price = remove_odd_space(parsed_item.find('span', class_='old-price').text).replace(' ', '')[:-2]
+                    parsed_product = get_empty_parsed_product_dict()
+                    # title
+                    title = remove_odd_space(parsed_item.find('div', class_='itemTitle').text)
+                    parsed_product['title'] = title
+
+                    # url
+                    url = remove_odd_space(parsed_item.find('div', class_='itemTitle').find('a')['href'])
+                    url = f"https:{url}"
+                    parsed_product['url'] = url
+
+                    # price
+                    try:
+                        price = remove_odd_space(parsed_item.find('span', class_='old-price').text).replace(' ', '')[:-2]
+                    except:
+                        price = remove_odd_space(parsed_item.find('span', class_='itemPrice').text).replace(' ', '')[:-2]
+                    parsed_product['price_new'] = price
+                    parsed_product['price_old'] = None
+
+                    # float, value in unit of unit_title
+                    parsed_product['unit_value'] = 1
+                    # string, name of units
+                    parsed_product['unit_title'] = '1шт'
+
+                    parsed_product_list.append(parsed_product)
                 except:
-                    price = remove_odd_space(parsed_item.find('span', class_='itemPrice').text).replace(' ', '')[:-2]
-                parsed_product['price_new'] = price
-                parsed_product['price_old'] = None
+                    pass
+            full_parsed_product_list.extend(parsed_product_list)
+        return full_parsed_product_list
 
-                # float, value in unit of unit_title
-                parsed_product['unit_value'] = 1
-                # string, name of units
-                parsed_product['unit_title'] = '1шт'
+    def _get_parsed_product_from_url(self, url) -> Union[None, ParsedProduct]:
 
-                parsed_product_list.append(parsed_product)
-            except:
-                pass
-        return parsed_product_list
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-    def _get_parsed_product_from_url(self, url) -> ParsedProduct:
-
-        self._driver.get(url)
-
-        time.sleep(5.0)
-        soup = BeautifulSoup(self._driver.page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         parsed_product = get_empty_parsed_product_dict()
         parsed_product['url'] = url

@@ -6,3 +6,4 @@ __pycache__/
 .idea/
 develop_mode_flag_file
 parser_app/logic/proxy_tools/store/
+parser_app/logic/auto_detected_urls/

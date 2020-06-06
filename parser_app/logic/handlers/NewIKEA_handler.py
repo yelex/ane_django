@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from bs4 import BeautifulSoup
 import time
 import json
@@ -8,7 +8,7 @@ from selenium import webdriver
 
 from parser_app.logic.handlers.handler_interface import HandlerInterface, ParsedProduct
 from parser_app.logic.handlers.handler_tools import get_empty_parsed_product_dict
-from parser_app.logic.handlers.tools import remove_odd_space, remove_ALL_spaces
+from parser_app.logic.handlers.handler_tools import remove_odd_space, remove_ALL_spaces
 
 
 class IkeaHandlerInterface(HandlerInterface):
@@ -31,9 +31,9 @@ class IkeaHandlerInterface(HandlerInterface):
     def _get_cookie(self) -> List:
         raise NotImplemented
 
-    def _get_parsed_product_from_search(self, category_row) -> List[ParsedProduct]:
+    def _get_parsed_product_from_search(self, category_row) -> Union[None, List[ParsedProduct]]:
         if category_row['sub_type'] != 'furniture':
-            return []
+            return None
 
         parsed_product_list = []
 
@@ -42,11 +42,13 @@ class IkeaHandlerInterface(HandlerInterface):
         print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
         print(f'using url:\n{url}')
 
-        self._driver.get(url)
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        time.sleep(6.0)
-
-        soup = BeautifulSoup(self._driver.page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         for parsed_item in soup.find_all('div', class_='product-compact__spacer'):
             try:
@@ -76,17 +78,18 @@ class IkeaHandlerInterface(HandlerInterface):
 
         return parsed_product_list
 
-    def _get_parsed_product_from_url(self, url) -> ParsedProduct:
-        self._driver.get(url)
+    def _get_parsed_product_from_url(self, url) -> Union[None, ParsedProduct]:
 
-        time.sleep(5.0)
+        page_source = self._load_page_with_TL(url)
+        if page_source is None:
+            # fixme - log - fatal - can't load page
+            print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
+            return None
 
-        page = self._driver.page_source
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         parsed_product = get_empty_parsed_product_dict()
         parsed_product['url'] = url
-
-        soup = BeautifulSoup(page, 'html.parser')
 
         # title
         title_item = soup.find('div', class_='product-pip__product-heading-container')

@@ -1,10 +1,12 @@
 import sys
 
+from pyvirtualdisplay import Display
+
 from anehome.settings import DEVELOP_MODE
 from parser_app.logic.handlers.NewEldoradoHandler import EldoradoHandlerMSK
 from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK, LentaHandlerSPB
-from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
-from parser_app.logic.handlers.NewPerekrestok_handler import PerekrestokSPBHandler
+from parser_app.logic.handlers.NewOkey_handler import OkeyHandlerSPB
+from parser_app.logic.handlers.NewPerekrestok_handler import PerekrestokHandlerSPB
 from parser_app.logic.handlers.NewRigla_handler import RiglaHandlerSPB
 from parser_app.logic.handlers.NewIKEA_handler import IkeaHandlerMSK
 from parser_app.logic.handlers.NewSvaznoy_handler import SvaznoyHandlerMSK
@@ -38,21 +40,24 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        # df = df.append(SvaznoyHandlerMSK().extract_products())
-        # df = df.append(IkeaHandlerMSK().extract_products())
-        # df = df.append(RiglaHandlerSPB().extract_products())
-        # df = df.append(EldoradoHandlerMSK().extract_products())
-        # df = df.append(PerekrestokSPBHandler().extract_products())
+        # use display from pyVirtual display package in order to launch selenium not in a real window
+        with Display():
+            df = df.append(SvaznoyHandlerMSK().extract_products())
+            df = df.append(IkeaHandlerMSK().extract_products())
+            # df = df.append(RiglaHandlerSPB().extract_products())
+            # df = df.append(EldoradoHandlerMSK().extract_products())
+            # df = df.append(PerekrestokHandlerSPB().extract_products())
+            # df = df.append(LentaHandlerMSK().extract_products())
+            # df = df.append(LentaHandlerSPB().extract_products())
+            # df = df.append(OkeyHandlerSPB().extract_products())
 
-        df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
+            # df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
 
-        # df = df.append(LentaHandlerMSK().extract_products())
-        # df = df.append(LentaHandlerSPB().extract_products())
-        # df = df.append(OkeySpbHandler().extract_products())
-        #
-        # df = df.append(TotalGrocery().get_df_page())
-        # df = df.append(TotalNongrocery().get_df_page())
-        # df = df.append(Services().get_df())
+
+            #
+            # df = df.append(TotalGrocery().get_df_page())
+            # df = df.append(TotalNongrocery().get_df_page())
+            # df = df.append(Services().get_df())
 
         df['date'] = pd.to_datetime(datetime.now().strftime("%Y-%m-%d"))
 
