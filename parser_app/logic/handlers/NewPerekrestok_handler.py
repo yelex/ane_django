@@ -44,14 +44,12 @@ class PerekrestokInterfaceHandler(HandlerInterface):
 
         parsed_product_list = []
 
-        url = self._create_serch_url_for_category(
-            str(category_row['search_word'])
-        )
+        url = self._create_serch_url_for_category(category_row['search_word'])
 
         print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
         print(f'using url:\n{url}')
 
-        page_source = self._load_page_with_TL(url)
+        page_source = self._load_page_with_TL(url, 10.0)
         if page_source is None:
             # fixme - log - fatal - can't load page
             print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
@@ -88,7 +86,7 @@ class PerekrestokInterfaceHandler(HandlerInterface):
 
     def _get_parsed_product_from_url(self, url) -> Union[None, ParsedProduct]:
 
-        page_source = self._load_page_with_TL(url)
+        page_source = self._load_page_with_TL(url, 10.0)
         if page_source is None:
             # fixme - log - fatal - can't load page
             print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
@@ -100,16 +98,24 @@ class PerekrestokInterfaceHandler(HandlerInterface):
         parsed_product['url'] = url
 
         # title
-        title = remove_odd_space(soup.find('h1', class_='xf-product-card__title').text)
+        try:
+            title = remove_odd_space(soup.find('h1', class_='xf-product-card__title').text)
+        except:
+            title = remove_odd_space(soup.find('h1', class_='xf-product-new__title').text)
+        title = remove_odd_space(title)
         parsed_product['title'] = title
 
         # price
-        price_item = soup.find('div', class_='xf-product-card__product-buy')
+        price_new = soup.find('span', class_='js-price-rouble').text
+        price_new = remove_odd_space(price_new)
+        parsed_product['price_new'] = price_new
+
         try:
-            price = price_item.find('div', class_='js-product__old-cost')['data-cost']
+            price_old = soup.find('span', class_='js-old-price-rouble').text
+            price_old = remove_odd_space(price_old)
         except:
-            price = price_item.find('div', class_='xf-product-cost__current')['data-cost']
-        parsed_product['price_new'] = price
+            price_old = None
+        parsed_product['price_old'] = price_old
 
         return parsed_product
 

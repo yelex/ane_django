@@ -44,20 +44,19 @@ class Total:
         with Display():
             df = df.append(SvaznoyHandlerMSK().extract_products())
             df = df.append(IkeaHandlerMSK().extract_products())
-            # df = df.append(RiglaHandlerSPB().extract_products())
-            # df = df.append(EldoradoHandlerMSK().extract_products())
-            # df = df.append(PerekrestokHandlerSPB().extract_products())
-            # df = df.append(LentaHandlerMSK().extract_products())
-            # df = df.append(LentaHandlerSPB().extract_products())
-            # df = df.append(OkeyHandlerSPB().extract_products())
+            df = df.append(RiglaHandlerSPB().extract_products())
+            df = df.append(EldoradoHandlerMSK().extract_products())
+            df = df.append(PerekrestokHandlerSPB().extract_products())
+            df = df.append(LentaHandlerMSK().extract_products())
+            df = df.append(LentaHandlerSPB().extract_products())
+            df = df.append(OkeyHandlerSPB().extract_products())
 
-            # df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
+            df = df.append(TotalGrocery().get_df_page())
+            df = df.append(TotalNongrocery().get_df_page())
+            df = df.append(Services().get_df())
 
-
-            #
-            # df = df.append(TotalGrocery().get_df_page())
-            # df = df.append(TotalNongrocery().get_df_page())
-            # df = df.append(Services().get_df())
+        # uncomment for tests
+        # df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
 
         df['date'] = pd.to_datetime(datetime.now().strftime("%Y-%m-%d"))
 
@@ -103,8 +102,6 @@ class Total:
             # product = ProductHandler(**dict(row))
             # cached_list.append(product)
             # Person.objects.bulk_create(person_list)
-            print(row['category_title'])
-            print(type(row['category_title']))
             prod = PricesRaw(date=row['date'],
                              type=row['type'],
                              category_id=row['category_id'],

@@ -34,7 +34,7 @@ class LentaHandlerInterface(HandlerInterface):
 
         print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
 
-        page_source = self._load_page_with_TL(url)
+        page_source = self._load_page_with_TL(url, 10.0)
         if page_source is None:
             # fixme - log - fatal - can't load page
             print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
@@ -81,7 +81,7 @@ class LentaHandlerInterface(HandlerInterface):
 
     def _get_parsed_product_from_url(self, url) -> Union[None, ParsedProduct]:
 
-        page_source = self._load_page_with_TL(url)
+        page_source = self._load_page_with_TL(url, 10.0)
         if page_source is None:
             # fixme - log - fatal - can't load page
             print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")
@@ -98,26 +98,25 @@ class LentaHandlerInterface(HandlerInterface):
         parsed_product['url'] = url
 
         # title
-        title = remove_odd_space(str(soup.find('div', class_='sku-card__title').text))
+        title = remove_odd_space(str(soup.find('h1', class_='sku-page__title').text))
         try:
-            sub_title = remove_odd_space(soup.find('div', class_='sku-card__sub-title').text)
+            sub_title = remove_odd_space(soup.find('div', class_='sku-page__sub-title').text)
             title += ' ' + sub_title
         except:
-            # just no subtitle
             pass
         parsed_product['title'] = title
 
         # price
-        for item in soup.find_all('div', class_='sku-card-params__item'):
+        for item in soup.find_all('div', class_='sku-prices-block__item'):
             if 'обычная' in str(item).lower():
-                price = remove_odd_space(item.find('dd', class_='price__regular').text).replace(' ', '')
+                price = remove_odd_space(item.find('span', class_='sku-price__integer').text).replace(' ', '')
                 parsed_product['price_new'] = float(price.replace(',', '.'))
 
         # unit
         for item in soup.find_all('div', class_='sku-card-tab-params__item'):
             if 'Упаковка' in str(item):
                 unit = remove_odd_space(item.find('dd', 'sku-card-tab-params__value').text)
-                parsed_product['unit_title'] = unit
+                parsed_product['unparsed_units'] = unit
 
         return parsed_product
 

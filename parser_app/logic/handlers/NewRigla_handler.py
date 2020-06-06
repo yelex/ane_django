@@ -52,7 +52,7 @@ class RiglaHandlerInterface(HandlerInterface):
         print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
         print(f'using url:\n{url}')
 
-        page_source = self._load_page_with_TL(url)
+        page_source = self._load_page_with_TL(url, 10.0)
         if page_source is None:
             # fixme - log - fatal - can't load page
             print(f"can't load page, info:\n, handler : {self.get_handler_name()}\nurl: {url}")

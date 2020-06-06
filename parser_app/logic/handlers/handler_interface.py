@@ -1,6 +1,5 @@
 import os
 import re
-import time
 from typing import List, Set, Union, Dict, Any
 from datetime import datetime
 import pandas as pd
@@ -13,7 +12,8 @@ from parser_app.logic.handlers.handler_tools import \
     ParsedProduct, \
     get_empty_handler_DF, \
     validate_ParsedProduct, \
-    postprocess_parsed_product, load_page_with_TL
+    postprocess_parsed_product, \
+    load_page_with_TL
 from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url
 from parser_app.logic.proxy_tools.proxy_keeper import ProxyKeeper
 
@@ -88,7 +88,7 @@ class HandlerInterface:
         self._returned_df: pd.DataFrame = get_empty_handler_DF()
         self._url_done: Set[str] = set()
 
-    def _load_page_with_TL(self, page_url, time_limit: float = 5) -> Union[str, None]:
+    def _load_page_with_TL(self, page_url, time_limit: float = 7.5) -> Union[str, None]:
         return load_page_with_TL(self._driver, page_url, time_limit)
 
     def _create_webdriver(self):
@@ -111,12 +111,18 @@ class HandlerInterface:
             # need to make single load
             print(f'Start to add cookie for {self.get_handler_name()}')
 
-            self._driver.get(self.get_test_ulr())
+            test_page = self._load_page_with_TL(self.get_test_ulr(), 10.0)
+            if test_page is None:
+                print(f"problem with loading page on handler : {self.get_handler_name()}")
+                raise ValueError(
+                    f"can't set cookie, cause of problem with first loading, "
+                    f"parser : {self.get_handler_name()}"
+                )
 
             for cookie in self._get_cookie():
                 if isinstance(cookie, dict) and 'sameSite' in cookie:
                     del cookie['sameSite']
-                self._driver.add_cookie(cookie)
+                self._driver.add_cookie({"name": cookie["name"], "value": cookie["value"]})
 
             # FIXME susses log
 
@@ -148,9 +154,10 @@ class HandlerInterface:
             try:
                 # self._url_getter.reinit_for_baseURL(self.get_test_ulr(), self._get_cookie(), 5)
                 self._create_webdriver()
-            except:
+            except Exception as e:
                 # FIXME fatal log
                 print(f"can't create driver for {self.get_test_ulr()}, return empty pd.DataFrame")
+                raise e
                 return get_empty_handler_DF()
 
             try:

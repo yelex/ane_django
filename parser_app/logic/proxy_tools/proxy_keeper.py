@@ -69,6 +69,10 @@ class ProxyKeeper:
                 raise ValueError(f'no proxy suit handler : {site_handler.get_handler_name()}')
 
             ip_to_test: str = np.random.choice(choose_from)
+
+            # to test proxy set it here
+            # ip_to_test = "51.178.220.168:3128"
+
             driver = create_webdriver_with_proxy(ip_to_test)
 
             if not simple_test_driver_with_url(driver, site_handler.get_test_ulr()):

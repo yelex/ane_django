@@ -35,7 +35,7 @@ class OkeyHandlerSPB(HandlerInterface):
         parsed_product_list = []
 
         url = self._create_serch_url_for_category(
-            str(categoty_row['cat_title']).replace(' ', '+')
+            str(categoty_row['search_word']).replace(' ', '+')
         )
 
         print(f"{self.get_handler_name()} -> {categoty_row['cat_title']}")
