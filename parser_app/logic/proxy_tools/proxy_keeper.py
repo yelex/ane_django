@@ -10,7 +10,7 @@ from typing import List
 from selenium import webdriver
 
 from anehome.settings import DEVELOP_MODE
-from parser_app.logic.global_status import create_webdriver_with_proxy
+from parser_app.logic.global_status import create_webdriver_with_proxy, create_webdriver
 # from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_is_proxy_suit
 from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url
 
@@ -51,7 +51,7 @@ class ProxyKeeper:
                 os.remove(self.get_path_to_not_suited_list())
             self.update_proxy_list()
 
-    def get_proxy_for_site(self, site_handler) -> webdriver.Chrome:
+    def get_web_driver_for_site(self, site_handler, **driver_options) -> webdriver.Chrome:
         """
         site_handler MUST ME HandlerInterface instance
         """
@@ -73,9 +73,9 @@ class ProxyKeeper:
             # to test proxy set it here
             # ip_to_test = "51.178.220.168:3128"
 
-            driver = create_webdriver_with_proxy(ip_to_test)
+            driver = create_webdriver(ip_to_test, **driver_options)
 
-            if not simple_test_driver_with_url(driver, site_handler.get_test_ulr()):
+            if not simple_test_driver_with_url(driver, site_handler.get_test_url()):
                 # FIXME event log
                 print(f"proxy did not pass simple tests : {ip_to_test}")
                 self._mark_proxy_not_suit_handler(ip_to_test, site_handler.get_handler_name())

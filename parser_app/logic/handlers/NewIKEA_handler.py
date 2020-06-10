@@ -19,7 +19,7 @@ class IkeaHandlerInterface(HandlerInterface):
     def get_handler_name(self) -> str:
         raise NotImplemented
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         return r"https://www.ikea.com/ru/ru/"
 
     def test_web_driver(self, driver: webdriver.Chrome) -> bool:

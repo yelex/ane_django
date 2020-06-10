@@ -39,7 +39,7 @@ class HandlerInterface:
         """
         return True
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         """
         Return single string - url of shop.
         Fro example 'http://ikea.com'
@@ -91,15 +91,24 @@ class HandlerInterface:
     def _load_page_with_TL(self, page_url, time_limit: float = 7.5) -> Union[str, None]:
         return load_page_with_TL(self._driver, page_url, time_limit)
 
+    def _get_domain(self, url: str) -> str:
+        a = url.split('//')
+        if len(a) == 1:
+            a = a[0]
+        else:
+            a = a[1]
+        a = a.split('.')
+        return '.' + a[-2] + '.' + a[-1]
+
     def _create_webdriver(self):
         proxy_keeper = ProxyKeeper()
         try:
-            driver = proxy_keeper.get_proxy_for_site(self)
+            driver = proxy_keeper.get_web_driver_for_site(self)
         except:
             # FIXME fatal log
             print(f"can't create proxy for {self.get_handler_name()}")
             driver = get_usual_webdriver()
-            if not self.test_web_driver(driver) or not simple_test_driver_with_url(driver, self.get_test_ulr()):
+            if not self.test_web_driver(driver) or not simple_test_driver_with_url(driver, self.get_test_url()):
                 # FIXME fatal log
                 print(f"can't create usual driver for {self.get_handler_name()}")
                 driver.quit()
@@ -111,7 +120,7 @@ class HandlerInterface:
             # need to make single load
             print(f'Start to add cookie for {self.get_handler_name()}')
 
-            test_page = self._load_page_with_TL(self.get_test_ulr(), 10.0)
+            test_page = self._load_page_with_TL(self.get_test_url(), 10.0)
             if test_page is None:
                 print(f"problem with loading page on handler : {self.get_handler_name()}")
                 raise ValueError(
@@ -119,10 +128,16 @@ class HandlerInterface:
                     f"parser : {self.get_handler_name()}"
                 )
 
+            print(test_page, len(test_page))
+
+            domain = self._get_domain(self.get_test_url())
+            # print(f"domain {domain} for {self.get_test_ulr()}")
             for cookie in self._get_cookie():
-                if isinstance(cookie, dict) and 'sameSite' in cookie:
-                    del cookie['sameSite']
-                self._driver.add_cookie({"name": cookie["name"], "value": cookie["value"]})
+                self._driver.add_cookie({
+                    "name": cookie["name"],
+                    "value": cookie["value"],
+                    # "domain": domain,
+                })
 
             # FIXME susses log
 
@@ -149,37 +164,37 @@ class HandlerInterface:
         and then (2) create DataFrame from url list
         :return: pd.DataFrame with ???
         """
-        with Display():
+        # with Display():
 
-            try:
-                # self._url_getter.reinit_for_baseURL(self.get_test_ulr(), self._get_cookie(), 5)
-                self._create_webdriver()
-            except Exception as e:
-                # FIXME fatal log
-                print(f"can't create driver for {self.get_test_ulr()}, return empty pd.DataFrame")
-                raise e
-                return get_empty_handler_DF()
+        try:
+            # self._url_getter.reinit_for_baseURL(self.get_test_ulr(), self._get_cookie(), 5)
+            self._create_webdriver()
+        except Exception as e:
+            # FIXME fatal log
+            print(f"can't create driver for {self.get_test_url()}, return empty pd.DataFrame")
+            raise e
+            # return get_empty_handler_DF()
 
-            try:
-                print(f'Start update url list for {self.get_handler_name()}')
-                self._update_url_list_from_search()
-            except Exception as e:
-                print(f"Some exception occur during searching for new urs in {self.get_handler_name()}")
-                self._driver.quit()
-                raise e
+        try:
+            print(f'Start update url list for {self.get_handler_name()}')
+            self._update_url_list_from_search()
+        except Exception as e:
+            print(f"Some exception occur during searching for new urs in {self.get_handler_name()}")
+            self._driver.quit()
+            raise e
 
-            try:
-                print(f'Start create df by url list {self.get_handler_name()}')
-                self._get_df_from_url_list()
-            except Exception as e:
-                print(f"Some exception occur during handling individual urls in {self.get_handler_name()}")
-                self._driver.quit()
-                raise e
+        try:
+            print(f'Start create df by url list {self.get_handler_name()}')
+            self._get_df_from_url_list()
+        except Exception as e:
+            print(f"Some exception occur during handling individual urls in {self.get_handler_name()}")
+            self._driver.quit()
+            raise e
 
-            try:
-                self._driver.quit()
-            except:
-                pass
+        try:
+            self._driver.quit()
+        except:
+            pass
 
         return self._returned_df
 

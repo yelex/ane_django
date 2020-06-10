@@ -41,22 +41,22 @@ class Total:
                                    'site_link', 'site_code'])
 
         # use display from pyVirtual display package in order to launch selenium not in a real window
-        with Display():
-            df = df.append(SvaznoyHandlerMSK().extract_products())
-            df = df.append(IkeaHandlerMSK().extract_products())
-            df = df.append(RiglaHandlerSPB().extract_products())
-            df = df.append(EldoradoHandlerMSK().extract_products())
-            df = df.append(PerekrestokHandlerSPB().extract_products())
-            df = df.append(LentaHandlerMSK().extract_products())
-            df = df.append(LentaHandlerSPB().extract_products())
-            df = df.append(OkeyHandlerSPB().extract_products())
-
-            df = df.append(TotalGrocery().get_df_page())
-            df = df.append(TotalNongrocery().get_df_page())
-            df = df.append(Services().get_df())
+        # with Display():
+        #     df = df.append(SvaznoyHandlerMSK().extract_products())
+            # df = df.append(IkeaHandlerMSK().extract_products())
+            # df = df.append(RiglaHandlerSPB().extract_products())
+            # df = df.append(EldoradoHandlerMSK().extract_products())
+            # df = df.append(PerekrestokHandlerSPB().extract_products())
+            # df = df.append(LentaHandlerMSK().extract_products())
+            # df = df.append(LentaHandlerSPB().extract_products())
+            # df = df.append(OkeyHandlerSPB().extract_products())
+            #
+            # df = df.append(TotalGrocery().get_df_page())
+            # df = df.append(TotalNongrocery().get_df_page())
+            # df = df.append(Services().get_df())
 
         # uncomment for tests
-        # df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
+        df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
 
         df['date'] = pd.to_datetime(datetime.now().strftime("%Y-%m-%d"))
 

@@ -33,7 +33,7 @@ class SvaznoyHandlerInterface(HandlerInterface):
     def make_search_url(self, search_word) -> str:
         return rf"https://www.svyaznoy.ru/search?q={search_word}"
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         return r"https://www.svyaznoy.ru"
 
     def _get_parsed_product_from_search(self, category_row) -> Union[None, List[ParsedProduct]]:

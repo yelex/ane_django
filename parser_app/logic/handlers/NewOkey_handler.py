@@ -19,7 +19,7 @@ class OkeyHandlerSPB(HandlerInterface):
     def get_handler_name(self) -> str:
         return 'okey_spb'
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         return r"https://www.okeydostavka.ru/spb"
 
     def test_web_driver(self, driver: webdriver.Chrome) -> bool:

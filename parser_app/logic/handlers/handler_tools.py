@@ -51,13 +51,18 @@ def load_page_with_TL(web_driver, page_url, time_limit: float = 5) -> Union[str,
         web_driver.get(page_url)
         time.sleep(time_limit)
         page_source = web_driver.page_source
+        if len(page_source) < 300:
+            return None
+        return page_source
     except:
         try:
             web_driver.execute_script("window.stop();")
             page_source = web_driver.page_source
+            if len(page_source) < 300:
+                return None
+            return page_source
         except:
             return None
-    return page_source
 
 
 def validate_ParsedProduct(parsed_product: ParsedProduct):
