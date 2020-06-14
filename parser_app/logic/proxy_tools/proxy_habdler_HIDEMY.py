@@ -4,6 +4,7 @@ from typing import List
 from bs4 import BeautifulSoup
 
 from parser_app.logic.global_status import get_usual_webdriver
+from parser_app.logic.handlers.handler_tools import load_page_with_TL
 from parser_app.logic.proxy_tools.proxy_habdler_interface import ProxyHandlerInterface
 
 
@@ -15,10 +16,16 @@ class HidemyProxyHandler(ProxyHandlerInterface):
     def get_proxy_list(self, port: str = 3128) -> List[str]:
 
         driver = get_usual_webdriver()
-        driver.get(f"https://hidemy.name/ru/proxy-list/?maxtime=300&ports={port}#list")
-        time.sleep(7.5)
-        page = driver.page_source
-        soup = BeautifulSoup(page, 'html.parser')
+        page_source = load_page_with_TL(
+            driver,
+            f"https://hidemy.name/ru/proxy-list/?maxtime=300&ports={port}#list",
+            7.5,
+        )
+        if page_source is None:
+            # fixme - log - error - can't load web page
+            print(f"can't load page for {self.get_name()}")
+            return []
+        soup = BeautifulSoup(page_source, 'html.parser')
         driver.quit()
 
         ips = []

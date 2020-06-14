@@ -1,7 +1,15 @@
 import sys
 
+from pyvirtualdisplay import Display
+
+from anehome.settings import DEVELOP_MODE
+from parser_app.logic.handlers.NewEldoradoHandler import EldoradoHandlerMSK
 from parser_app.logic.handlers.NewLenta_handler import LentaHandlerMSK, LentaHandlerSPB
-from parser_app.logic.handlers.NewOkey_handler import OkeySpbHandler
+from parser_app.logic.handlers.NewOkey_handler import OkeyHandlerSPB
+from parser_app.logic.handlers.NewPerekrestok_handler import PerekrestokHandlerSPB
+from parser_app.logic.handlers.NewRigla_handler import RiglaHandlerSPB
+from parser_app.logic.handlers.NewIKEA_handler import IkeaHandlerMSK
+from parser_app.logic.handlers.NewSvaznoy_handler import SvaznoyHandlerMSK
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
@@ -32,13 +40,23 @@ class Total:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        df = df.append(LentaHandlerMSK().extract_products())
-        df = df.append(LentaHandlerSPB().extract_products())
-        df = df.append(OkeySpbHandler().extract_products())
+        # use display from pyVirtual display package in order to launch selenium not in a real window
+        with Display():
+            df = df.append(SvaznoyHandlerMSK().extract_products())
+            df = df.append(IkeaHandlerMSK().extract_products())
+            df = df.append(RiglaHandlerSPB().extract_products())
+            df = df.append(EldoradoHandlerMSK().extract_products())
+            df = df.append(PerekrestokHandlerSPB().extract_products())
+            df = df.append(LentaHandlerMSK().extract_products())
+            df = df.append(LentaHandlerSPB().extract_products())
+            df = df.append(OkeyHandlerSPB().extract_products())
 
-        df = df.append(TotalGrocery().get_df_page())
-        df = df.append(TotalNongrocery().get_df_page())
-        df = df.append(Services().get_df())
+            df = df.append(TotalGrocery().get_df_page())
+            df = df.append(TotalNongrocery().get_df_page())
+            df = df.append(Services().get_df())
+
+        # uncomment for tests
+        # df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
 
         df['date'] = pd.to_datetime(datetime.now().strftime("%Y-%m-%d"))
 
@@ -84,8 +102,6 @@ class Total:
             # product = ProductHandler(**dict(row))
             # cached_list.append(product)
             # Person.objects.bulk_create(person_list)
-            print(row['category_title'])
-            print(type(row['category_title']))
             prod = PricesRaw(date=row['date'],
                              type=row['type'],
                              category_id=row['category_id'],
@@ -147,22 +163,24 @@ class Total:
 
         # basket_df.to_csv('basket_df.csv')
         # basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
-        cached_list = []
 
         print('Storing basket to db...')
 
-        try:
-            Basket.objects.all().delete()
-            for _, row in basket_df.iterrows():
-                prod = Basket(date=row['date'],
-                              gks_price=row['gks_price'],
-                              online_price=row['online_price'])
-                cached_list.append(prod)
-                # m.save()
-            Basket.objects.bulk_create(cached_list)
-            print('Storing completed!')
-        except:
-            print('fail to create backet sql base')
+        # try:
+        cached_list = []
+        Basket.objects.all().delete()
+        for _, row in basket_df.iterrows():
+            prod = Basket(
+                date=row['date'],
+                gks_price=row['gks_price'],
+                online_price=row['online_price'],
+            )
+            cached_list.append(prod)
+            # m.save()
+        Basket.objects.bulk_create(cached_list)
+        print('Storing completed!')
+        # except:
+        #     print('fail to create backet sql base')
 
         end = datetime.now()
         time_execution = str(end - start)
@@ -170,7 +188,7 @@ class Total:
 
         print('PARSING ENDED!\ntotal time of all execution: {}'.format(time_execution))
 
-        if Global().is_shutdown is True:
+        if Global().is_shutdown is True and not DEVELOP_MODE:
             # os.system('shutdown /p /f') # windows
             os.system('systemctl poweroff') # linux
 

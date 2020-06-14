@@ -22,6 +22,7 @@ from stem import Signal
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
+
 class perpetualTimer:
 
     def __init__(self, t, hFunction):
@@ -74,23 +75,6 @@ def wspex(x):
     return re.sub(u'\u200a', '', ''.join(x.split()))
 
 
-def remove_odd_space(x: str) -> str:
-    _x = re.sub(r'"', " ", x)
-    _x = _x.replace(u'\xa0', ' ')
-    _x = re.sub(r"\s\s+", " ", _x)
-    if _x[0] == ' ':
-        _x = _x[1:]
-    if _x[-1] == ' ':
-        _x = _x[:-1]
-    return str(_x)
-
-
-def remove_ALL_spaces(x: str) -> str:
-    _x = remove_odd_space(x)
-    _x = _x.replace(' ', '')
-    return str(_x)
-
-
 def list_html(text):
     return (text.split())
 
@@ -119,13 +103,12 @@ def checkIP():
 
 
 def clever_sleep(mu=5, sigma=0.3):
-    nmb = sigma*np.random.randn()+mu
+    nmb = sigma * np.random.randn() + mu
     print(nmb)
     time.sleep(nmb)
 
 
 def get_proxy(link, get_new=False, get_list=False):
-
     with Controller.from_port(port=9051) as controller:
         controller.authenticate('mypassword')
         controller.signal(Signal.NEWNYM)
@@ -207,7 +190,6 @@ def pack_to_gramm(string):  # перевод в граммы для (50×2г)
 # price_in_basket
 
 sfb = pd.read_csv(Global().path_sfb, sep=';')
-
 
 
 def price_coef(id_n, string_unit):  # основано на весах 33 категорий условного минимального набора товаров и услуг
@@ -298,10 +280,10 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     pattern1 = re.compile('\d+\s{0,1}(пак){0,1}\s{0,1}(?:\*|×|x|х)\s{0,1}\d+\,{0,1}\d*\s*г')
     pattern2 = re.compile('\d+(?:\,|\.){0,1}\d*\s*г(?:\*|×|x|х)\s{0,1}\d+\s{0,1}(пак){0,1}')
     df_new.loc[:, 'weight'] = df_new.apply(
-        lambda x: pack_to_gramm(x['site_title']) if re.search(pattern1, x['site_title']) != None or re.search(pattern2,
-                                                                                                              x[
-                                                                                                                  'site_title']) is not None
-        else x['weight'], axis=1)
+        lambda x: pack_to_gramm(x['site_title'])
+        if re.search(pattern1, x['site_title']) != None or re.search(pattern2,x['site_title']) is not None
+        else x['weight'], axis=1
+    )
 
     dict_pack = {'25пак': '50г', '20пак': '80г', '100пак': '200г', 'л': '1л', '010шт': '10шт.',
                  '2019кг': '1кг', '110шт': '10шт', '210шт': '10шт'}
@@ -322,9 +304,15 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
         for unit in df_new.loc[df_new.category_id == id_n].weight.unique():
             df_new.loc[(df_new.category_id == id_n) & (df_new.weight == unit), 'coef'] = price_coef(id_n, unit)
 
-    df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'coef'] * df_new.loc[:, 'nsprice_f']  # поменять на регулярные цены
-    df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'price_bsk'].astype(float)
+    print('here!')
+    df_new['price_bsk'] = df_new.loc[:, 'coef'] * df_new.loc[:, 'nsprice_f']  # поменять на регулярные цены
+    print('pass 1')
+    df_new['price_bsk'] = [float(x) for x in df_new['price_bsk'].fillna(-1.0)]
+    print('pass 2')
     df_new = df_new.drop_duplicates(subset=['date', 'site_title', 'site_code'])
+    print('pass')
+
+    print(df_new.columns)
 
     def percentile(n):
         def percentile_(x):
@@ -333,12 +321,59 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
         percentile_.__name__ = 'percentile_%s' % n
         return percentile_
 
-    basket_df = pd.DataFrame()
-    basket_df.loc[:, 'gks_price'] = df_new[df_new.site_code == 'gks'].groupby(['date']).sum()['price_bsk']
+    # for key, rows in df_new[df_new.site_code == 'gks'].groupby(['date']):
+    #     print(key)
+    #     print(rows)
+    #     print(np.sum(list(rows['price_bsk'])))
+    #     print()
+    # )
+    print('pass 3')
 
-    basket_df.loc[:, 'online_price'] = \
-        df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
-            'price_bsk']
-    basket_df = basket_df.reset_index().reset_index().rename(columns={'index': 'id'}).set_index('id')
+    # print(df_new[df_new.site_code != 'gks']
+    #         .groupby(['date', 'category_id'])
+    #         .aggregate(lambda x: np.percentile(x, 25)))
+    #
+    # basket_df['online_price'] = (
+    #     df_new[df_new.site_code != 'gks']
+    #         .groupby(['date', 'category_id'])
+    #         .aggregate(lambda x: np.percentile(x, 25))
+    #         .groupby(level=0)
+    #         .apply(lambda x: np.sum(list(x['price_bsk'])))
+    #         # .sum()['price_bsk']
+    # )
+
+    basket_df = pd.DataFrame(columns=['date', 'gks_price', 'online_price'])
+    # buffer = {'date': [], 'gks_price': [], }
+    for date, rows in df_new.groupby('date'):
+        # print(rows)
+        # print(rows[rows['site_code'] == 'gks'])
+        # print(type(rows[rows['site_code'] == 'gks']))
+        sum_price_gks = rows[rows['site_code'] == 'gks']['price_bsk'].sum()
+        sum_price_online = rows[rows['site_code'] != 'gks']['price_bsk'].sum()
+        basket_df = basket_df.append(
+            {
+                'date': date,
+                'gks_price': sum_price_gks,
+                'online_price': sum_price_online,
+            },
+            ignore_index=True,
+        )
+
+    # basket_df['gks_price'] = (
+    #     df_new[df_new.site_code == 'gks']
+    #         .groupby(['date'])
+    #         .apply(lambda x: np.sum(list(x['price_bsk'])))
+    #
+    # basket_df['online_price'] = (
+    #     df_new[df_new.site_code != 'gks']
+    #         .groupby(['date'])
+    #         .apply(lambda x: np.sum(list(x['price_bsk'])))
+    # )
+    #
+    # print(basket_df)
+    # print(basket_df.columns)
+    # print('pass 4')
+    # basket_df = basket_df.reset_index().reset_index().rename(columns={'index': 'id'}).set_index('id')
+
     print('completed!')
     return basket_df

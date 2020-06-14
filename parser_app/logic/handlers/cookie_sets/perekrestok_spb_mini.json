@@ -1,0 +1,12 @@
+[
+    {
+        "domain": ".perekrestok.ru",
+        "name": "region",
+        "value": "2"
+    },
+    {
+        "domain": ".perekrestok.ru",
+        "name": "noHouse",
+        "value": "0"
+    }
+]
