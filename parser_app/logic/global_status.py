@@ -82,7 +82,9 @@ def get_path_to_webdriver() -> str:
     # chose chrome driver appropriate for current operation system
     if sys.platform.startswith('linux'):
         path_to_chrome_driver = os.path.join('ChromeDriver', 'chromedriver_Linux')
-    elif sys.platform.contain('win'):
+    elif sys.platform == ('darwin'):
+        path_to_chrome_driver = os.path.join('ChromeDriver', 'chromedriver.exe')
+    elif 'win' in sys.platform:
         path_to_chrome_driver = os.path.join('ChromeDriver', 'chromedriver.exe')
     else:
         raise ValueError(
