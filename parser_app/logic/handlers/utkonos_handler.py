@@ -1,3 +1,5 @@
+import os
+
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
@@ -13,16 +15,17 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-class UtkonosHandler():
 
-    def representsInt(self,s):
+class UtkonosHandler:
+
+    def representsInt(self, s):
         try:
             intnumber = int(s)
             return intnumber
         except ValueError:
             return None
 
-    def construct_html(self,start_html, page_number):
+    def construct_html(self, start_html, page_number):
         end_html = '/page/{}'.format(page_number)
         html = start_html + end_html
         return (html)
@@ -35,7 +38,8 @@ class UtkonosHandler():
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
 
-        path_sfb = r'description/urls.csv'
+        path_sfb = os.path.join('description', 'urls.csv')
+
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         hrefs = [href for href in hrefs if type(href) is not float]  # испр

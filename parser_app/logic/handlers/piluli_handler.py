@@ -13,7 +13,7 @@ class PiluliHandler():
 
         path = Global().path_chromedriver  # здесь вставить путь к chomedriver
 
-        path_sfb = os.path.join(Global().base_dir, r'description/urls.csv')
+        path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         #keywords = df_desc.loc[['7', '18', '21']]['Ключевы слова, которые должны присутствовать'].values

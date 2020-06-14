@@ -1,3 +1,5 @@
+import os
+
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
@@ -12,7 +14,7 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-class PerekrestokHandler():
+class PerekrestokHandler:
 
     def extract_products(self, is_proxy = True):
         if is_proxy == True:
@@ -24,12 +26,12 @@ class PerekrestokHandler():
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
         fail_array = []
-        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+        path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('perekrestok')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]
         # print(hrefs)
-        id_n=0
+        id_n = 0
 
         for href in tqdm(hrefs):
 

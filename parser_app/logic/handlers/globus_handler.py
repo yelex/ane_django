@@ -14,16 +14,18 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
+
 class GlobusHandler:
 
-    def construct_html(self,start_html,begin_index):
-        end_html='&PAGEN_2={}'.format(begin_index)
-        html=start_html+end_html
-        return(html)
+    def construct_html(self, start_html, begin_index):
+        end_html = '&PAGEN_2={}'.format(begin_index)
+        html = start_html + end_html
+        return (html)
 
     def extract_products(self):
         start_time = datetime.now().minute
-        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+
+        path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['URL'].values
         id_n = 0
@@ -31,14 +33,15 @@ class GlobusHandler:
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
         proxies = get_proxy(hrefs[0])
+
         header = UserAgent().chrome
-        for href in tqdm(hrefs): #испр
+        for href in tqdm(hrefs):  # испр
             id_n += 1
             category_title = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['cat_title'].iloc[id_n - 1]
 
             print("{}... ".format(category_title))
 
-            #print(' id_n =', id_n)
+            # print(' id_n =', id_n)
             url_list = list_html(href)
             i = 0
 
@@ -70,8 +73,8 @@ class GlobusHandler:
                     products_div = soup.find('div', {'class': 'catalog-section'})
                     if not products_div:
                         print('WARNING! {} has not product_div'.format(href_i))
-                        it_error+=1
-                        if it_error>5:
+                        it_error += 1
+                        if it_error > 5:
                             break
                         else:
                             continue
@@ -89,9 +92,11 @@ class GlobusHandler:
                         price_dict['date'] = Global().date
                         price_dict['site_code'] = 'globus'
                         price_dict['category_id'] = id_n
-                        price_dict['category_title'] = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['cat_title'].iloc[id_n-1]
+                        price_dict['category_title'] = \
+                            sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['cat_title'].iloc[id_n - 1]
                         price_dict['type'] = 'food'
-                        price_dict['site_title'] = price_elem.find('span', {'class': 'catalog-section__item__title'}).text
+                        price_dict['site_title'] = price_elem.find('span',
+                                                                   {'class': 'catalog-section__item__title'}).text
 
                         # print('category_title: {}\nsite_title: {}'.format(price_dict['category_title'],price_dict['site_title']))
                         if filter_flag(id_n, price_dict['site_title']) == False:
@@ -106,22 +111,22 @@ class GlobusHandler:
                             continue
 
                         try:
-                            price_dict['price_new'] = int(price_text_rub_div.text.replace(" ", ""))+\
+                            price_dict['price_new'] = int(price_text_rub_div.text.replace(" ", "")) + \
                                                       0.01 * int(price_text_kop_div.text)
                         except:
                             price_dict['price_new'] = int(price_text_rub_div.text.replace("\xa0", "")) + \
                                                       0.01 * int(price_text_kop_div.text)
 
                         if price_text_old_div:
-                            list_ = re.findall('\s+', wspex_space(price_text_old_div.text))
+                            list_ = re.findall(r'\s+', wspex_space(price_text_old_div.text))
 
                             if len(list_) == 2:
-                                price_text = re.sub('\s+', '', wspex_space(price_text_old_div.text), count=1)
-                                price_text = re.sub('\s+', '.', price_text)
+                                price_text = re.sub(r'\s+', '', wspex_space(price_text_old_div.text), count=1)
+                                price_text = re.sub(r'\s+', '.', price_text)
 
                             else:
-                                price_text = re.sub('\s+', '.', wspex_space(price_text_old_div.text))
-   
+                                price_text = re.sub(r'\s+', '.', wspex_space(price_text_old_div.text))
+
                             price_dict['price_old'] = float(price_text)
                         else:
                             price_dict['price_old'] = ''
@@ -133,7 +138,7 @@ class GlobusHandler:
                             'href')
                         res = res.append(price_dict, ignore_index=True)
 
-                    if flag_nextpage == False:
+                    if not flag_nextpage:
                         break
                     else:
                         continue

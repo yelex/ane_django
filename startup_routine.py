@@ -1,12 +1,10 @@
-
 from parser_app.models import PricesRaw, Basket
 import plotly.graph_objects as go
 import plotly.offline as opy
 import pandas as pd
 import numpy as np
-import sqlite3
 import os
-from parser_app.logic.global_status import Global
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -20,7 +18,13 @@ class SnapshotManager:
 
     def update_plot(self, wdw=3):
 
+        print(Basket.objects.all())
+
         df = pd.DataFrame(list(Basket.objects.all().values()))
+
+        print(df)
+        print(df.columns)
+
         df = df.set_index('date')
         df.loc[:, 'online_ma'] = pd.Series(index=df.iloc[wdw:-wdw + 1, :].index.values,
                                            data=[np.mean(df.online_price.values[i - wdw:i + wdw + 1]) for i in

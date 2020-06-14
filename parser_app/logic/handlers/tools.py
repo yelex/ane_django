@@ -1,4 +1,3 @@
-
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
@@ -23,27 +22,28 @@ from stem import Signal
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-class perpetualTimer():
 
-   def __init__(self, t, hFunction):
-      self.t = t  # t
-      self.hFunction = hFunction
-      self.thread = Timer(0, self.handle_function)
+class perpetualTimer:
 
-   def handle_function(self):
-      self.hFunction()
-      self.thread = Timer(self.t,self.handle_function)
-      self.thread.start()
+    def __init__(self, t, hFunction):
+        self.t = t  # t
+        self.hFunction = hFunction
+        self.thread = Timer(0, self.handle_function)
 
-   def start(self):
-      self.thread.start()
+    def handle_function(self):
+        self.hFunction()
+        self.thread = Timer(self.t, self.handle_function)
+        self.thread.start()
 
-   def cancel(self):
-      self.thread.cancel()
+    def start(self):
+        self.thread.start()
+
+    def cancel(self):
+        self.thread.cancel()
 
 
 def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=True если учитывать слова "за", False - иначе
-    path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+    path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
     sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
     row = sfb_df.loc[[id_n]]
     keyword = row['keyword'].values[0]
@@ -54,7 +54,7 @@ def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=
     match_pro = re.search(str(pattern_pro), text, flags=re.IGNORECASE)
     match_cons = re.search(str(pattern_cons), text, flags=re.IGNORECASE)
 
-    if match_kwrd or keyword in ['хлеб','рыба']:
+    if match_kwrd or keyword in ['хлеб', 'рыба']:
         if type(pattern_pro) is float and type(pattern_cons) is float:
             flag = True
         elif type(pattern_pro) is float and type(pattern_cons) is not float:
@@ -88,7 +88,6 @@ def tofloat(s):
 
 
 def find_float_number(str):
-
     str = wspex(str)
     sr = re.findall(r"[-+]?\d*[.,]\d+|\d+", str)
     if sr:
@@ -102,118 +101,22 @@ def checkIP():
     soup = BeautifulSoup(ip, 'html.parser')
     print(soup.find('body').text)
 
+
 def clever_sleep(mu=5, sigma=0.3):
-    nmb = sigma*np.random.randn()+mu
+    nmb = sigma * np.random.randn() + mu
     print(nmb)
     time.sleep(nmb)
 
+
 def get_proxy(link, get_new=False, get_list=False):
-    # soup = None
-    # # print('Global.proxies:', Global().proxies)
-    #
-    # while True:
-    #     if get_new is True:
-    #
-    #         driver = webdriver.Chrome(executable_path=Global().path_chromedriver, options=Global().chrome_options)
-    #         driver.get("https://hidemy.name/ru/proxy-list/?maxtime=300#list") # https://hidemy.name/ru/proxy-list/?maxtime=500&ports=3128#list
-    #         while True:
-    #             time.sleep(1)
-    #             if "IP адрес" in driver.page_source:
-    #                 ip_list = re.findall(r'\d+[.]\d+[.]\d+[.]\d+', driver.page_source)
-    #                 print('ip_list: ', ip_list)
-    #                 break
-    #         # print('ip_list2: ', ip_list)
-    #         Global().proxies = [i + ":3128" for i in ip_list[1:]]
-    #
-    #         driver.quit()
-    #     if get_list:
-    #         # print('Global.proxies2:', Global().proxies)
-    #         break
-    #
-    #     ua = UserAgent()
-    #     header = {'User-Agent': str(ua.chrome)}
-    #
-    #     html = None
-    #     print('Global.succ:{}\nGlobal.proxies:{}'.format(Global().succ_proxies, Global().proxies))
-    #     proxy_list = Global().succ_proxies + Global().proxies
-    #     # print('proxy_list:', proxy_list)
-    #     for it in range(len(proxy_list)):
-    #         print('it =', it)
-    #         proxy = proxy_list[it]
-    #         proxies = {
-    #           'https': 'https://{}'.format(proxy),
-    #         }
-    #         try:
-    #             if 'okey' in link:
-    #                 cookie = r'_ga=GA1.2.1325218443.1577886613; gtmListKey=GTM_LIST_RECOMENDATIONS; _ym_uid=15778866221036907447; _ym_d=1577886622; isNative=1; selectedCity=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0; selectedStore=10151_13151; acceptCookie=1; storeGroup=msk1; ffcId=13151; WC_SESSION_ESTABLISHED=true; WC_AUTHENTICATION_-1002=-1002%2CzZHlyRjQcgWKqNcfDjyX4iZ02zjcQoyDurbFiQxFNVk%3D; WC_ACTIVEPOINTER=-20%2C10151; WC_USERACTIVITY_-1002=-1002%2C10151%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C1877362032%2Cver_null%2CDg2tDaIGqtvlUd7GeVDIZu1DtkcjFvj1SdTgnMiPwCmRMdhqBYKQ9oMgiku72VhoL3OKnTP2aV5k8VzF6ztiaJ508J0SZkHyBJdFQodkOMqqwSEr%2Bg%2B0C1rETa4auryIDSq4FP7c1urrNfoJqDzAkdVBlG8NuO0KAfbPocosaJL1o7xK78QvuQz25bWv8w%2BzRoaWagOu7%2BQUD%2B%2FGPrl94xaDOHhYYdgsXrofcc04xzx0c%2BlK6FFHANLAGseWFGCm; WC_GENERIC_ACTIVITYDATA=[1996034293%3Atrue%3Afalse%3A0%3AaSne5YGZoxA4Mpz2j8qE86%2FndHXVreuwTKmYZIVqRY4%3D][com.ibm.commerce.context.entitlement.EntitlementContext|4000000000000000003%264000000000000000003%26null%26-2000%26null%26null%26null][com.ibm.commerce.context.audit.AuditContext|null][com.ibm.commerce.context.globalization.GlobalizationContext|-20%26RUB%26-20%26RUB][com.ibm.commerce.store.facade.server.context.StoreGeoCodeContext|null%26null%26null%26null%26null%26null][com.ibm.commerce.catalog.businesscontext.CatalogContext|12051%26null%26false%26false%26false][com.ibm.commerce.context.experiment.ExperimentContext|null][com.ibm.commerce.context.ExternalCartContext|null][com.ibm.commerce.context.bcsversion.BusinessContextVersionContext|null][CTXSETNAME|Store][com.ibm.commerce.context.base.BaseContext|10151%26-1002%26-1002%26-1][com.ibm.commerce.giftcenter.context.GiftCenterContext|null%26null%26null]; solarfri=6a3c99192124a2fe; _gid=GA1.2.311834681.1579169412; _ym_isad=1; JSESSIONID=0000LPiEiWXPfA6ejMPrOUxMf90:-1; _gat_UA-58508147-1=1; _ym_visorc_27891822=w'
-    #
-    #                 headers = {
-    #                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    #                     'Accept-Encoding': 'gzip, deflate, br',
-    #                     'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    #                     'Cache-Control': 'max-age=0',
-    #                     'Connection': 'keep-alive',
-    #                     'Cookie': cookie,
-    #                     'Host': 'www.okeydostavka.ru',
-    #                     'Sec-Fetch-Mode': 'navigate',
-    #                     'Sec-Fetch-Site': 'none',
-    #                     'Sec-Fetch-User': '?1',
-    #                     'Upgrade-Insecure-Requests': '1',
-    #                     'User-Agent': str(ua.chrome),
-    #                     }
-    #                 html = requests.get(link, headers=headers, proxies=proxies, timeout=20).content
-    #             else:
-    #                 html = requests.get(link, proxies=proxies, headers=header, timeout=20).content
-    #             soup = BeautifulSoup(html, 'lxml')
-    #             if 'utkonos' in link:
-    #                 print('utkonos detected!')
-    #                 if soup.find('div', {'class': re.compile('goods_view_item-action_header')}) is not None and \
-    #                         soup.find('div', {'class': re.compile('goods_view_item-action')}) is not None:
-    #                     print('goods_view_item-action:', soup.find('div', {'class': re.compile('goods_view_item-action_header')}).text)
-    #                     print('break!')
-    #                     time.sleep(3)
-    #                     break
-    #             elif 'perekrestok' in link and soup.find('a', {'class': 'xfnew-user-category__link'}) is not None:
-    #                 print('good proxy for perekrestok')
-    #                 break
-    #             else:
-    #                 if html is not None and 'We have detected' not in soup.text:
-    #                     break
-    #         except Exception as e:
-    #             print(e)
-    #             continue
-    #
-    #     if soup is not None:
-    #         if 'utkonos' in link and soup.find('div', {'class': re.compile('goods_view_item-action')}) is not None:
-    #             print('good proxy for utkonos')
-    #             break
-    #         elif 'utkonos' not in link and html is not None and 'We have detected' not in soup.text:
-    #             break
-    #         else:
-    #             get_new = True
-    #             continue
-    #     else:
-    #         get_new = True
-    #         continue
-    # if not get_list:
-    #
-    #     print('good proxy: {}'.format(proxy))
-    #     if proxy not in Global().succ_proxies:
-    #         Global().succ_proxies = [proxy] + Global().succ_proxies
-    #         print('G.succ.proxies:', Global().succ_proxies)
-
-        with Controller.from_port(port=9051) as controller:
-            controller.authenticate('mypassword')
-            controller.signal(Signal.NEWNYM)
-        proxies = {
-            'http': 'socks5h://127.0.0.1:9060',
-            'https': 'socks5h://127.0.0.1:9060'
-        }
-
-        url = 'http://icanhazip.com'
-        r = requests.get(url, proxies=proxies)
-        print('New IP Address: %s' % r.text)
-        return proxies
+    with Controller.from_port(port=9051) as controller:
+        controller.authenticate('mypassword')
+        controller.signal(Signal.NEWNYM)
+    proxies = {
+        'http': 'socks5h://127.0.0.1:9060',
+        'https': 'socks5h://127.0.0.1:9060'
+    }
+    return proxies
 
 
 def strsim(a, b):
@@ -233,7 +136,6 @@ def send_mail(message, sender='ane_debug@mail.ru', to='evseev_alexey94@bk.ru'):
 
 
 def fill_df(df):
-
     df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'], format='%Y-%m-%d')
     df = df.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index().reset_index().drop(
         columns='id').rename(columns={'index': 'id'}).set_index('id')
@@ -284,6 +186,7 @@ def pack_to_gramm(string):  # перевод в граммы для (50×2г)
         return str(int(wspex(re.search('\d+', ((re.search(pattern_4, string)[0])))[0])) * tofloat(
             wspex(re.search(pattern_3, string)[0])[:-2])) + 'г'
 
+
 # price_in_basket
 
 sfb = pd.read_csv(Global().path_sfb, sep=';')
@@ -315,13 +218,14 @@ def price_coef(id_n, string_unit):  # основано на весах 33 кат
 def percentile(n):
     def percentile_(x):
         return np.percentile(x, n)
+
     percentile_.__name__ = 'percentile_%s' % n
     return percentile_
 
 
 def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     # print('get basket df...')
-    df_gks.loc[:, 'nsprice_f'] = df_gks.loc[:,'price_new']
+    df_gks.loc[:, 'nsprice_f'] = df_gks.loc[:, 'price_new']
     df_gks.loc[:, 'date'] = pd.to_datetime(df_gks.loc[:, 'date'], format='%Y-%m-%d')
     df_gks = df_gks.drop_duplicates(subset=['date', 'site_title', 'site_link']).reset_index(drop=True)
     # онлайн-проды
@@ -370,21 +274,21 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
 
     # weight only
 
-    df_new.loc[:,'weight'] = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
+    df_new.loc[:, 'weight'] = df_new.weight.apply(lambda x: wspex(x.replace('\xa0', '')) if x is not None else x)
 
-    df_new.loc[:,'weight']  = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
+    df_new.loc[:, 'weight'] = df_new.weight.apply(lambda x: x.replace(',', '.') if ',' in x else x)
     pattern1 = re.compile('\d+\s{0,1}(пак){0,1}\s{0,1}(?:\*|×|x|х)\s{0,1}\d+\,{0,1}\d*\s*г')
     pattern2 = re.compile('\d+(?:\,|\.){0,1}\d*\s*г(?:\*|×|x|х)\s{0,1}\d+\s{0,1}(пак){0,1}')
-    df_new.loc[:,'weight']  = df_new.apply(
-        lambda x: pack_to_gramm(x['site_title']) if re.search(pattern1, x['site_title']) != None or re.search(pattern2,
-                                                                                                              x[
-                                                                                                                  'site_title']) is not None
-        else x['weight'], axis=1)
+    df_new.loc[:, 'weight'] = df_new.apply(
+        lambda x: pack_to_gramm(x['site_title'])
+        if re.search(pattern1, x['site_title']) != None or re.search(pattern2,x['site_title']) is not None
+        else x['weight'], axis=1
+    )
 
     dict_pack = {'25пак': '50г', '20пак': '80г', '100пак': '200г', 'л': '1л', '010шт': '10шт.',
                  '2019кг': '1кг', '110шт': '10шт', '210шт': '10шт'}
 
-    df_new.loc[:,'weight']  = df_new.weight.replace(dict_pack)
+    df_new.loc[:, 'weight'] = df_new.weight.replace(dict_pack)
     df_new.loc[(df_new.weight == '4l') & (df_new.type == 'food'), 'weight'] = df_new.loc[
         (df_new.weight == '4l') & (df_new.type == 'food'), 'site_unit'].apply(lambda x: wspex(x).replace(',', '.'))
     df_new.loc[df_new.site_title == 'Соль поваренная пищевая каменная помол №1', 'weight'] = '1кг'
@@ -392,7 +296,7 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
     df_new = df_new[df_new.weight != '1шт']
     non_sht = df_new.loc[
         (df_new.site_title.str.contains(re.compile('Яйц(?:о|а)')) == False) & (df_new.weight.str.contains('шт')) & (
-                    df_new.type == 'food')].site_link.unique()
+                df_new.type == 'food')].site_link.unique()
     df_new = df_new[df_new.site_link.isin(non_sht) == False]
     df_new.loc[:, 'coef'] = None
     # df_new.loc[df_new.nsprice_f==-1.0,'nspices_f']=0
@@ -400,9 +304,15 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
         for unit in df_new.loc[df_new.category_id == id_n].weight.unique():
             df_new.loc[(df_new.category_id == id_n) & (df_new.weight == unit), 'coef'] = price_coef(id_n, unit)
 
-    df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'coef'] * df_new.loc[:, 'nsprice_f']  # поменять на регулярные цены
-    df_new.loc[:, 'price_bsk'] = df_new.loc[:, 'price_bsk'].astype(float)
+    print('here!')
+    df_new['price_bsk'] = df_new.loc[:, 'coef'] * df_new.loc[:, 'nsprice_f']  # поменять на регулярные цены
+    print('pass 1')
+    df_new['price_bsk'] = [float(x) for x in df_new['price_bsk'].fillna(-1.0)]
+    print('pass 2')
     df_new = df_new.drop_duplicates(subset=['date', 'site_title', 'site_code'])
+    print('pass')
+
+    print(df_new.columns)
 
     def percentile(n):
         def percentile_(x):
@@ -411,12 +321,59 @@ def get_basket_df(df_gks, df_retail, date=date(2019, 3, 1)):
         percentile_.__name__ = 'percentile_%s' % n
         return percentile_
 
-    basket_df = pd.DataFrame()
-    basket_df.loc[:, 'gks_price'] = df_new[df_new.site_code == 'gks'].groupby(['date']).sum()['price_bsk']
+    # for key, rows in df_new[df_new.site_code == 'gks'].groupby(['date']):
+    #     print(key)
+    #     print(rows)
+    #     print(np.sum(list(rows['price_bsk'])))
+    #     print()
+    # )
+    print('pass 3')
 
-    basket_df.loc[:, 'online_price'] = \
-        df_new[df_new.site_code != 'gks'].groupby(['date', 'category_id']).agg(percentile(25)).groupby(level=0).sum()[
-            'price_bsk']
-    basket_df = basket_df.reset_index().reset_index().rename(columns={'index': 'id'}).set_index('id')
+    # print(df_new[df_new.site_code != 'gks']
+    #         .groupby(['date', 'category_id'])
+    #         .aggregate(lambda x: np.percentile(x, 25)))
+    #
+    # basket_df['online_price'] = (
+    #     df_new[df_new.site_code != 'gks']
+    #         .groupby(['date', 'category_id'])
+    #         .aggregate(lambda x: np.percentile(x, 25))
+    #         .groupby(level=0)
+    #         .apply(lambda x: np.sum(list(x['price_bsk'])))
+    #         # .sum()['price_bsk']
+    # )
+
+    basket_df = pd.DataFrame(columns=['date', 'gks_price', 'online_price'])
+    # buffer = {'date': [], 'gks_price': [], }
+    for date, rows in df_new.groupby('date'):
+        # print(rows)
+        # print(rows[rows['site_code'] == 'gks'])
+        # print(type(rows[rows['site_code'] == 'gks']))
+        sum_price_gks = rows[rows['site_code'] == 'gks']['price_bsk'].sum()
+        sum_price_online = rows[rows['site_code'] != 'gks']['price_bsk'].sum()
+        basket_df = basket_df.append(
+            {
+                'date': date,
+                'gks_price': sum_price_gks,
+                'online_price': sum_price_online,
+            },
+            ignore_index=True,
+        )
+
+    # basket_df['gks_price'] = (
+    #     df_new[df_new.site_code == 'gks']
+    #         .groupby(['date'])
+    #         .apply(lambda x: np.sum(list(x['price_bsk'])))
+    #
+    # basket_df['online_price'] = (
+    #     df_new[df_new.site_code != 'gks']
+    #         .groupby(['date'])
+    #         .apply(lambda x: np.sum(list(x['price_bsk'])))
+    # )
+    #
+    # print(basket_df)
+    # print(basket_df.columns)
+    # print('pass 4')
+    # basket_df = basket_df.reset_index().reset_index().rename(columns={'index': 'id'}).set_index('id')
+
     print('completed!')
     return basket_df

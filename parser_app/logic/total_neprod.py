@@ -7,7 +7,7 @@ from parser_app.logic.handlers.piluli_handler import PiluliHandler
 from parser_app.logic.handlers.mvideo_handler import MvideoHandler
 
 
-class TotalNongrocery():
+class TotalNongrocery:
 
     def get_df(self):
         start = datetime.now()

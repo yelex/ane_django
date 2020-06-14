@@ -81,8 +81,10 @@ def cp(request):
     return render(request, 'parser_app/test/cp.html', {})
 
 
+
 def snaps(request):
     return render(request, 'parser_app/test/cp.html', {})
+
 
 
 def dynamics(request):

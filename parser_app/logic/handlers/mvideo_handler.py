@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
-import requests, re
-from datetime import datetime
+import requests
+import re
+
 from fake_useragent import UserAgent
 import ssl
 

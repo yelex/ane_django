@@ -1,0 +1,350 @@
+[
+    {
+        "domain": ".ikea.com",
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "is_city_confirmed",
+        "path": "/",
+        
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "%7B%22key%22%3A%22604%22%2C%22city%22%3A%22%u0421%u0430%u043D%u043A%u0442-%u041F%u0435%u0442%u0435%u0440%u0431%u0443%u0440%u0433%22%2C%22cityByIP%22%3A%22%u041C%u043E%u0441%u043A%u0432%u0430%22%2C%22keyByIP%22%3A524%2C%22postalCodeByIP%22%3A%22101000%22%7D"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586884104,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "localScriptVersion",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1586883204059"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1615654404,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "tmr_lvid",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "8ca96a081cd6fb5d48431e5cf0c2d986"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586969604,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_gid",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "GA1.2.1323117873.1586883203"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586883264,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_gat_gtag_UA_101279823_29",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586885004,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_ym_visorc_45382863",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "b"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586897601.186671,
+        "hostOnly": false,
+        "httpOnly": true,
+        "name": "bm_sz",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "B36FB833C89E0699E3ED686F271B2A5B~YAAQWk1lX+njAWtxAQAAcQiceQdudGluSj8gNOXj/YwsQ09JOrb4oDonUnQESYV/k65CDbaAr1sEcOSikAl4R1sx3jaWYs92BRN6ndG5z4cTMs0lfOLxdDjKI/t4JGEsLkKc9d1vr8T7cGTOUbbsERx/7y36aNdLM0L+umQFLPfrdKzg1owQGjT9vGOFNw=="
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586969602,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "checkedRecently",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1621047204,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_cs_c",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1618430006,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "ins-storage-version",
+        "path": "/",
+        
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "1"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1649955204,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_ga",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "GA1.2.1019067417.1586883203"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1615654404,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "tmr_reqNum",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "60"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1615654404,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "tmr_lvidTS",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1586881579887"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1589561604,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "user_unic_ac_id",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "45d9d31f-379e-8779-9fc9-036510ec992f"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1618419204.781977,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_abck",
+        "path": "/",
+        
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "60AE7CB01E983561257716C576164F74~-1~YAAQWk1lXxLkAWtxAQAAZhaceQMxXWpC43um6rcWMcqp+q8xW8kK7SD9+QV/dD8mstmawn0rJ30tLBvREUa9/fpybQPDdSPVreJmcCqBiyz0j3saRx3y8CWCHtka8BiGiKPGJ4rg2FW836Bb9nIKD4zQyXBepTw7FACXGATuw6cL19TXviIlLUClL9weMtG9Mhb0rrCq0ENFD5gY7u/2nm0IcA1S2DP7jePV1nKe3dMeIvhPB3RNKZbBUrgnCGAl1mdAIPgnAloY8eYvGtJlGY/NPVlQdiQBkiIoPJDzLHXaFFqCeFIhE9FV5KsGFWuD96leje9yaBbSDAG31k6+qxFE~-1~-1~-1"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1589475204,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_cs_ex",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1564655402"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1594659205,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_fbp",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "fb.1.1586883204544.258484710"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1618419204,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_ym_d",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1586883204"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586955204,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_ym_isad",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1618419204,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_ym_uid",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1586881580743327913"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586886804,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "advcake_session",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586890402.857955,
+        "hostOnly": false,
+        "httpOnly": true,
+        "name": "ak_bmsc",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1D2B0DFF642FEA8F46DBA2362072EBB65F654D5ABA7C000082EA955E80E08356~plfn6W3cYFwrZnvzC6nGsDwy55DzTxv4HbJOWu8Twur2qe+8S/7hF6Zojn12fZpEqLeL1KwXQAJ/AyDXUdpzkYAAh5FezZ7GBGBWfCqjS0VlcAZ4oRFvJjQx/vSlDYa9vXVHYTsNHtdNv/KANeRyE5nVPr4pfnJhQk/IoaFxpAKgNLP8TT5pqGw+gCuy+31ZLfR8B1rH5q37mXefXw7rdeaRJYVmcID8IdAQ4JunK8tiLpDGJudtNF5LX1VRBIahDK"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1586886802.987568,
+        "hostOnly": false,
+        "httpOnly": true,
+        "name": "AKA_A2",
+        "path": "/",
+        
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "A"
+    },
+    {
+        "domain": ".ikea.com",
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "eaesssn",
+        "path": "/",
+        
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "5a4d655fba7c000081ea955e8800000077140000"
+    },
+    {
+        "domain": "www.ikea.com",
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "ikea_geo",
+        "path": "/ru/ru/",
+        
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "RU"
+    },
+    {
+        "domain": ".ikea.com",
+        "expirationDate": 1602435203,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "optimizelyEndUserId",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "oeu1586883203223r0.3494636212525022"
+    },
+    {
+        "domain": "www.ikea.com",
+        "expirationDate": 1586969604,
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "tmr_detect",
+        "path": "/",
+        
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "1%7C1586883204423"
+    }
+]

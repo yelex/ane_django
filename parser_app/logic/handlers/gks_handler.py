@@ -1,9 +1,14 @@
+import os
+from typing import Dict, Union
+
 import pandas as pd
 import urllib
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, date
 import time
+
+from anehome.settings import DEVELOP_MODE
 from parser_app.logic.global_status import Global
 from parser_app.logic.handlers.tools import tofloat
 
@@ -20,8 +25,18 @@ class SiteHandlerGks:
 
     def get_qry_weekly(self, year):
 
-        df = pd.read_csv(r'~/PycharmProjects/ane_django/parser_app/logic/description/gks_weekly_links.csv', sep=';',
-                         index_col=0)
+        if DEVELOP_MODE:
+            df = pd.read_csv(
+                os.path.join('parser_app', 'logic', 'description', 'gks_weekly_links.csv'),
+                sep=';',
+                index_col=0,
+            )
+        else:
+            df = pd.read_csv(
+                r'~/PycharmProjects/ane_django/parser_app/logic/description/gks_weekly_links.csv',
+                sep=';',
+                index_col=0,
+            )
 
         list_grtov = df['site_link'].values
 
@@ -68,13 +83,21 @@ class SiteHandlerGks:
             r.encoding = 'cp1251'
             html = r.text
             # print(html)
-            dict_years.update(self.extract_products_weekly(year, html))
+            extracted_weekly_products = self.extract_products_weekly(year, html)
+            if extracted_weekly_products is not None:
+                dict_years.update(extracted_weekly_products)
 
         return dict_years
 
-    def extract_products_weekly(self, year, html):
+    def extract_products_weekly(self, year, html) -> Union[None, Dict]:
+        if 'Проблема доступа к БД' in html:
+            # fixme - log - fatal - Проблема доступа к БД - no needed information
+            print(f"extract_products_weekly -> Проблема доступа к БД - no needed information, return None")
+            return None
+
         soup = BeautifulSoup(html, 'lxml')
-        # print('soup', soup)
+        print('soup', soup)
+
         product_table = soup.find('table', {'class': 'OutTbl'})
         price_list_divs = product_table.find_all('tr')[2:]
         table_dict = dict()

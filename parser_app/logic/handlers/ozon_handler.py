@@ -1,3 +1,5 @@
+import os
+
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
@@ -67,7 +69,8 @@ class OzonHandler():
         return a
 
     def extract_products(self, max_prod=200):
-        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+
+        path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')]['URL'].values
