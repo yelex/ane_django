@@ -61,8 +61,9 @@ class Global(Singleton):
         print(f'Use chrome driver for you operation system : {sys.platform}')
         if sys.platform.startswith('linux'):
             self.path_chromedriver = os.path.join('ChromeDriver', 'chromedriver_Linux')
-
-        elif sys.platform.contain('win'):
+        elif sys.platform == 'darwin':
+            self.path_chromedriver = os.path.join('ChromeDriver', 'chromedriver_mac')
+        elif 'win' in sys.platform:
             self.path_chromedriver = os.path.join('ChromeDriver', 'chromedriver.exe')
         else:
             raise ValueError("find chrome driver for your OS on site:\n"
