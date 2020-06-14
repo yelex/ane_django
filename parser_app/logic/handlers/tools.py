@@ -216,6 +216,16 @@ def get_proxy(link, get_new=False, get_list=False):
         return proxies
 
 
+def get_my_ip():
+    url = 'http://icanhazip.com'
+    proxies = {
+        'http': 'socks5h://127.0.0.1:9060',
+        'https': 'socks5h://127.0.0.1:9060'
+    }
+    r = requests.get(url, proxies=proxies)
+    print('My IP Address: %s' % r.text)
+
+
 def strsim(a, b):
     return wspex_space(a).lower() == wspex_space(b).lower()
 

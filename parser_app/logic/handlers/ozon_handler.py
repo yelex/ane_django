@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from tqdm import tqdm
 import random
-from parser_app.logic.handlers.tools import wspex, wspex_space, get_proxy
+from parser_app.logic.handlers.tools import wspex, wspex_space, get_proxy, get_my_ip
 from parser_app.logic.global_status import Global
 from fake_useragent import UserAgent
 import requests
@@ -230,12 +230,12 @@ class OzonHandler():
                                       chrome_options=Global().chrome_options)  #, chrome_options=self.option_chrome(proxy))
         ua = UserAgent()
         header = {'User-Agent': str(ua.chrome)}
-        proxies = None
+        proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0])
 
-        h1_class = 'b4j'
-        price_new_class_sale = 'b4u8 b4w0'
-        price_new_class = 'b4u8'
-        price_old_class = 'b4v2'
+        h1_class = 'b7p1'
+        price_new_class_sale = 'b7v6 b7w9'
+        price_new_class = 'b7v6'
+        price_old_class = 'b7w0'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -244,7 +244,7 @@ class OzonHandler():
             i = 0
 
             while i + 1 <= len(url_list):
-
+                # get_my_ip()
                 href_i = url_list[i]
                 print(href_i)
                 if Global().is_selenium_ozon is True:
@@ -254,24 +254,30 @@ class OzonHandler():
                     try:
                         # time.sleep(3)
                         if proxies is not None:
+                            print(proxies)
                             r = requests.get(href_i, proxies=proxies, headers=header)  # CRITICAL
                         else:
                             r = requests.get(href_i, headers=header)
                     except:
-                        while True:
+                        for i in range(2):
                             print('im here!')
                             try:
                                 proxies = get_proxy(href_i)
-                                time.sleep(3)
+                                # time.sleep(10)
                                 r = requests.get(href_i, proxies=proxies, headers=header)
                                 if r.status_code == 200:
                                     break
+                                else:
+                                    print('r.status_code:', r.status_code)
+                                    html = r.content
+                                    soup = BeautifulSoup(html, 'lxml')
+                                    print('soup:\n', soup)
                             except:
                                 continue
                     html = r.content
                     soup = BeautifulSoup(html, 'lxml')
 
-                i += 1
+
 
                 # print(soup)
                 price_dict = dict()
@@ -280,7 +286,7 @@ class OzonHandler():
                 price_dict['category_id'] = cat_id
                 price_dict['category_title'] = category_title
 
-
+                i += 1
                 try:
                     if soup.find('h1', {'class': h1_class}) is not None:
                         price_dict['site_title'] = wspex_space(soup.find('h1', {'class': h1_class}).text)
@@ -290,24 +296,32 @@ class OzonHandler():
                     print('except sitetitle not found')
                     if 'Такой страницы не существует' in soup.text:
                         print('Такой страницы не существует!')
-                        continue
+
+                    if 'Incapsula' in soup.text:
+                        print('Incapsula detected!')
+                        time.sleep(10)
+                        proxies = get_proxy(href_i)
+
                     # i -= 1
                     if soup.find('li', {'class': 'links-item'}) is None:
-                        while True:
-                            proxies = get_proxy(href_i)
-                            time.sleep(3)
-                            r = requests.get(href_i, proxies=proxies, headers=header)
-                            if r.status_code == 200:
-                                break
-                            else:
-                                print('r.status_code:', r.status_code)
+                        print('links-item place')
+
+                        # while True:
+                        # for iterr in range(2):
+                        #     proxies = get_proxy(href_i)
+                        #     time.sleep(3)
+                        #     r = requests.get(href_i, proxies=proxies, headers=header)
+                        #     if r.status_code == 200:
+                        #         break
+                        #     else:
+                        #         print('r.status_code:', r.status_code)
                     continue
 
                 # div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
                 # print('soup:\n', soup)
                 # if 'Товар закончился' in soup.text:
-                # print('Товар закончился!')
-                # continue
+                #     print('Товар точно закончился!')
+                #     continue
 
                 div_new = soup.find('span', {'class': price_new_class_sale})
 

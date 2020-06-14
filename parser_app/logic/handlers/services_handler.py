@@ -104,48 +104,50 @@ class Services():
         final_df=final_df.append(price_dict,ignore_index=True)
 
         #Помывка в бане в общем отделении, билет	https://rzhevskie-bani.ru/rb/bani.html
-        n=3
-        price_dict=dict()
-        url=list_url[n]
-        print(url)
-        html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
-        soup=BeautifulSoup(html, 'lxml')
-        price_dict['price_new']=int(re.findall('\d+',soup.findAll('td',{'class':'price'})[0].text)[0])
-        pattern=re.compile(r'Стоимость')
-        soup.findAll('td')
-        price_dict['date']=Global().date
-        price_dict['site_code']='services'
-        price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
-        price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
-        price_dict['site_title']=soup(text=pattern)[0]
-        price_dict['type'] = 'services'
-        price_dict['site_unit']=re.findall('(\d+.*\d часа)',soup(text=pattern)[0][-9:])[0]
-        price_dict['site_link']=url
-        final_df=final_df.append(price_dict,ignore_index=True)
-
-        #Помывка в бане в общем отделении, билет	http://vorontsovskie-bani.ru/obshchestvennye-bani/muzhskoj-zal-pervyj-razryad
-        n=4
-        price_dict=dict()
-        price_dict['date']=Global().date
-        price_dict['site_code']='services'
-        url=list_url[n]
-        print(url)
-        price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
         try:
-            html=requests.get(url, headers={'User-Agent': UserAgent().chrome}, timeout=10).content
+            n=3
+            price_dict=dict()
+            url=list_url[n]
+            print(url)
+            html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
+            soup=BeautifulSoup(html, 'lxml')
+            price_dict['price_new']=int(re.findall('\d+',soup.findAll('td',{'class':'price'})[0].text)[0])
+            pattern=re.compile(r'Стоимость')
+            soup.findAll('td')
+            price_dict['date']=Global().date
+            price_dict['site_code']='services'
+            price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
+            price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
+            price_dict['site_title']=soup(text=pattern)[0]
+            price_dict['type'] = 'services'
+            price_dict['site_unit']=re.findall('(\d+.*\d часа)',soup(text=pattern)[0][-9:])[0]
+            price_dict['site_link']=url
+            final_df=final_df.append(price_dict,ignore_index=True)
         except:
-            proxy = get_proxy(url)
-            html = requests.get(url, headers={'User-Agent': UserAgent().chrome}, proxies=proxy).content
-        soup=BeautifulSoup(html, 'lxml')
-        price_div=soup.findAll('div',{'class':'price-head'})[0]
-        price_dict['price_new']=int(re.findall('\d+',price_div.findAll('span',{'class':'price'})[0].text)[0])
-        price_dict['price_old']=''
-        price_dict['site_title']=price_div.find('p').text.replace('\xa0',' ')
-        price_dict['site_unit']=re.findall('\d+ часа',price_dict['site_title'])[0]
-        price_dict['type'] = 'services'
-        price_dict['site_link']=url
-        price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
-        final_df=final_df.append(price_dict,ignore_index=True)
+            print('DAMN! {} can not be parsed'.format(url))
+        #Помывка в бане в общем отделении, билет	http://vorontsovskie-bani.ru/obshchestvennye-bani/muzhskoj-zal-pervyj-razryad
+        # n=4
+        # price_dict=dict()
+        # price_dict['date']=Global().date
+        # price_dict['site_code']='services'
+        # url=list_url[n]
+        # print(url)
+        # price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
+        # try:
+        #     html=requests.get(url, headers={'User-Agent': UserAgent().chrome}, timeout=10).content
+        # except:
+        #     proxy = get_proxy(url)
+        #     html = requests.get(url, headers={'User-Agent': UserAgent().chrome}, proxies=proxy).content
+        # soup=BeautifulSoup(html, 'lxml')
+        # price_div=soup.findAll('div',{'class':'price-head'})[0]
+        # price_dict['price_new']=int(re.findall('\d+',price_div.findAll('span',{'class':'price'})[0].text)[0])
+        # price_dict['price_old']=''
+        # price_dict['site_title']=price_div.find('p').text.replace('\xa0',' ')
+        # price_dict['site_unit']=re.findall('\d+ часа',price_dict['site_title'])[0]
+        # price_dict['type'] = 'services'
+        # price_dict['site_link']=url
+        # price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
+        # final_df=final_df.append(price_dict,ignore_index=True)
 
         #Постановка набоек, пара	https://masterskaya-obuvi.ru/tseny
         '''

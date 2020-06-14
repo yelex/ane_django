@@ -16,7 +16,7 @@ class TotalGrocery:
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
 
-        site_handlers = [OkeyHandler(), GlobusHandler(), UtkonosHandler(), PerekrestokHandler(), ]  ##
+        site_handlers = [PerekrestokHandler(), OkeyHandler(), GlobusHandler(), UtkonosHandler(), ]  ##
 
         for handler in site_handlers:
             df = df.append(handler.extract_products())
@@ -50,7 +50,7 @@ class TotalGrocery:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        site_handlers = [OkeyHandler(), GlobusHandler(), PerekrestokHandler(), UtkonosHandler(), ]  #
+        site_handlers = [OkeyHandler(), PerekrestokHandler(), GlobusHandler(), UtkonosHandler(), ]  #
 
         for handler in site_handlers:
             df = df.append(handler.extract_product_page())

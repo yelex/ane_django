@@ -45,7 +45,10 @@ class PiluliHandler():
             price_dict['type'] = 'non-food'
             price_dict['category_title'] = category_titles[index]
             price_dict['site_link'] = link
-            price_dict['site_title'] = soup.find('h1', {'id': 'offer-title'}).text
+            if soup.find('h1', {'id': 'offer-title'}) is not None:
+                price_dict['site_title'] = soup.find('h1', {'id': 'offer-title'}).text
+            else:
+                print(' site_link is unreachable!')
             price_dict['price_new'] = int(soup.find('span', {'id': 'products_price'}).text)
             price_dict['price_old'] = int(soup.find('span', {'class': 'old-price'}).text) if soup.find('span', {'class': 'old-price'}).text != '\n' else ''
 

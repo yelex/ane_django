@@ -5,7 +5,7 @@ import requests, re
 from datetime import datetime
 from fake_useragent import UserAgent
 import ssl
-
+import time
 ssl._create_default_https_context = ssl._create_unverified_context
 
 from parser_app.logic.global_status import Global
@@ -40,6 +40,7 @@ class MvideoHandler:
             i = 0
 
             while i + 1 <= len(url_list):
+                time.sleep(3)
 
                 href_i = url_list[i]
                 i += 1
