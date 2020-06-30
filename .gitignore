@@ -9,3 +9,5 @@ parser_app/logic/proxy_tools/store/
 parser_app/logic/auto_detected_urls/
 *.pyc
 .DS_Store
+tor_browser_folder/
+!tor_broser_folder/README.md

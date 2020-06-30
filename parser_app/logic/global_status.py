@@ -5,11 +5,16 @@ import pandas as pd
 from datetime import datetime, timedelta, date
 
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+from tbselenium.exceptions import TBDriverPortError
+from tbselenium.tbdriver import TorBrowserDriver
 
 import parser_app
 from anehome.settings import BASE_DIR
 import os
 from selenium import webdriver
+
+from anehome.utils import static_variables
 
 
 class Singleton(object):
@@ -138,3 +143,45 @@ def create_webdriver(**kwargs) -> webdriver.Chrome:
 
     driver = webdriver.Chrome(executable_path=get_path_to_webdriver(), options=options)
     return driver
+
+
+@static_variables(already_add=False)
+def _add_geckodriver_to_path() -> None:
+    if _add_geckodriver_to_path.already_add:
+        return
+    abs_path_to_project = os.path.join(os.path.abspath(os.path.curdir), 'geckodriver')
+    if sys.platform.startswith('linux'):
+        path_to_geckodriver = 'linux'
+    elif sys.platform == 'darwin':
+        path_to_geckodriver = 'mac'
+    elif 'win' in sys.platform:
+        path_to_geckodriver = 'windows'
+    else:
+        raise ValueError(
+            "Unfortunately there aren't preloaded geckodriver for yor OS\\"
+            'Visit:\nhttps://github.com/mozilla/geckodriver/releases and load needed version'
+        )
+    sys.path.append(os.path.join(abs_path_to_project, path_to_geckodriver))
+
+
+def create_tor_webdriver() -> TorBrowserDriver:
+    """
+    Create Selenium Tor Web driver and load test page.
+    :return: TorBrowserDriver
+    """
+    _add_geckodriver_to_path()
+
+    try:
+        cur_path = os.path.abspath(os.curdir)
+        driver = TorBrowserDriver(
+            "../tor-browser-linux64-9.5_en-US/tor-browser_en-US",
+        )
+        driver.load_url('https://check.torproject.org', wait_for_page_body=True)
+        os.chdir(cur_path)
+        return driver
+    except TBDriverPortError:
+        print('Probably you need to install Tor Service\non linux try this:\nsudo apt-get install tor')
+        raise TBDriverPortError
+    except WebDriverException:
+        print('Probably you have uncompatible geckodriver, visit:\nhttps://github.com/mozilla/geckodriver/releases')
+        raise WebDriverException

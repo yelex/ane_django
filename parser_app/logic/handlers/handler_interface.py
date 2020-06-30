@@ -1,10 +1,12 @@
 import os
 import re
-from typing import List, Set, Union, Dict, Any
+import time
+from typing import List, Set, Union, Dict, Any, Optional
 from datetime import datetime
 import pandas as pd
 from selenium import webdriver
 from pyvirtualdisplay import Display
+from tbselenium.tbdriver import TorBrowserDriver
 
 from anehome.settings import DEVELOP_MODE
 from parser_app.logic.global_status import get_usual_webdriver
@@ -76,7 +78,10 @@ class HandlerInterface:
         return []
 
     # common part of handlers
-    def __init__(self):
+    def __init__(self, tor_driver: Optional[TorBrowserDriver] = None):
+        import os
+        print(os.path.abspath(os.curdir))
+        self._tor_driver = tor_driver
         # self._url_getter: URLGetterInterface = url_getter
         self._old_urls: pd.DataFrame = pd.read_csv(self._get_path_to_old_urls())
         self._full_category_table: pd.DataFrame = pd.read_csv(
@@ -89,18 +94,43 @@ class HandlerInterface:
         self._url_done: Set[str] = set()
 
     def _load_page_with_TL(self, page_url, time_limit: float = 7.5) -> Union[str, None]:
+        """
+        Base method for page loading.
+        Return string - page source if page load in time_limit second,
+            otherwise return any loaded string,
+            else return None
+        """
+        if self._tor_driver is not None:
+            # load_page_with_TL(self._tor_driver, page_url, time_limit)
+            self._tor_driver.load_url(page_url, wait_for_page_body=True)
+            time.sleep(time_limit)
+            return self._tor_driver.page_source
         return load_page_with_TL(self._driver, page_url, time_limit)
 
-    def _get_domain(self, url: str) -> str:
-        a = url.split('//')
-        if len(a) == 1:
-            a = a[0]
-        else:
-            a = a[1]
-        a = a.split('.')
-        return '.' + a[-2] + '.' + a[-1]
+    # def _get_domain(self, url: str) -> str:
+    #     a = url.split('//')
+    #     if len(a) == 1:
+    #         a = a[0]
+    #     else:
+    #         a = a[1]
+    #     a = a.split('.')
+    #     return '.' + a[-2] + '.' + a[-1]
 
-    def _create_webdriver(self):
+    def _setup_tor_driver(self) -> None:
+        assert isinstance(self._tor_driver, TorBrowserDriver)
+        self._tor_driver.load_url(self.get_test_url())
+
+        for cookie in self._get_cookie():
+            self._tor_driver.add_cookie({
+                "name": cookie["name"],
+                "value": cookie["value"],
+            })
+
+    def _create_webdriver(self) -> None:
+        if self._tor_driver is not None:
+            self._setup_tor_driver()
+            return
+
         proxy_keeper = ProxyKeeper()
         try:
             driver = proxy_keeper.get_web_driver_for_site(self)
@@ -130,7 +160,7 @@ class HandlerInterface:
 
             print(test_page, len(test_page))
 
-            domain = self._get_domain(self.get_test_url())
+            # domain = self._get_domain(self.get_test_url())
             # print(f"domain {domain} for {self.get_test_ulr()}")
             for cookie in self._get_cookie():
                 self._driver.add_cookie({

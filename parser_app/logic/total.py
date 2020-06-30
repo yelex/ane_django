@@ -14,8 +14,8 @@ from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
 from parser_app.logic.handlers.tools import perpetualTimer, fill_df, get_basket_df
-from parser_app.logic.global_status import Global
-from parser_app.logic.handlers.gks_handler import SiteHandlerGks
+from parser_app.logic.global_status import Global, create_tor_webdriver
+# from parser_app.logic.handlers.gks_handler import SiteHandlerGks
 from parser_app.models import PricesRaw, PricesProcessed, Gks, Basket
 import pandas as pd
 from datetime import datetime
@@ -42,9 +42,10 @@ class Total:
 
         # use display from pyVirtual display package in order to launch selenium not in a real window
         # with Display():
-        #     df = df.append(SvaznoyHandlerMSK().extract_products())
+        tor_webdriver = create_tor_webdriver()
+        # df = df.append(SvaznoyHandlerMSK(tor_driver=tor_webdriver).extract_products())
             # df = df.append(IkeaHandlerMSK().extract_products())
-            # df = df.append(RiglaHandlerSPB().extract_products())
+        df = df.append(RiglaHandlerSPB(tor_driver=tor_webdriver).extract_products())
             # df = df.append(EldoradoHandlerMSK().extract_products())
             # df = df.append(PerekrestokHandlerSPB().extract_products())
             # df = df.append(LentaHandlerMSK().extract_products())
@@ -55,8 +56,10 @@ class Total:
             # df = df.append(TotalNongrocery().get_df_page())
             # df = df.append(Services().get_df())
 
+        tor_webdriver.quit()
+
         # uncomment for tests
-        df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
+        # df = pd.read_csv(os.path.join('parser_app', 'logic', 'description', 'df_after_handlers_FOR_TESTS.csv'))
 
         df['date'] = pd.to_datetime(datetime.now().strftime("%Y-%m-%d"))
 
@@ -132,65 +135,65 @@ class Total:
             raise ValueError("your operation system not found")
         print('Filling complete!')
 
-        df_gks = SiteHandlerGks().get_df()
-        cached_list = []
-
-        Gks.objects.all().delete()
-        print('Storing gks prices to db...')
-        for _, row in df_gks.iterrows():
-            prod = Gks(date=row['date'],
-                       type=row['type'],
-                       category_id=row['category_id'],
-                       category_title=row['category_title'],
-                       site_title=row['site_title'],
-                       price_new=row['price_new'],
-                       price_old=row['price_old'],
-                       site_unit=row['site_unit'],
-                       site_link=row['site_link'],
-                       site_code=row['site_code'],
-                       miss=row['miss'])
-            cached_list.append(prod)
-
-            # m.save()
-
-        Gks.objects.all().delete()
-        Gks.objects.bulk_create(cached_list)
-        print('Storing complete!')
-
-        print('Getting basket df...')
-        basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food', :])
-        print('Getting complete!')
+        # df_gks = SiteHandlerGks().get_df()
+        # cached_list = []
+        #
+        # Gks.objects.all().delete()
+        # print('Storing gks prices to db...')
+        # for _, row in df_gks.iterrows():
+        #     prod = Gks(date=row['date'],
+        #                type=row['type'],
+        #                category_id=row['category_id'],
+        #                category_title=row['category_title'],
+        #                site_title=row['site_title'],
+        #                price_new=row['price_new'],
+        #                price_old=row['price_old'],
+        #                site_unit=row['site_unit'],
+        #                site_link=row['site_link'],
+        #                site_code=row['site_code'],
+        #                miss=row['miss'])
+        #     cached_list.append(prod)
+        #
+        #     # m.save()
+        #
+        # Gks.objects.all().delete()
+        # Gks.objects.bulk_create(cached_list)
+        # print('Storing complete!')
+        #
+        # print('Getting basket df...')
+        # basket_df = get_basket_df(df_gks, filled_df.loc[filled_df.type == 'food', :])
+        # print('Getting complete!')
 
         # basket_df.to_csv('basket_df.csv')
         # basket_df.to_csv(r'D:\ANE_2\parsed_content\basket_df.csv')
 
         print('Storing basket to db...')
 
-        # try:
-        cached_list = []
-        Basket.objects.all().delete()
-        for _, row in basket_df.iterrows():
-            prod = Basket(
-                date=row['date'],
-                gks_price=row['gks_price'],
-                online_price=row['online_price'],
-            )
-            cached_list.append(prod)
-            # m.save()
-        Basket.objects.bulk_create(cached_list)
-        print('Storing completed!')
-        # except:
-        #     print('fail to create backet sql base')
-
-        end = datetime.now()
-        time_execution = str(end - start)
-        # send_mail(message='Снапшот успешно создан {}'.format(end))
-
-        print('PARSING ENDED!\ntotal time of all execution: {}'.format(time_execution))
-
-        if Global().is_shutdown is True and not DEVELOP_MODE:
-            # os.system('shutdown /p /f') # windows
-            os.system('systemctl poweroff') # linux
+        # # try:
+        # cached_list = []
+        # Basket.objects.all().delete()
+        # for _, row in basket_df.iterrows():
+        #     prod = Basket(
+        #         date=row['date'],
+        #         gks_price=row['gks_price'],
+        #         online_price=row['online_price'],
+        #     )
+        #     cached_list.append(prod)
+        #     # m.save()
+        # Basket.objects.bulk_create(cached_list)
+        # print('Storing completed!')
+        # # except:
+        # #     print('fail to create backet sql base')
+        #
+        # end = datetime.now()
+        # time_execution = str(end - start)
+        # # send_mail(message='Снапшот успешно создан {}'.format(end))
+        #
+        # print('PARSING ENDED!\ntotal time of all execution: {}'.format(time_execution))
+        #
+        # if Global().is_shutdown is True and not DEVELOP_MODE:
+        #     # os.system('shutdown /p /f') # windows
+        #     os.system('systemctl poweroff') # linux
 
     def get_new_snap_threaded(self):
         tim = perpetualTimer(24 * 60 * 60, self.printer_test)

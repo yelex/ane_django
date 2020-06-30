@@ -9,9 +9,6 @@ from parser_app.logic.handlers.handler_tools import remove_odd_space
 
 class LentaHandlerInterface(HandlerInterface):
 
-    def __init__(self):
-        super().__init__()
-
     def get_handler_name(self) -> str:
         raise NotImplemented('implement me! in sub class for needed city')
 
