@@ -3,7 +3,6 @@ import os
 from selenium import webdriver
 import json
 
-from parser_app.logic.global_status import create_webdriver_with_proxy
 from parser_app.logic.handlers.handler_tools import load_page_with_TL
 
 
@@ -23,11 +22,9 @@ def simple_test_driver_with_url(driver: webdriver.Chrome, url: str) -> bool:
     except:
         return False
 
-    if "no internet" in page_text:
-        return False
-
-    if "bad ip" in page_text:
-        return False
+    for custom_bad_word in ["an error occurred", "no internet", "bad ip"]:
+        if custom_bad_word in page_text:
+            return False
 
     for google_chrome_error in GOOGLE_CHROME_ERROR_LIST:
         if google_chrome_error.lower() in page_text:

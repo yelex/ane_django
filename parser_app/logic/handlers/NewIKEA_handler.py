@@ -47,13 +47,13 @@ class IkeaHandlerInterface(HandlerInterface):
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        for parsed_item in soup.find_all('div', class_='product-compact__spacer'):
+        for parsed_item in soup.find_all('div', class_='serp-grid__item'):
             try:
                 parsed_product = get_empty_parsed_product_dict()
 
                 # title
-                title = remove_odd_space(parsed_item.find('span', 'product-compact__name').text)
-                sub_title = remove_odd_space(parsed_item.find('span', 'product-compact__type').text)
+                title = remove_odd_space(parsed_item.find('div', 'range-revamp-header-section__title--small').text)
+                sub_title = remove_odd_space(parsed_item.find('span', 'range-revamp-header-section__description-text').text)
                 title += ' ' + sub_title
                 parsed_product['title'] = title
 
@@ -62,9 +62,7 @@ class IkeaHandlerInterface(HandlerInterface):
                 parsed_product['url'] = url
 
                 # price
-                price = remove_ALL_spaces(
-                    parsed_item.find('span', class_='product-compact__price__value').text
-                )[:-1]
+                price = remove_ALL_spaces(parsed_item.find('span', class_='range-revamp-price__integer').text)
                 parsed_product['price_new'] = price
 
                 parsed_product_list.append(parsed_product)
@@ -89,14 +87,14 @@ class IkeaHandlerInterface(HandlerInterface):
         parsed_product['url'] = url
 
         # title
-        title_item = soup.find('div', class_='product-pip__product-heading-container')
-        title = remove_odd_space(title_item.find('span', class_='product-pip__name').text)
-        sub_title = remove_odd_space(title_item.find('span', 'range__text-rtl').text)
+        # title
+        title = remove_odd_space(soup.find('div', class_='range-revamp-header-section__title--big').text)
+        sub_title = remove_odd_space(soup.find('span', 'range-revamp-header-section__description-text').text)
         title += ' ' + sub_title
         parsed_product['title'] = title
 
         # price
-        price = remove_ALL_spaces(soup.find('span', class_='product-pip__price__value').text)[:-1]
+        price = remove_ALL_spaces(soup.find('span', class_='range-revamp-price__integer').text)
         parsed_product['price_new'] = price
 
         return parsed_product

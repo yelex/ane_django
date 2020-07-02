@@ -11,3 +11,6 @@ parser_app/logic/auto_detected_urls/
 .DS_Store
 tor_browser_folder/
 !tor_broser_folder/README.md
+tor_test_screenshots/
+parser_app/logic/gks_store/
+parsed_content/

@@ -73,7 +73,7 @@ class ProxyKeeper:
             # to test proxy set it here
             # ip_to_test = "51.178.220.168:3128"
 
-            driver = create_webdriver(ip_to_test, **driver_options)
+            driver = create_webdriver(proxy_ip_with_port=ip_to_test, **driver_options)
 
             if not simple_test_driver_with_url(driver, site_handler.get_test_url()):
                 # FIXME event log

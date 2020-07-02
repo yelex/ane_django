@@ -11,6 +11,10 @@ from parser_app.logic.handlers.handler_tools import remove_odd_space, remove_ALL
 
 class EldoradoHandlerInterface(HandlerInterface):
 
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self._category_links = pd.da
+
     # implement in every real handler
     def get_handler_name(self) -> str:
         raise NotImplemented
@@ -28,11 +32,11 @@ class EldoradoHandlerInterface(HandlerInterface):
     def get_test_url(self) -> str:
         return rf"https://www.eldorado.ru"
 
-    def _create_serch_url_for_category(self, name: str, page_number: Optional[int] = None) -> str:
-        if page_number is None or page_number == 1 or page_number == 0:
-            return rf"https://www.eldorado.ru/search/catalog.php?q={name.replace(' ', '+')}&utf"
+    def create_general_search_url(self, search_word: str, page_num: Optional[int] = None) -> str:
+        if page_num is None or page_num == 1 or page_num == 0:
+            return rf"https://www.eldorado.ru/search/catalog.php?q={search_word.replace(' ', '+')}&utf"
         return rf"https://www.eldorado.ru/search/catalog.php?" \
-               rf"PAGEN_SEARCH={page_number}&q={name.replace(' ', '+')}&utf"
+               rf"PAGEN_SEARCH={page_num}&q={search_word.replace(' ', '+')}&utf"
 
     def _get_parsed_product_from_search(self, category_row) -> Union[None, List[ParsedProduct]]:
         if category_row['sub_type'] != 'appliances':
@@ -42,7 +46,8 @@ class EldoradoHandlerInterface(HandlerInterface):
 
         for page_num in range(1):
             parsed_product_list = []
-            url = self._create_serch_url_for_category(str(category_row['search_word']))
+            # url = self.get_search_url_for_category(category_row, page_num)
+            url = self.create_general_search_url(category_row['search_word'], page_num)
 
             print(f"{self.get_handler_name()} -> {category_row['cat_title']}")
             print(f'using url:\n{url}')

@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from datetime import datetime
 
-from anehome.path_utils import OS_dep_path_join
+from anehome.utils import OS_dep_path_join
 from parser_app.logic.handlers.perekrestok_handler import PerekrestokHandler
 from parser_app.logic.handlers.okey_handler import OkeyHandler
 from parser_app.logic.handlers.globus_handler import GlobusHandler

@@ -5,7 +5,6 @@ from typing import List, Set, Union, Dict, Any, Optional
 from datetime import datetime
 import pandas as pd
 from selenium import webdriver
-from pyvirtualdisplay import Display
 from tbselenium.tbdriver import TorBrowserDriver
 
 from anehome.settings import DEVELOP_MODE
@@ -18,6 +17,11 @@ from parser_app.logic.handlers.handler_tools import \
     load_page_with_TL
 from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url
 from parser_app.logic.proxy_tools.proxy_keeper import ProxyKeeper
+
+
+Interface_TEST_MODE: bool = True
+if not DEVELOP_MODE:
+    Interface_TEST_MODE = False
 
 
 class HandlerInterface:
@@ -68,6 +72,30 @@ class HandlerInterface:
         """
         raise NotImplemented("Implement me! I'm just an interface!")
 
+    # def create_general_search_url(self, search_word: str, page_num: Optional[int] = None) -> str:
+    #     """
+    #     create search url, if categoty link store have no
+    #     :param search_word:
+    #     :param page_num:
+    #     :return:
+    #     """
+    #     raise NotImplemented
+    #
+    # def get_search_url_for_category(self, category_row, page_num: Optional[int] = None) -> str:
+    #     """
+    #     Note: interface don't use this function directly,
+    #         it is juts remainder, that you should write this function
+    #     :return: string url for search category
+    #     """
+    #     if self._category_urls is None:
+    #         return self.create_general_search_url(category_row['search_word'], page_num)
+    #
+    #     rows = self._category_urls[self._category_urls['cat_title'] == category_row['cat_title']]
+    #     if rows is None or len(rows) == 0:
+    #         return self.create_general_search_url(category_row['search_word'], page_num)
+    #
+    #     return str(rows['url'].values[0])
+
     def _get_cookie(self) -> List[Dict[str, Any]]:
         """
         It can be useful for some shope implement all function of parsing independently of city.
@@ -80,10 +108,18 @@ class HandlerInterface:
     # common part of handlers
     def __init__(self, tor_driver: Optional[TorBrowserDriver] = None):
         import os
-        print(os.path.abspath(os.curdir))
         self._tor_driver = tor_driver
         # self._url_getter: URLGetterInterface = url_getter
         self._old_urls: pd.DataFrame = pd.read_csv(self._get_path_to_old_urls())
+
+        # # load category links
+        # self._category_urls = None
+        # path_to_category_links = os.path.join(
+        #     'parser_app', 'logic', 'description', 'site_category_links', f"{self.get_handler_name()}.csv",
+        # )
+        # if os.path.exists(path_to_category_links):
+        #     self._category_urls: pd.DataFrame = pd.read_csv(path_to_category_links)
+
         self._full_category_table: pd.DataFrame = pd.read_csv(
             os.path.join('parser_app', 'logic', 'description', 'category_with_keywords.csv')
         )
@@ -107,15 +143,6 @@ class HandlerInterface:
             return self._tor_driver.page_source
         return load_page_with_TL(self._driver, page_url, time_limit)
 
-    # def _get_domain(self, url: str) -> str:
-    #     a = url.split('//')
-    #     if len(a) == 1:
-    #         a = a[0]
-    #     else:
-    #         a = a[1]
-    #     a = a.split('.')
-    #     return '.' + a[-2] + '.' + a[-1]
-
     def _setup_tor_driver(self) -> None:
         assert isinstance(self._tor_driver, TorBrowserDriver)
         self._tor_driver.load_url(self.get_test_url())
@@ -125,6 +152,13 @@ class HandlerInterface:
                 "name": cookie["name"],
                 "value": cookie["value"],
             })
+
+    def _quiet_driver(self) -> None:
+        if self._driver is not None:
+            try:
+                self._driver.quit()
+            except:
+                pass
 
     def _create_webdriver(self) -> None:
         if self._tor_driver is not None:
@@ -136,19 +170,23 @@ class HandlerInterface:
             driver = proxy_keeper.get_web_driver_for_site(self)
         except:
             # FIXME fatal log
-            print(f"can't create proxy for {self.get_handler_name()}")
+            print(f"can't create proxy for {self.get_handler_name()}, try to create usual driver")
             driver = get_usual_webdriver()
             if not self.test_web_driver(driver) or not simple_test_driver_with_url(driver, self.get_test_url()):
                 # FIXME fatal log
                 print(f"can't create usual driver for {self.get_handler_name()}")
-                driver.quit()
+                try:
+                    driver.quit()
+                except:
+                    pass
                 raise ValueError(f"can't use any driver for {self.get_handler_name()}")
 
         self._driver = driver
 
         if len(self._get_cookie()) != 0:
             # need to make single load
-            print(f'Start to add cookie for {self.get_handler_name()}')
+            if DEVELOP_MODE:
+                print(f'Start to add cookie for {self.get_handler_name()}')
 
             test_page = self._load_page_with_TL(self.get_test_url(), 10.0)
             if test_page is None:
@@ -158,10 +196,6 @@ class HandlerInterface:
                     f"parser : {self.get_handler_name()}"
                 )
 
-            print(test_page, len(test_page))
-
-            # domain = self._get_domain(self.get_test_url())
-            # print(f"domain {domain} for {self.get_test_ulr()}")
             for cookie in self._get_cookie():
                 self._driver.add_cookie({
                     "name": cookie["name"],
@@ -210,7 +244,7 @@ class HandlerInterface:
             self._update_url_list_from_search()
         except Exception as e:
             print(f"Some exception occur during searching for new urs in {self.get_handler_name()}")
-            self._driver.quit()
+            self._quiet_driver()
             raise e
 
         try:
@@ -218,11 +252,11 @@ class HandlerInterface:
             self._get_df_from_url_list()
         except Exception as e:
             print(f"Some exception occur during handling individual urls in {self.get_handler_name()}")
-            self._driver.quit()
+            self._quiet_driver()
             raise e
 
         try:
-            self._driver.quit()
+            self._quiet_driver()
         except:
             pass
 
@@ -251,6 +285,7 @@ class HandlerInterface:
                 'site_unit': parsed_product['unit_title'] + str(parsed_product['unit_value']),
                 'site_link': parsed_product['url'],
                 'site_code': self.get_handler_name(),
+                'miss': False,
             },
             ignore_index=True,
         )
@@ -296,28 +331,34 @@ class HandlerInterface:
         :param category_row: new item's category
         :return: nothing
         """
+        print(f"{category_row['cat_title']} ->\n"
+              f" title: {parsed_item['title']}, price : {parsed_item['price_new']}, "
+              f"units: {parsed_item['unit_title']} {parsed_item['unit_value']}")
 
         # try to update some old ones
         for _, row in self._old_urls[
             self._old_urls['cat_title'] == category_row['cat_title']
         ].iterrows():
             if self._match_parsed_product(parsed_item, row):
+                print('product already in url store')
                 self._add_df_row_from_parsed_product(parsed_item, category_row)
                 return
             if self._match_parsed_product_by_url(parsed_item, row):
-                row['title'] = parsed_item['title']
+                parsed_item['title'] = row['title']
+                print('product already in url store (but with different name, name in store was updated)')
                 self._add_df_row_from_parsed_product(parsed_item, category_row)
                 return
 
         # if we have too few items in current category, add this item
         if len(self._old_urls[self._old_urls['cat_title'] == category_row['cat_title']]) <= 15:
-            print(f"add new Item to category {category_row['cat_title']}, it is {parsed_item['title']}")
-            self._old_urls = self._old_urls.append({
+            print('add to url store')
+            self._old_urls = self._old_urls.append(
+                ignore_index=True,
+                other={
                     'cat_title': category_row['cat_title'],
                     'title': parsed_item['title'],
                     'url': parsed_item['url'],
                 },
-                ignore_index=True,
             )
             self._add_df_row_from_parsed_product(parsed_item, category_row)
 
@@ -357,12 +398,15 @@ class HandlerInterface:
                 try:
                     if isinstance(category_row['keywords_cons'], str) and len(category_row['keywords_cons']) > 0:
                         if re.search(category_row['keywords_cons'], item['title']) is not None:
-                            # print(f'del item due to  keywords_cons {item["title"]}')
+                            if DEVELOP_MODE:
+                                print(f'del item due to keywords_cons {item["title"]}')
                             continue
                     if isinstance(category_row['keywords_pro'], str) and len(category_row['keywords_pro']) > 0:
                         if re.search(category_row['keywords_pro'], item['title']) is None:
-                            # print(f'del item due to  keywords_pro {item["title"]}')
+                            if DEVELOP_MODE:
+                                print(f'del item due to  keywords_pro {item["title"]}')
                             continue
+
                 except Exception as e:
                     print('\nsome re in keywords are uncorrect')
                     print(f"currently look at:\n"
@@ -375,7 +419,19 @@ class HandlerInterface:
 
                 self._update_category(item, category_row)
 
+                if Interface_TEST_MODE:
+                    if len(self._old_urls) > 1:
+                        print(f'TEST MODE exit search due to find at least one element for handler '
+                              f'{self.get_handler_name()}')
+                        break
+            if Interface_TEST_MODE:
+                if len(self._old_urls) > 1:
+                    break
+
         self._old_urls.to_csv(self._get_path_to_old_urls(), index=False)
+
+        if Interface_TEST_MODE:
+            self._url_done = set()
 
     def _get_df_from_url_list(self) -> None:
         """
@@ -383,6 +439,8 @@ class HandlerInterface:
         """
         for index, url_row in self._old_urls.iterrows():
             # have columns : 'cat_title', 'title', 'url'
+
+            category_row = self._full_category_table[self._full_category_table['cat_title'] == url_row['cat_title']].iloc[0]
 
             if url_row['title'] in self._url_done:
                 # was processed
@@ -399,17 +457,11 @@ class HandlerInterface:
                 print(url_row['cat_title'])
                 print(url_row['title'])
                 print(url_row['url'], end='\n\n')
-                break
                 continue
 
-            parsed_product = postprocess_parsed_product(parsed_product)
+            self._add_df_row_from_parsed_product(parsed_product, category_row)
 
-            print(parsed_product)
-
-            self._add_df_row_from_parsed_product(
-                parsed_product,
-                self._full_category_table[self._full_category_table['cat_title'] == url_row['cat_title']].iloc[0],
-            )
-
-            if index > 3:
+            if Interface_TEST_MODE:
+                print(f'TEST MODE exit single due to find at least one element for handler '
+                      f'{self.get_handler_name()}')
                 break
