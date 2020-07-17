@@ -13,13 +13,10 @@ from parser_app.logic.handlers.tools import wspex, find_float_number
 
 class OkeyHandlerSPB(HandlerInterface):
 
-    def __init__(self):
-        super().__init__()
-
     def get_handler_name(self) -> str:
         return 'okey_spb'
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         return r"https://www.okeydostavka.ru/spb"
 
     def test_web_driver(self, driver: webdriver.Chrome) -> bool:

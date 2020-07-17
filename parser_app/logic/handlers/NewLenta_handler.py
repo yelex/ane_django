@@ -9,13 +9,10 @@ from parser_app.logic.handlers.handler_tools import remove_odd_space
 
 class LentaHandlerInterface(HandlerInterface):
 
-    def __init__(self):
-        super().__init__()
-
     def get_handler_name(self) -> str:
         raise NotImplemented('implement me! in sub class for needed city')
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         return r"https://lenta.com/"
 
     def _create_serch_url_for_category(self, category_row):

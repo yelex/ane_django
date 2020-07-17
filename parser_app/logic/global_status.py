@@ -1,14 +1,18 @@
 import sys
 
 import pandas as pd
-from datetime import datetime, timedelta, date
+from datetime import datetime
 
-from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+from tbselenium.exceptions import TBDriverPortError
+from tbselenium.tbdriver import TorBrowserDriver
 
 import parser_app
-from anehome.settings import BASE_DIR
+from anehome.settings import BASE_DIR, DEVELOP_MODE
 import os
 from selenium import webdriver
+
+from anehome.utils import static_variables
 
 
 class Singleton(object):
@@ -21,13 +25,13 @@ class Singleton(object):
 
 
 class Global(Singleton):
-
     succ_proxies = []
 
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.example_shot = os.path.join(self.base_dir, 'description', 'data_2019-10-02.csv')
-        self.links = pd.read_csv(os.path.join(self.base_dir, os.path.join('description', 'final_links.csv')), sep=';', index_col=0)
+        self.links = pd.read_csv(os.path.join(self.base_dir, os.path.join('description', 'final_links.csv')), sep=';',
+                                 index_col=0)
         self.gks_links = os.path.join(self.base_dir, os.path.join('description', 'gks_weekly_links.csv'))
         self.path_desc = os.path.join(self.base_dir, os.path.join('description', 'categories.csv'))
 
@@ -45,7 +49,8 @@ class Global(Singleton):
         if not hasattr(self, 'already_make_proxy'):
             self.getproxies()
 
-        self.path_chromedriver = os.path.join(BASE_DIR, 'chromedriver')  # '/home/yelex/PycharmProjects/ane_django/chromedriver'
+        self.path_chromedriver = os.path.join(BASE_DIR,
+                                              'chromedriver')  # '/home/yelex/PycharmProjects/ane_django/chromedriver'
         self.path_parsedcontent = os.path.join(BASE_DIR, 'parsed_content')
         options = webdriver.ChromeOptions()
         # options.add_argument('--headless')
@@ -74,7 +79,6 @@ class Global(Singleton):
             self.already_make_proxy = True
             parser_app.logic.handlers.tools.get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
 
-
     def setstatus(self, status):
         self.status = status
 
@@ -97,15 +101,89 @@ def get_path_to_webdriver() -> str:
 
 
 def get_usual_webdriver() -> webdriver.Chrome:
+    """
+    Create simple selenium web chrome driver
+    :return: webdriver.Chrome
+    """
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(executable_path=get_path_to_webdriver(), options=options)
-
     return driver
 
 
 def create_webdriver_with_proxy(proxy_ip_with_port: str) -> webdriver.Chrome:
-    options = webdriver.ChromeOptions()
-    options.add_argument(f'--proxy-server={proxy_ip_with_port}')
-    driver = webdriver.Chrome(executable_path=get_path_to_webdriver(), options=options)
+    """
+    Create simple selenium web chrome driver with proxy
+    :return: webdriver.Chrome
+    """
+    assert isinstance(proxy_ip_with_port, str), "proxy_ip_with_port should be string like '255.255.0.1:8080'"
+    return create_webdriver(proxy_ip_with_port=proxy_ip_with_port)
 
+
+def create_webdriver(**kwargs) -> webdriver.Chrome:
+    """
+    Create selenium web driver with params from kwargs.
+    :param kwargs: can contain:
+        - proxy_ip_with_port - proxy
+        - download_path - path for downloaded content
+    :return: webdriver.Chrome
+    """
+    options = webdriver.ChromeOptions()
+
+    if 'proxy_ip_with_port' in kwargs.keys():
+        options.add_argument(f"--proxy-server={kwargs['proxy_ip_with_port']}")
+
+    if 'download_path' in kwargs.keys():
+        options.add_experimental_option(
+            "prefs",
+            {
+                "profile.default_content_settings.popups": 0,
+                "download.default_directory": kwargs['download_path'],
+            },
+        )
+
+    driver = webdriver.Chrome(executable_path=get_path_to_webdriver(), options=options)
     return driver
+
+
+@static_variables(already_add=False)
+def _add_geckodriver_to_path() -> None:
+    if _add_geckodriver_to_path.already_add:
+        return
+    abs_path_to_project = os.path.join(os.path.abspath(os.path.curdir), 'geckodriver')
+    if sys.platform.startswith('linux'):
+        path_to_geckodriver = 'linux'
+    elif sys.platform == 'darwin':
+        path_to_geckodriver = 'mac'
+    elif 'win' in sys.platform:
+        path_to_geckodriver = 'windows'
+    else:
+        raise ValueError(
+            "Unfortunately there aren't preloaded geckodriver for yor OS\\"
+            'Visit:\nhttps://github.com/mozilla/geckodriver/releases and load needed version'
+        )
+    sys.path.append(os.path.join(abs_path_to_project, path_to_geckodriver))
+    if DEVELOP_MODE:
+        print('\ncurrent PATH:\n', "\n".join(sys.path), '\n***\n', sep='')
+
+
+def create_tor_webdriver() -> TorBrowserDriver:
+    """
+    Create Selenium Tor Web driver and load test page.
+    :return: TorBrowserDriver
+    """
+    _add_geckodriver_to_path()
+
+    try:
+        cur_path = os.path.abspath(os.curdir)
+        driver = TorBrowserDriver('tor_browser_folder')
+        driver.load_url('https://check.torproject.org', wait_for_page_body=True)
+        os.chdir(cur_path)
+        return driver
+    except TBDriverPortError:
+        print('Probably you need to install Tor Service\non linux try this:\nsudo apt-get install tor\n')
+        raise TBDriverPortError
+    except WebDriverException:
+        print('Probably you have uncompatible geckodriver\n'
+              'then visit:\nhttps://github.com/mozilla/geckodriver/releases\n'
+              'But, may be, you just have no geckodriver in you PATH then just add it there :)\n')
+        raise WebDriverException

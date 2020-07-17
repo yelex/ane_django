@@ -51,13 +51,18 @@ def load_page_with_TL(web_driver, page_url, time_limit: float = 5) -> Union[str,
         web_driver.get(page_url)
         time.sleep(time_limit)
         page_source = web_driver.page_source
+        if len(page_source) < 300:
+            return None
+        return page_source
     except:
         try:
             web_driver.execute_script("window.stop();")
             page_source = web_driver.page_source
+            if len(page_source) < 300:
+                return None
+            return page_source
         except:
             return None
-    return page_source
 
 
 def validate_ParsedProduct(parsed_product: ParsedProduct):
@@ -120,7 +125,7 @@ def get_empty_handler_DF() -> pd.DataFrame:
     """
     df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                'site_title', 'price_new', 'price_old', 'site_unit',
-                               'site_link', 'site_code'])
+                               'site_link', 'site_code', 'miss'])
     return df
 
 
@@ -231,7 +236,7 @@ def _extract_units_from_string(unit_string) -> Tuple[str, float, bool]:
     match = re.search(rf"({re_number})\s*({re_unit})", unit_string.replace(',', '.'))
 
     if match is None:
-        return "error no match", 0.0, False
+        return _search_for_only_unit_title(unit_string)
 
     if not hasattr(match, 'groups') or len(match.groups()) != 4:
         return "error no group", 0.0, False
@@ -247,3 +252,21 @@ def _extract_units_from_string(unit_string) -> Tuple[str, float, bool]:
         return "no match in group", 0.0, False
 
     return title_string, value, True
+
+
+def _search_for_only_unit_title(unit_string: str) -> Tuple[str, float, bool]:
+    # regular expression for units
+    re_mass_units = r"кг|г"
+    re_value_units = r"мл|л"
+    re_cnt_units = r"шт"
+    re_unit = rf"{re_mass_units}|{re_value_units}|{re_cnt_units}"
+
+    match = re.search(rf"({re_unit})", unit_string.replace(',', '.'))
+
+    if match is None:
+        return "error no match", 0.0, False
+
+    if not hasattr(match, 'groups') or len(match.groups()) != 1:
+        return "error no group", 0.0, False
+
+    return match.group(0), 1.0, True

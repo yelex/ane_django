@@ -11,13 +11,10 @@ from parser_app.logic.handlers.handler_tools import remove_odd_space, remove_ALL
 
 class RiglaHandlerInterface(HandlerInterface):
 
-    def __init__(self):
-        super().__init__()
-
     def get_handler_name(self) -> str:
         raise NotImplemented
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         return r"https://rigla.ru/"
 
     def test_web_driver(self, driver: webdriver.Chrome) -> bool:

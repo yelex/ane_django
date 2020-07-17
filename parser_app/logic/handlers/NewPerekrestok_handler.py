@@ -32,7 +32,7 @@ class PerekrestokInterfaceHandler(HandlerInterface):
         """
         return True
 
-    def get_test_ulr(self) -> str:
+    def get_test_url(self) -> str:
         return r"https://www.perekrestok.ru/"
 
     def _create_serch_url_for_category(self, name: str) -> str:
