@@ -7,7 +7,7 @@ from selenium.common.exceptions import WebDriverException
 from tbselenium.exceptions import TBDriverPortError
 from tbselenium.tbdriver import TorBrowserDriver
 
-import parser_app
+from parser_app.logic.handlers.tools import get_proxy
 from anehome.settings import BASE_DIR, DEVELOP_MODE
 import os
 from selenium import webdriver
@@ -77,7 +77,7 @@ class Global(Singleton):
     def getproxies(self):
         if not hasattr(self, 'already_make_proxy'):
             self.already_make_proxy = True
-            parser_app.logic.handlers.tools.get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
+            get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
 
     def setstatus(self, status):
         self.status = status

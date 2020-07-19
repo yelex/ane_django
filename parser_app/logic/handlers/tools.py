@@ -5,20 +5,19 @@ import random
 import requests
 import time
 import os
-from parser_app.logic.global_status import Global
-from selenium import webdriver
 from threading import Timer  # для автозапуска
-from fake_useragent import UserAgent
 import smtplib
 import datetime
 from datetime import date
 import numpy as np
 from tqdm import tqdm
 import difflib
-# from webdriver_manager.chrome import ChromeDriverManager
 import ssl
 from stem.control import Controller
 from stem import Signal
+
+from parser_app.logic import gloabal_paths
+
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -43,7 +42,7 @@ class perpetualTimer:
 
 
 def filter_flag(id_n, text):  # id_n-номер категории (1..33), pro=True если учитывать слова "за", False - иначе
-    path_sfb = os.path.join(Global().base_dir, 'description', 'urls.csv')
+    path_sfb = os.path.join(gloabal_paths.base_dir, 'description', 'urls.csv')
     sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
     row = sfb_df.loc[[id_n]]
     keyword = row['keyword'].values[0]
@@ -189,7 +188,7 @@ def pack_to_gramm(string):  # перевод в граммы для (50×2г)
 
 # price_in_basket
 
-sfb = pd.read_csv(Global().path_sfb, sep=';')
+sfb = pd.read_csv(gloabal_paths.path_sfb, sep=';')
 
 
 def price_coef(id_n, string_unit):  # основано на весах 33 категорий условного минимального набора товаров и услуг
