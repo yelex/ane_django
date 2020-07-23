@@ -14,6 +14,9 @@ from selenium import webdriver
 
 from anehome.utils import static_variables
 
+TOR_SERVICE_PORT = '9050'
+TOR_SERVICE_HOST = '127.0.0.1'
+
 
 class Singleton(object):
     _instance = None
@@ -77,7 +80,7 @@ class Global(Singleton):
     def getproxies(self):
         if not hasattr(self, 'already_make_proxy'):
             self.already_make_proxy = True
-            get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
+            # get_proxy('https://www.perekrestok.ru/', get_new=True, get_list=True)
 
     def setstatus(self, status):
         self.status = status
@@ -187,3 +190,11 @@ def create_tor_webdriver() -> TorBrowserDriver:
               'then visit:\nhttps://github.com/mozilla/geckodriver/releases\n'
               'But, may be, you just have no geckodriver in you PATH then just add it there :)\n')
         raise WebDriverException
+
+
+def create_tor_service_browser() -> webdriver.Chrome:
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument(f"--proxy-server=socks5://{TOR_SERVICE_HOST}:{TOR_SERVICE_PORT}")
+    driver = webdriver.Chrome(executable_path=get_path_to_webdriver(), options=chrome_options)
+
+    return driver
