@@ -42,18 +42,25 @@ class Total:
 
         # use display from pyVirtual display package in order to launch selenium not in a real window
         with Display():
-            tor_webdriver = create_tor_webdriver()
-            df = df.append(IkeaHandlerMSK(tor_driver=tor_webdriver).extract_products())
-            df = df.append(RiglaHandlerSPB(tor_driver=tor_webdriver).extract_products())
-            df = df.append(PerekrestokHandlerSPB(tor_driver=tor_webdriver).extract_products())
-            df = df.append(OkeyHandlerSPB(tor_driver=tor_webdriver).extract_products())
-            tor_webdriver.quit()
+            # tor_webdriver = create_tor_webdriver()
+            # df = df.append(IkeaHandlerMSK(tor_driver=tor_webdriver).extract_products())
+            # df = df.append(RiglaHandlerSPB(tor_driver=tor_webdriver).extract_products())
+            # df = df.append(PerekrestokHandlerSPB(tor_driver=tor_webdriver).extract_products())
+            # df = df.append(OkeyHandlerSPB(tor_driver=tor_webdriver).extract_products())
+            # tor_webdriver.quit()
+
+            df = df.append(IkeaHandlerMSK().extract_products())
+            df = df.append(RiglaHandlerSPB().extract_products())
+            df = df.append(PerekrestokHandlerSPB().extract_products())
+            df = df.append(OkeyHandlerSPB().extract_products())
 
             df = df.append(SvaznoyHandlerMSK().extract_products())
             df = df.append(EldoradoHandlerMSK().extract_products())
-            df = df.append(LentaHandlerMSK().extract_products())
-            df = df.append(LentaHandlerSPB().extract_products())
 
+            df = df.append(LentaHandlerMSK(use_proxy=False).extract_products())
+            df = df.append(LentaHandlerSPB(use_proxy=False).extract_products())
+
+        with Display():
             try:
                 df = df.append(TotalGrocery().get_df_page())
             except:

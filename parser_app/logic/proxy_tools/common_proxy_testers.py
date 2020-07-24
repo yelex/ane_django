@@ -22,7 +22,7 @@ def simple_test_driver_with_url(driver: webdriver.Chrome, url: str) -> bool:
     except:
         return False
 
-    for custom_bad_word in ["an error occurred", "no internet", "bad ip"]:
+    for custom_bad_word in ["an error occurred", "no internet", "bad ip", "web page blocked"]:
         if custom_bad_word in page_text:
             return False
 

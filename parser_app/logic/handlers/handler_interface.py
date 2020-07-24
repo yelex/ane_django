@@ -8,7 +8,7 @@ from selenium import webdriver
 from tbselenium.tbdriver import TorBrowserDriver
 
 from anehome.settings import DEVELOP_MODE
-from parser_app.logic.global_status import get_usual_webdriver
+from parser_app.logic.global_status import get_usual_webdriver, create_tor_service_browser
 from parser_app.logic.handlers.handler_tools import \
     ParsedProduct, \
     get_empty_handler_DF, \
@@ -17,8 +17,12 @@ from parser_app.logic.handlers.handler_tools import \
     load_page_with_TL
 from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url
 from parser_app.logic.proxy_tools.proxy_keeper import ProxyKeeper
+from parser_app.logic.tor_utils import restart_tor
 
-
+"""
+If Interface_TEST_MODE enabled (set True) then HandlerInterface will fetch only one item from search
+and only one item from stored urls. In order just to test if all shop handlers work.  
+"""
 Interface_TEST_MODE: bool = True
 if not DEVELOP_MODE:
     Interface_TEST_MODE = False
@@ -72,30 +76,6 @@ class HandlerInterface:
         """
         raise NotImplemented("Implement me! I'm just an interface!")
 
-    # def create_general_search_url(self, search_word: str, page_num: Optional[int] = None) -> str:
-    #     """
-    #     create search url, if categoty link store have no
-    #     :param search_word:
-    #     :param page_num:
-    #     :return:
-    #     """
-    #     raise NotImplemented
-    #
-    # def get_search_url_for_category(self, category_row, page_num: Optional[int] = None) -> str:
-    #     """
-    #     Note: interface don't use this function directly,
-    #         it is juts remainder, that you should write this function
-    #     :return: string url for search category
-    #     """
-    #     if self._category_urls is None:
-    #         return self.create_general_search_url(category_row['search_word'], page_num)
-    #
-    #     rows = self._category_urls[self._category_urls['cat_title'] == category_row['cat_title']]
-    #     if rows is None or len(rows) == 0:
-    #         return self.create_general_search_url(category_row['search_word'], page_num)
-    #
-    #     return str(rows['url'].values[0])
-
     def _get_cookie(self) -> List[Dict[str, Any]]:
         """
         It can be useful for some shope implement all function of parsing independently of city.
@@ -106,19 +86,45 @@ class HandlerInterface:
         return []
 
     # common part of handlers
-    def __init__(self, tor_driver: Optional[TorBrowserDriver] = None):
+    def __init__(self, use_proxy: bool = True, proxy_via_tor_service: bool = True, tor_driver: Optional[TorBrowserDriver] = None):
         import os
         self._tor_driver = tor_driver
         # self._url_getter: URLGetterInterface = url_getter
         self._old_urls: pd.DataFrame = pd.read_csv(self._get_path_to_old_urls())
 
-        # # load category links
-        # self._category_urls = None
-        # path_to_category_links = os.path.join(
-        #     'parser_app', 'logic', 'description', 'site_category_links', f"{self.get_handler_name()}.csv",
-        # )
-        # if os.path.exists(path_to_category_links):
-        #     self._category_urls: pd.DataFrame = pd.read_csv(path_to_category_links)
+        # 4 proxy cases
+        if not use_proxy:
+            # case 1 - do not use proxy
+            self._driver = get_usual_webdriver()
+        elif tor_driver is not None:
+            # case 2 - use tor browser from init
+            self._setup_tor_driver()
+        elif proxy_via_tor_service:
+            # case 3 - connect via running tor service
+            # NOTE, need root to restart tor
+            test_times = 0
+            while True:
+
+                self._driver = create_tor_service_browser()
+
+                if simple_test_driver_with_url(self._driver, self.get_test_url()):
+                    break
+
+                restart_tor()
+                test_times += 1
+
+                if test_times >= 3:
+                    raise ValueError(f"can't fetch {self.get_test_url()} via TOR service")
+        else:
+            # case 4 - search for proxy in installed sites
+            try:
+                self._create_webdriver()
+            except Exception as e:
+                # FIXME fatal log
+                print(f"can't create driver for {self.get_test_url()}, return empty pd.DataFrame")
+                print(e.__str__())
+                self._driver = None
+                self._tor_driver = None
 
         self._full_category_table: pd.DataFrame = pd.read_csv(
             os.path.join('parser_app', 'logic', 'description', 'category_with_keywords.csv')
@@ -223,21 +229,14 @@ class HandlerInterface:
         """
         Call this function to get df with data.
 
-        Try create webdriver (0), if fails return empty pd.DataFrame
         Function (1) update url list for current handler,
         and then (2) create DataFrame from url list
         :return: pd.DataFrame with ???
         """
-        # with Display():
-
-        try:
-            # self._url_getter.reinit_for_baseURL(self.get_test_ulr(), self._get_cookie(), 5)
-            self._create_webdriver()
-        except Exception as e:
-            # FIXME fatal log
-            print(f"can't create driver for {self.get_test_url()}, return empty pd.DataFrame")
-            raise e
-            # return get_empty_handler_DF()
+        if self._driver is None and self._tor_driver is None:
+            print(f"Can't fetch {self.get_handler_name()}, no web driver")
+            print(f"return empty DF in order to not interapt all process")
+            return get_empty_handler_DF()
 
         try:
             print(f'Start update url list for {self.get_handler_name()}')
