@@ -1,7 +1,11 @@
 from os.path import dirname, join, realpath, exists
 from os import makedirs
 
-from parser_app.logic.global_status import create_tor_webdriver
+from parser_app.logic.handlers.handler_tools import load_page_with_TL
+from parser_app.logic.proxy_tools.common_proxy_testers import test_html_page
+from parser_app.logic.global_status import \
+    create_tor_webdriver, \
+    create_tor_service_browser
 
 
 def main():
@@ -9,8 +13,14 @@ def main():
     if not exists(out_img_folder):
         makedirs(out_img_folder)
 
-    print('creating TorDriver... ', end='')
-    driver = create_tor_webdriver()
+    # print('creating TorDriver... ', end='')
+    # driver = create_tor_webdriver()
+    # DRIVER_TYPE = 'TOR'
+    # print('ok')
+
+    print('creating Chrome driver with tor service proxy... ', end='')
+    driver = create_tor_service_browser()
+    DRIVER_TYPE = 'CHROME'
     print('ok')
 
     print('Start iterating over test pages...\n')
@@ -26,23 +36,23 @@ def main():
     ]:
         print(f'Check {site_name}:')
         try:
-            print(f'loading... ', end='')
-            driver.load_url(site_url, wait_for_page_body=True)
-            print('ok')
+            page_source = None
+            if DRIVER_TYPE == 'TOR':
+                print(f'loading... ', end='')
+                driver.load_url(site_url, wait_for_page_body=True)
+                page_source = driver.page_source
+                print('ok')
+            elif DRIVER_TYPE == 'CHROME':
+                MAX_WAIT_TIME_S = 3.0
+                print(f'loading (max wait time {MAX_WAIT_TIME_S}s)... ', end='')
+                page_source = load_page_with_TL(driver, site_url, MAX_WAIT_TIME_S)
+                print('ok')
 
             print('make screen-shot... ', end='')
             driver.get_screenshot_as_file(join(out_img_folder, site_name + '.png'))
             print('ok')
 
-            if isinstance(driver.page_source, str):
-                content_len = len(driver.page_source)
-                content = driver.page_source
-            else:
-                content_len = 0
-                content = ""
-            print(f'content len is {content_len}')
-
-            if content_len < 500 or "an error occurred" in content.lower():
+            if not test_html_page(page_source):
                 print(f'{site_name} FAIL')
             else:
                 print(f'{site_name} OK')
