@@ -27,6 +27,8 @@ def get_os_short_name() -> str:
         return 'linux'
     elif sys.platform.contain('win'):
         return 'win'
+    elif sys.platform == 'darwin':
+        return 'mac'
     else:
         return 'other'
 
