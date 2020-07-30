@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 
 from parser_app.logic.handlers.handler_interface import HandlerInterface
-from parser_app.logic.handlers.handler_tools import ParsedProduct, get_empty_parsed_product_dict
+from parser_app.logic.handlers.handler_tools import ParsedProduct, get_empty_parsed_product_dict, remove_non_digits
 from parser_app.logic.handlers.handler_tools import remove_odd_space, remove_ALL_spaces
 
 
@@ -60,34 +60,28 @@ class EldoradoHandlerInterface(HandlerInterface):
 
             soup = BeautifulSoup(page_source, 'html.parser')
 
-            for parsed_item in soup.find_all('div', class_='item'):
-                try:
-                    parsed_product = get_empty_parsed_product_dict()
-                    # title
-                    title = remove_odd_space(parsed_item.find('div', class_='itemTitle').text)
-                    parsed_product['title'] = title
+            for parsed_item in soup.find_all('li', {'data-dy': 'product'}):
+                parsed_product = get_empty_parsed_product_dict()
+                # title
+                title = remove_odd_space(parsed_item.find('a', {'data-dy': 'title'}).text)
+                parsed_product['title'] = title
 
-                    # url
-                    url = remove_odd_space(parsed_item.find('div', class_='itemTitle').find('a')['href'])
-                    url = f"https:{url}"
-                    parsed_product['url'] = url
+                # url
+                url = remove_odd_space(parsed_item.find('a', {'data-dy': 'title'})['href'])
+                url = f"https://www.eldorado.ru{url}"
+                parsed_product['url'] = url
 
-                    # price
-                    try:
-                        price = remove_odd_space(parsed_item.find('span', class_='old-price').text).replace(' ', '')[:-2]
-                    except:
-                        price = remove_odd_space(parsed_item.find('span', class_='itemPrice').text).replace(' ', '')[:-2]
-                    parsed_product['price_new'] = price
-                    parsed_product['price_old'] = None
+                # price
+                price_list = []
+                for price_item in parsed_item.find_all('span'):
+                    if hasattr(price_item, 'text') and price_item.text[-2:] == 'р.':
+                        mb_price = int(remove_non_digits(price_item.text))
+                        if 100 <= mb_price <= 100000:
+                            price_list.append(mb_price)
+                price = sorted(price_list)[-1]
+                parsed_product['price_new'] = price
 
-                    # float, value in unit of unit_title
-                    parsed_product['unit_value'] = 1
-                    # string, name of units
-                    parsed_product['unit_title'] = '1шт'
-
-                    parsed_product_list.append(parsed_product)
-                except:
-                    pass
+                parsed_product_list.append(parsed_product)
             full_parsed_product_list.extend(parsed_product_list)
         return full_parsed_product_list
 

@@ -23,7 +23,7 @@ class OkeyHandlerSPB(HandlerInterface):
         return True
 
     def _create_serch_url_for_category(self, cat_title: str):
-        return rf"https://www.okeydostavka.ru/webapp/wcs/stores/servlet/SearchDisplay?categoryId=&storeId=10653&catalogId=12052&langId=-20&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=72&searchTerm={cat_title}"
+        return rf"https://www.okeydostavka.ru/webapp/wcs/stores/servlet/SearchDisplay?categoryId=&storeId=10151&catalogId=12051&langId=-20&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=72&searchTerm={cat_title}"
 
     def _get_parsed_product_from_search(self, categoty_row) -> Union[None, List[ParsedProduct]]:
         if categoty_row['type'] != 'food':
@@ -84,7 +84,7 @@ class OkeyHandlerSPB(HandlerInterface):
 
                     parsed_product_list.append(parsed_product)
                 except:
-                    print('\nLenta parser, cant parse:')
+                    print('\nOkey parser, cant parse:')
                     print(product_item, end='\n\n')
 
         return parsed_product_list

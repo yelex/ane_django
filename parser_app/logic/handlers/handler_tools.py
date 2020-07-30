@@ -173,6 +173,14 @@ def remove_ALL_spaces(x: str) -> str:
     return str(_x)
 
 
+def cookie_to_name_value(cookie_list: List[Dict[str, str]]) -> Dict[str, str]:
+    cookie_name_value = {}
+    for cookie_item in cookie_list:
+        cookie_name_value[cookie_item['name']] = cookie_item['value']
+
+    return cookie_name_value
+
+
 def extract_units_from_parsed_product(parsed_product: ParsedProduct, category_row: Optional[dict] = None) -> ParsedProduct:
     """
     Extract units from parsed_product. Firstly look at field
