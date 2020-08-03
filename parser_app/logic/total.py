@@ -49,16 +49,16 @@ class Total:
             # df = df.append(OkeyHandlerSPB(tor_driver=tor_webdriver).extract_products())
             # tor_webdriver.quit()
 
-            df = df.append(IkeaHandlerMSK().extract_products())
-            df = df.append(RiglaHandlerSPB().extract_products())
-            df = df.append(PerekrestokHandlerSPB().extract_products())
-            df = df.append(OkeyHandlerSPB().extract_products())
+            df = df.append(IkeaHandlerMSK(proxy_method='tor-service').extract_products())
+            df = df.append(RiglaHandlerSPB(proxy_method='tor-service').extract_products())
+            df = df.append(PerekrestokHandlerSPB(proxy_method='tor-service').extract_products())
+            df = df.append(OkeyHandlerSPB(proxy_method='tor-service', use_request=True).extract_products())
 
-            df = df.append(SvaznoyHandlerMSK().extract_products())
-            df = df.append(EldoradoHandlerMSK().extract_products())
+            df = df.append(SvaznoyHandlerMSK(proxy_method='no-proxy').extract_products())
+            df = df.append(EldoradoHandlerMSK(proxy_method='tor-service').extract_products())
 
-            df = df.append(LentaHandlerMSK(use_proxy=False).extract_products())
-            df = df.append(LentaHandlerSPB(use_proxy=False).extract_products())
+            df = df.append(LentaHandlerMSK(proxy_method='no-proxy').extract_products())
+            df = df.append(LentaHandlerSPB(proxy_method='no-proxy').extract_products())
 
         with Display():
             try:

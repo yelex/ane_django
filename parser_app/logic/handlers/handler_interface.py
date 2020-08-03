@@ -4,6 +4,7 @@ import time
 from typing import List, Set, Union, Dict, Any, Optional
 from datetime import datetime
 import pandas as pd
+import requests
 from selenium import webdriver
 from tbselenium.tbdriver import TorBrowserDriver
 
@@ -14,16 +15,17 @@ from parser_app.logic.handlers.handler_tools import \
     get_empty_handler_DF, \
     validate_ParsedProduct, \
     postprocess_parsed_product, \
-    load_page_with_TL
-from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url
+    load_page_with_TL, cookie_to_name_value
+from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url, test_html_page
 from parser_app.logic.proxy_tools.proxy_keeper import ProxyKeeper
-from parser_app.logic.tor_utils import restart_tor
+from parser_app.logic.tor_utils import renew_tor_service_ip
+from parser_app.logic.tor_service_settings import TOR_SERVICE_PORT, TOR_SERVICE_HOST
 
 """
 If Interface_TEST_MODE enabled (set True) then HandlerInterface will fetch only one item from search
 and only one item from stored urls. In order just to test if all shop handlers work.  
 """
-Interface_TEST_MODE: bool = True
+Interface_TEST_MODE: bool = False
 if not DEVELOP_MODE:
     Interface_TEST_MODE = False
 
@@ -86,45 +88,29 @@ class HandlerInterface:
         return []
 
     # common part of handlers
-    def __init__(self, use_proxy: bool = True, proxy_via_tor_service: bool = True, tor_driver: Optional[TorBrowserDriver] = None):
-        import os
+    def __init__(
+            self,
+            proxy_method: str = 'tor-service',
+            use_request: bool = False,
+            tor_driver: Optional[TorBrowserDriver] = None,
+    ):
+        assert proxy_method in ['tor-service', 'tor-browser', 'find-proxy', 'no-proxy'], \
+            "proxy_method must be one of '['tor-service', 'tor-browser', 'find-proxy', 'no-proxy']'"
+
+        assert not use_request or proxy_method in ['tor-service', 'find-proxy', 'no-proxy'], \
+            "you should use 'use_request' only with '['tor-service', 'find-proxy', 'no-proxy']'"
+
+        assert proxy_method != 'tor-browser' or tor_driver is not None, \
+            "you must pass 'tor_driver' if you set proxy_method as 'tor-browser'"
+
+        self._use_request = use_request
+        self._request_proxy = {}
         self._tor_driver = tor_driver
+        self._driver = None
+        self._set_up_proxy(proxy_method)
+
         # self._url_getter: URLGetterInterface = url_getter
         self._old_urls: pd.DataFrame = pd.read_csv(self._get_path_to_old_urls())
-
-        # 4 proxy cases
-        if not use_proxy:
-            # case 1 - do not use proxy
-            self._driver = get_usual_webdriver()
-        elif tor_driver is not None:
-            # case 2 - use tor browser from init
-            self._setup_tor_driver()
-        elif proxy_via_tor_service:
-            # case 3 - connect via running tor service
-            # NOTE, need root to restart tor
-            test_times = 0
-            while True:
-
-                self._driver = create_tor_service_browser()
-
-                if simple_test_driver_with_url(self._driver, self.get_test_url()):
-                    break
-
-                restart_tor()
-                test_times += 1
-
-                if test_times >= 3:
-                    raise ValueError(f"can't fetch {self.get_test_url()} via TOR service")
-        else:
-            # case 4 - search for proxy in installed sites
-            try:
-                self._create_webdriver()
-            except Exception as e:
-                # FIXME fatal log
-                print(f"can't create driver for {self.get_test_url()}, return empty pd.DataFrame")
-                print(e.__str__())
-                self._driver = None
-                self._tor_driver = None
 
         self._full_category_table: pd.DataFrame = pd.read_csv(
             os.path.join('parser_app', 'logic', 'description', 'category_with_keywords.csv')
@@ -135,18 +121,92 @@ class HandlerInterface:
         self._returned_df: pd.DataFrame = get_empty_handler_DF()
         self._url_done: Set[str] = set()
 
-    def _load_page_with_TL(self, page_url, time_limit: float = 7.5) -> Union[str, None]:
+    def _set_up_proxy(self, proxy_method: str) -> None:
+        print(f'{self.get_handler_name()} setup proxy...')
+
+        if self._use_request:
+            print(f'{self.get_handler_name()} use request (instead of selenium)')
+            if proxy_method == 'no-proxy':
+                print(f'{self.get_handler_name()} use no-proxy mode')
+                self._request_proxy = {}
+                return
+            if proxy_method == 'tor-service':
+                self._request_proxy = {
+                    'SOCKSv5': f"{TOR_SERVICE_HOST}:{TOR_SERVICE_PORT}",
+                }
+                print(f'{self.get_handler_name()} use tor-service mode')
+                return
+            if proxy_method == 'find-proxy':
+                raise NotImplemented('I hope you wont use this function')
+
+        print(f'{self.get_handler_name()} use selenium {proxy_method} mode')
+        # 4 proxy cases
+        if proxy_method == 'no-proxy' or proxy_method is None:
+            # case 1 - do not use proxy
+            self._driver = get_usual_webdriver()
+        elif proxy_method == 'tor-browser':
+            # case 2 - use tor browser from init
+            self._setup_tor_driver()
+        elif proxy_method == 'tor-service':
+            # case 3 - connect via running tor service
+            # NOTE, need root to restart tor
+            test_times = 0
+            while True:
+
+                self._driver = create_tor_service_browser()
+
+                if simple_test_driver_with_url(self._driver, self.get_test_url()):
+                    break
+
+                renew_tor_service_ip()
+                test_times += 1
+
+                if test_times >= 4:
+                    print(f"can't fetch {self.get_test_url()} via TOR service")
+                    self._driver = None
+                    self._tor_driver = None
+                    self._use_request = False
+                    # empty df will be returned
+                    return
+
+        elif proxy_method == 'find-proxy':
+            # case 4 - search for proxy in installed sites
+            try:
+                self._create_webdriver()
+            except Exception as e:
+                # FIXME fatal log
+                print(f"can't create driver for {self.get_test_url()}, return empty pd.DataFrame")
+                print(e.__str__())
+                self._driver = None
+                self._tor_driver = None
+
+    def _load_page_with_TL(self, page_url, time_limit: float = 3.5) -> Union[str, None]:
         """
         Base method for page loading.
         Return string - page source if page load in time_limit second,
             otherwise return any loaded string,
             else return None
         """
+        if self._use_request:
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            response = requests.get(
+                page_url,
+                timeout=time_limit,
+                cookies=cookie_to_name_value(self._get_cookie()),
+                headers=headers,
+                proxies=self._request_proxy,
+            )
+            page_source = response.text
+            if not test_html_page(page_source):
+                return None
+            return page_source
+
         if self._tor_driver is not None:
             # load_page_with_TL(self._tor_driver, page_url, time_limit)
             self._tor_driver.load_url(page_url, wait_for_page_body=True)
             time.sleep(time_limit)
             return self._tor_driver.page_source
+
         return load_page_with_TL(self._driver, page_url, time_limit)
 
     def _setup_tor_driver(self) -> None:
@@ -233,7 +293,7 @@ class HandlerInterface:
         and then (2) create DataFrame from url list
         :return: pd.DataFrame with ???
         """
-        if self._driver is None and self._tor_driver is None:
+        if self._driver is None and self._tor_driver is None and not self._use_request:
             print(f"Can't fetch {self.get_handler_name()}, no web driver")
             print(f"return empty DF in order to not interapt all process")
             return get_empty_handler_DF()
@@ -349,7 +409,7 @@ class HandlerInterface:
                 return
 
         # if we have too few items in current category, add this item
-        if len(self._old_urls[self._old_urls['cat_title'] == category_row['cat_title']]) <= 15:
+        if len(self._old_urls[self._old_urls['cat_title'] == category_row['cat_title']]) <= 5:
             print('add to url store')
             self._old_urls = self._old_urls.append(
                 ignore_index=True,
