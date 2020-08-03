@@ -14,4 +14,4 @@ tor_browser_folder/
 tor_test_screenshots/
 parser_app/logic/gks_store/
 parsed_content/
-parser_app/logic/tor_service_setings.json
+parser_app/logic/tor_service_settings.json
