@@ -1,4 +1,4 @@
-# code taken from https://python-scripts.com/question/10246
+# some code taken from https://python-scripts.com/question/10246
 
 from urllib.error import URLError
 from urllib.request import urlopen
@@ -7,9 +7,37 @@ from subprocess import check_call, CalledProcessError, getoutput
 from json import load
 from os import devnull
 import time
+from stem import Signal
+from stem.control import Controller
+# import socks
+# import socket
+
+from parser_app.logic.tor_service_settings import TOR_SERVICE_PORT, TOR_SERVICE_PASSWORD, TOR_SERVICE_HOST
 
 
-def restart_tor():
+def colored(r, g, b, text):
+    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
+
+
+def renew_tor_service_ip():
+    print(f"{colored(10, 250, 10, 'TOR-SERVICE')} take new ip")
+    try:
+        with Controller.from_port(address=TOR_SERVICE_HOST, port=int(TOR_SERVICE_PORT)) as controller:
+            controller.authenticate(password=TOR_SERVICE_PASSWORD)
+            # socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, TOR_SERVICE_HOST, TOR_SERVICE_PORT)
+            # socket.socket = socks.socksocket
+            controller.signal(Signal.NEWNYM)
+
+        time.sleep(5)
+    except:
+        print(f"{colored(250, 10, 10, 'TOR-SERVICE')} fail, smth went wrong")
+
+
+def restart_tor_LINUX():
+    """
+    require SUDO
+    :return:
+    """
     fnull = open(devnull, 'w')
     try:
         tor_restart = check_call(

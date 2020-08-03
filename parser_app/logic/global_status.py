@@ -1,20 +1,16 @@
-import json
 import sys
-
+import os
 import pandas as pd
 from datetime import datetime
 
+from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from tbselenium.exceptions import TBDriverPortError
 from tbselenium.tbdriver import TorBrowserDriver
 
-from parser_app.logic.handlers.tools import get_proxy
 from anehome.settings import BASE_DIR, DEVELOP_MODE
-import os
-from selenium import webdriver
-
-from anehome.utils import static_variables, get_os_short_name
-
+from anehome.utils import static_variables
+from parser_app.logic.tor_service_settings import TOR_SERVICE_PORT, TOR_SERVICE_HOST
 
 
 class Singleton(object):

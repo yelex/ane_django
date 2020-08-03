@@ -75,7 +75,7 @@ class EldoradoHandlerInterface(HandlerInterface):
                 price_list = []
                 for price_item in parsed_item.find_all('span'):
                     if hasattr(price_item, 'text') and price_item.text[-2:] == 'р.':
-                        mb_price = int(remove_non_digits(price_item.text))
+                        mb_price = float(remove_non_digits(price_item.text))
                         if 100 <= mb_price <= 100000:
                             price_list.append(mb_price)
                 price = sorted(price_list)[-1]

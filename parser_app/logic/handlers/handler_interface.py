@@ -18,14 +18,14 @@ from parser_app.logic.handlers.handler_tools import \
     load_page_with_TL, cookie_to_name_value
 from parser_app.logic.proxy_tools.common_proxy_testers import simple_test_driver_with_url, test_html_page
 from parser_app.logic.proxy_tools.proxy_keeper import ProxyKeeper
-from parser_app.logic.tor_utils import restart_tor
+from parser_app.logic.tor_utils import renew_tor_service_ip
 from parser_app.logic.tor_service_settings import TOR_SERVICE_PORT, TOR_SERVICE_HOST
 
 """
 If Interface_TEST_MODE enabled (set True) then HandlerInterface will fetch only one item from search
 and only one item from stored urls. In order just to test if all shop handlers work.  
 """
-Interface_TEST_MODE: bool = True
+Interface_TEST_MODE: bool = False
 if not DEVELOP_MODE:
     Interface_TEST_MODE = False
 
@@ -106,6 +106,7 @@ class HandlerInterface:
         self._use_request = use_request
         self._request_proxy = {}
         self._tor_driver = tor_driver
+        self._driver = None
         self._set_up_proxy(proxy_method)
 
         # self._url_getter: URLGetterInterface = url_getter
@@ -121,18 +122,24 @@ class HandlerInterface:
         self._url_done: Set[str] = set()
 
     def _set_up_proxy(self, proxy_method: str) -> None:
+        print(f'{self.get_handler_name()} setup proxy...')
 
         if self._use_request:
+            print(f'{self.get_handler_name()} use request (instead of selenium)')
             if proxy_method == 'no-proxy':
+                print(f'{self.get_handler_name()} use no-proxy mode')
                 self._request_proxy = {}
                 return
             if proxy_method == 'tor-service':
                 self._request_proxy = {
                     'SOCKSv5': f"{TOR_SERVICE_HOST}:{TOR_SERVICE_PORT}",
                 }
+                print(f'{self.get_handler_name()} use tor-service mode')
+                return
             if proxy_method == 'find-proxy':
                 raise NotImplemented('I hope you wont use this function')
 
+        print(f'{self.get_handler_name()} use selenium {proxy_method} mode')
         # 4 proxy cases
         if proxy_method == 'no-proxy' or proxy_method is None:
             # case 1 - do not use proxy
@@ -151,11 +158,17 @@ class HandlerInterface:
                 if simple_test_driver_with_url(self._driver, self.get_test_url()):
                     break
 
-                restart_tor()
+                renew_tor_service_ip()
                 test_times += 1
 
-                if test_times >= 3:
-                    raise ValueError(f"can't fetch {self.get_test_url()} via TOR service")
+                if test_times >= 4:
+                    print(f"can't fetch {self.get_test_url()} via TOR service")
+                    self._driver = None
+                    self._tor_driver = None
+                    self._use_request = False
+                    # empty df will be returned
+                    return
+
         elif proxy_method == 'find-proxy':
             # case 4 - search for proxy in installed sites
             try:
@@ -280,7 +293,7 @@ class HandlerInterface:
         and then (2) create DataFrame from url list
         :return: pd.DataFrame with ???
         """
-        if self._driver is None and self._tor_driver is None:
+        if self._driver is None and self._tor_driver is None and not self._use_request:
             print(f"Can't fetch {self.get_handler_name()}, no web driver")
             print(f"return empty DF in order to not interapt all process")
             return get_empty_handler_DF()
@@ -396,7 +409,7 @@ class HandlerInterface:
                 return
 
         # if we have too few items in current category, add this item
-        if len(self._old_urls[self._old_urls['cat_title'] == category_row['cat_title']]) <= 15:
+        if len(self._old_urls[self._old_urls['cat_title'] == category_row['cat_title']]) <= 5:
             print('add to url store')
             self._old_urls = self._old_urls.append(
                 ignore_index=True,

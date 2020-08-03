@@ -237,14 +237,16 @@ class GKS_handler_interface:
             print(f'unknown category: {category}')
             return None
 
-        value = week_row.iloc[0][category]
+        try:
+            value = week_row.iloc[0][category]
+            if pd.isna(value):
+                # fixme log
+                print(f'This category is NaN: {category}')
+                return None
 
-        if pd.isna(value):
-            # fixme log
-            print(f'This category is NaN: {category}')
+            return float(value)
+        except ValueError:
             return None
-
-        return float(value)
 
     def _update_local_store(self, start_date: Date, end_date: Date) -> None:
         """
@@ -264,14 +266,15 @@ class GKS_handler_interface:
         driver = create_webdriver(download_path=path_to_download_folder)
         gks_url = self._construct_url(start_date, end_date)
         driver.get(gks_url)
-        time.sleep(20)
+        time.sleep(60)
         driver.find_element_by_class_name("fa-download").click()
-        time.sleep(20)
+        time.sleep(60)
 
         assert len(os.listdir(path_to_download_folder)) >= 1, \
             f"Problems with loading, no file in expected folder :\n{path_to_download_folder}\n***\n"
 
-        driver.quit()
+        # driver.quit()
+        print(f'{self.get_handler_name()} -> exit driver, start to extract downloaded data')
 
         path_to_file = os.path.join(
             path_to_download_folder,
@@ -285,13 +288,17 @@ class GKS_handler_interface:
         cat_titles = list(cat_with_kw['cat_title'])
 
         df, unit_dict = GKS_handler_interface.transform(data, cat_titles, 'msk')
+        print('finish GKS transformation')
+
+        print(f"local store shape : {self._local_store.shape}")
+        print(f"appended df shape : {df.shape}")
 
         self._local_store = self._local_store.append(df, ignore_index=True)
         self._local_store.drop_duplicates(inplace=True)
         self._units_table = unit_dict
         self._save_local_store()
 
-        shutil.rmtree(path_to_download_folder)
+        # shutil.rmtree(path_to_download_folder)
 
     @staticmethod
     def transform(df: pd.DataFrame, cat_titles: List[str], city='msk') \
