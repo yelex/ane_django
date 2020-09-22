@@ -246,7 +246,9 @@ class UtkonosHandler():
 
                 products_div = soup.find('div', {'class': 'goods_view_item-action'})
                 if products_div is None:
-                    print('soup:\n', soup)
+                    # print('soup:\n', soup)
+                    print('products_div not found!')
+                    continue
                 # print(products_div)
                 # products_div = soup.find('div', {'class': 'b-section--bg i-pb30 js-product-item js-product-main'})
                 # print('\n\nproducts_div:\n', products_div)

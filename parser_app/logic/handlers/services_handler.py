@@ -10,7 +10,8 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-class Services():
+
+class Services:
     def __init__(self):
         self.path_sfb = os.path.join(Global().base_dir, r'description/urls.csv')
 

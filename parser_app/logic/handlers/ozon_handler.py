@@ -221,10 +221,7 @@ class OzonHandler():
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        # options = webdriver.ChromeOptions()
-        # proxies = get_proxy('https://www.ozon.ru/')
-        # options.add_argument('--headless')
-        # options.add_argument('--proxy-server=%s' % proxy)
+
         if Global().is_selenium_ozon is True:
             driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
                                       chrome_options=Global().chrome_options)
@@ -235,10 +232,10 @@ class OzonHandler():
         header = {'User-Agent': str(ua.chrome)}
         proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0])
 
-        h1_class = 'a8w3'
-        price_new_class_sale = 'a9g a9h2'
-        price_new_class = 'a9g'
-        price_old_class = 'a9g4'
+        h1_class = 'b3a8'
+        price_new_class_sale = 'b3d b3n5'
+        price_new_class = price_new_class_sale.split(' ')[0]
+        price_old_class = 'b3d5'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']

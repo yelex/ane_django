@@ -26,7 +26,7 @@ class Global(Singleton):
         self.path_desc = os.path.join(self.base_dir, r'description/categories.csv')
         self.example_shot = os.path.join(self.base_dir, r'description/data_2019-10-02.csv')
         self.desc_df = pd.read_csv(self.path_desc, sep=';', index_col='id')
-        self.date = datetime.now().date() # date(year=2020, month=6, day=21)
+        self.date = datetime.now().date()  # date(year=2020, month=8, day=8)
         self.max_links = None
         self.is_selenium_ozon = False
         self.is_selenium_okey = False
@@ -35,9 +35,7 @@ class Global(Singleton):
         self.path_chromedriver = os.path.join(BASE_DIR, 'chromedriver')  # '/home/yelex/PycharmProjects/ane_django/chromedriver'
         self.path_parsedcontent = os.path.join(BASE_DIR, 'parsed_content')
         options = webdriver.ChromeOptions()
-        # options.add_argument('--headless')
-        # options.add_argument("--disable-dev-shm-usage");
-        # options.add_argument("--start-maximized")
+
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")

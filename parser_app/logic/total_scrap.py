@@ -41,8 +41,8 @@ class TotalGrocery:
         end = datetime.now()
         time_execution = str(end-start)
         print('ALL STORES have successfully parsed\ntotal time of execution: {}'.format(time_execution))
-
         return df
+
 
     def get_df_page(self):
         start = datetime.now()
@@ -50,7 +50,8 @@ class TotalGrocery:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        site_handlers = [OkeyHandler(), PerekrestokHandler(), GlobusHandler(), UtkonosHandler(), ]  #
+        site_handlers = [UtkonosHandler(), OkeyHandler(),
+                         PerekrestokHandler(), GlobusHandler(), ]  #
 
         for handler in site_handlers:
             df = df.append(handler.extract_product_page())
