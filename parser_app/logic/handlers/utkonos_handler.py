@@ -174,15 +174,22 @@ class UtkonosHandler():
         return res
 
     def extract_product_page(self):
+        global driver
         site_code = 'utkonos'
         # ua = UserAgent()
         # header = {'User-Agent': str(ua.chrome)}
-        header = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                                'Chrome/51.0.2704.103 Safari/537.36'}
+        header = {
+            'Cookie': 'ADRUM=s=1606571730119&r=https%3A%2F%2Fwww.utkonos.ru%2Fitem%2F2008269%2Flopatka-teljachja-na-kosti-ekol-khaljal-okhlazhdennaja-0-1---1-5-kg%3F0; SGM_VAR=C; Utk_SssTkn=10390D51A0E3C538D282011930FAD50E; store=utk; uid=6738448053914566656; store_mod=full; agree_with_cookie=true; _tm_st_sid=1606571209652.203312; _ym_visorc_942065=w; cto_bundle=VkCUE190eUhneXAwc0kzS3lvS0xJaTFIcnBpVEg3NW5VdDI4QmtSNFltR2VQTzh1ZEZhU0thQTI5S1d3QWx1M0FnTiUyQmd3RTlHJTJCVmpUbTJLcnVvb2tLJTJGNUdZaUhxdmZ3S3dVYVhoVWtES2EwT2xpcXJ4UXZaVkVGSDhTSEZHSXZ3NyUyQjFP; flocktory-uuid=c6879935-8824-424d-be6e-b833a0016c8f-8; _dc_gtm_UA-8149186-8=1; _fbp=fb.1.1606571210725.1126819666; _ga=GA1.2.1582499665.1606571209; _gid=GA1.2.1593123435.1606571209; _ym_debug=1; G_ENABLED_IDPS=google; _tm_lt_sid=1606571209652.884297; _ym_isad=2; _ym_d=1606571208; _ym_uid=1606571208479204302; _gcl_au=1.1.1702359336.1606571207; Utk_MrkGrpTkn=7A53C82F44D108F552CEA4AF171B9340; SGM_201012_1000=443; Utk_DvcGuid=B1C823335BA04BFFFCFC95C54804F944; Utk_LncTime=2020-11-28+16%3A46%3A30',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Host': 'www.utkonos.ru',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15',
+            'Accept-Language': 'ru',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive'}
         # print(header)
         desc_df = Global().desc_df
         links_df = Global().links
-        links_df = links_df[links_df['site_link'].str.contains(site_code)].iloc[:Global().max_links]
+        links_df = links_df[links_df['site_link'].str.contains(site_code)]
 
         category_ids = links_df.category_id.unique()
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
@@ -192,13 +199,12 @@ class UtkonosHandler():
         # proxies = get_proxy(check_url) #
         proxies = None
 
-        time.sleep(5)
         # selenium
         if Global().is_selenium_utkonos:
             path = Global().path_chromedriver
             # options = webdriver.ChromeOptions()
             # options.add_argument('--headless')
-            driver = webdriver.Chrome(executable_path=path, chrome_options=Global().chrome_options)
+            driver = webdriver.Chrome(executable_path=path)
 
         #
         for cat_id in tqdm(category_ids):  # испр
@@ -219,6 +225,7 @@ class UtkonosHandler():
                 print(href_i)
                 if Global().is_selenium_utkonos:
                     driver.get(href_i)
+                    time.sleep(5)
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     # driver.close()
                 else:
@@ -231,24 +238,41 @@ class UtkonosHandler():
                     except Exception as e:
                         print('Exception:', e)
                         while True:
-                           try:
+                            try:
                                 proxies = get_proxy(href_i)
                                 time.sleep(3)
                                 r = requests.get(href_i, proxies=proxies, headers=header)
                                 break
-                           except:
-                              continue
+                            except:
+                                continue
 
                     html = r.content
 
                     soup = BeautifulSoup(html, 'html.parser')
-                    # print('soup:\n', soup)
+                #                 print('soup:\n', soup)
 
-                products_div = soup.find('div', {'class': 'goods_view_item-action'})
+                products_div = soup.find('div', {'class': 'product-base-info_content'})
                 if products_div is None:
-                    # print('soup:\n', soup)
-                    print('products_div not found!')
-                    continue
+                    # print(soup)
+                    while True:
+                        proxies = get_proxy(href_i)
+                        time.sleep(3)
+                        r = requests.get(href_i, proxies=proxies, headers=header)
+                        html = r.content
+                        soup = BeautifulSoup(html, 'html.parser')
+                        # print(soup)
+                        if soup.find('h1', {'class': 'product-base-info_name ng-star-inserted'}) is not None:
+                            print('yahoo!')
+                            break
+                # print(soup.text.lower())
+                #                 print(soup)
+                #                 if soup.find('span', {'class': 'product-nameplate__text'}) is not None:
+                #                     print('Снят с продажи!')
+                #                     continue
+                # print('soup:\n', soup)
+                # raise AttributeError
+                # print('products_div not found!')
+                # continue
                 # print(products_div)
                 # products_div = soup.find('div', {'class': 'b-section--bg i-pb30 js-product-item js-product-main'})
                 # print('\n\nproducts_div:\n', products_div)
@@ -259,41 +283,95 @@ class UtkonosHandler():
                 price_dict['category_id'] = cat_id
                 price_dict['category_title'] = category_title
 
-                # try:
-                price_dict['site_title'] = wspex_space(
-                products_div.find('div', {'class': 'goods_view_item-action_header'}).text)
-                # except:
-                #     print('url %s is broken' % href_i)
-                #     continue
-                price_dict['site_link'] = href_i
-                # print(price_dict['site_link'])
+                try:
+                    price_dict['site_title'] = wspex_space(
+                        soup.find('h1', {'class': 'product-base-info_name ng-star-inserted'}).text)
+                except Exception as e:
+                    print(e)
+                    print('soup:\n', soup)
+                    raise AttributeError
+                    # continue
 
-                # if filter_flag(id_n, price_dict['site_title']) == False:
-                # print("   skipped position: {}".format(price_dict['site_title']))
-                # continue
-                price_div = products_div.find('div', {'class': 'goods_price has_old_price'})
+                if soup.find('span', {'class': 'product-nameplate__text'}) is not None:
+                    if 'Снят' in soup.find('span', {'class': 'product-nameplate__text'}).text:
+                        print('Снят с продажи!\n')
+                        continue
+
+                price_dict['site_link'] = href_i
+
+                price_div = soup.find('div', {'class': 'product-price-block'})
+                if price_div is None:
+                    raise AttributeError('price_div is none')
 
                 # print('div_sale:', div_sale)
-                if price_div is not None:
 
-                    div_sale = price_div.find('div', {'class': 'goods_price-item old_price'})
-                    # print('div_sale: ', div_sale)
+                div_sale = price_div.find('span',
+                                          {'class': 'product-old-price--strike'})  # print('div_sale: ', div_sale)
+
+                if div_sale:
                     price_dict['price_old'] = float(re.search('\d+\.\d+', wspex(div_sale.text).replace(',', '.'))[0])
-
-                    div_new = price_div.find('div', {'class': 'goods_price-item current'})
-                    if div_new is None:
-                        div_new = price_div.find('div', {'class': 'goods_price-item current big'})
-                    price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(div_new.text).replace(',', '.'))[0])
-
-                    price_dict['site_unit'] = str(div_new.get('data-weight'))[1:]
-
                 else:
-                    div_new = products_div.find('div', {'class': 'goods_price-item current'})
-                    if div_new is None:
-                        div_new = products_div.find('div', {'class': 'goods_price-item current big'})
-                    price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(div_new.text).replace(',', '.'))[0])
                     price_dict['price_old'] = ''
-                    price_dict['site_unit'] = str(div_new.get('data-weight'))[1:]
+
+                price_dict['site_unit'] = None
+                price_dict['price_new'] = None
+                # если есть цена за кг
+                if price_div.find('span', {'class': 'product-price __accent ng-star-inserted'}) is not None:
+                    price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(
+                        price_div.find('span', {'class': 'product-price __accent ng-star-inserted'}).text).replace(',',
+                                                                                                                   '.'))[
+                                                        0])
+                    price_dict['site_unit'] = re.search('/[а-яА-Я]*', price_div.find('span', {
+                        'class': 'product-price __accent ng-star-inserted'}).text.lower())[0][1:]
+                else:
+                    if price_div.find('span', {'class': 'product-price ng-star-inserted'}) is not None:
+                        price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(
+                            price_div.find('span', {'class': 'product-price ng-star-inserted'}).text).replace(',',
+                                                                                                              '.'))[0])
+                        price_dict['site_unit'] = re.search('/[а-яА-Я]*', price_div.find('span', {
+                            'class': 'product-price ng-star-inserted'}).text.lower())[0][1:]
+                    # если нет
+                    else:
+                        if price_div.find('span',
+                                          {'class': 'product-sale-price __accent ng-star-inserted'}) is not None:
+                            price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(price_div.find('span', {
+                                'class': 'product-sale-price __accent ng-star-inserted'}).text).replace(',', '.'))[0])
+                        else:
+
+                            if price_div.find('span', {'class': 'product-sale-price ng-star-inserted'}) is not None:
+                                price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(price_div.find('span', {
+                                    'class': 'product-sale-price ng-star-inserted'}).text).replace(',', '.'))[0])
+
+                if price_dict['site_unit'] is None:
+                    piece_units = ['шт', 'штук', 'штуки', 'штука', 'пак', 'пакетиков', 'пак']
+                    kg_units = ['кг', 'kg', 'килограмм']  # оставить в граммах
+                    gram_units = ['г', 'g', 'грамм', 'граммов', 'гр']  # в кг
+                    litre_units = ['л', 'l', 'литр', 'литров', 'литра']
+                    ml_units = ['мл', 'ml', 'миллилитров', 'миллилитра']
+                    tenpiece_units = ['10 шт', '10 шт.', '10шт', '10шт.', 'десяток', 'дес.']
+
+                    kg_pattern = r'(?:\s+|\-)(?:\d{1,4}[×,.]\d{1,4}|\d{0,4})\s*(?:' + r'|'.join(
+                        kg_units) + r')' + '(?:\s+|$)'
+                    g_pattern = r'(?:\s+|\-)(?:\d{1,4}[×,.]\d{1,4}|\d{0,4})\s*(?:' + r'|'.join(
+                        gram_units) + r')' + '(?:\s+|$)'
+                    l_pattern = r'(?:\s+|\-)(?:\d{1,4}[×,.]\d{1,4}|\d{0,4})\s*(?:' + r'|'.join(
+                        litre_units) + r')' + '(?:\s+|$)'
+                    ml_pattern = r'(?:\s+|\-)(?:\d{1,4}[×,.]\d{1,4}|\d{0,4})\s*(?:' + r'|'.join(
+                        ml_units) + r')' + '(?:\s+|$)'
+                    piece_pattern = r'(?:\s+|\-)(?:\d{1,4}[×,.]\d{1,4}|\d{0,4})\s*(?:' + r'|'.join(
+                        piece_units) + r')' + '(?:\s+|$)'
+                    tenpiece_pattern = r'(?:\s*|\-)(?:\d{1,4}[×,.]\d{1,4}|\d{0,4})\s*(?:' + r'|'.join(
+                        tenpiece_units) + r')' + '(?:\s+|$)'
+
+                    patterns = [piece_pattern, tenpiece_pattern, kg_pattern, g_pattern, l_pattern, ml_pattern]
+
+                    for pattern in patterns:
+                        match = re.search(pattern, price_dict['site_title'].lower())
+                        if match:
+                            price_dict['site_unit'] = wspex_space(match[0])
+                            if price_dict['site_unit'].startswith('-'):
+                                price_dict['site_unit'] = price_dict['site_unit'][1:]
+
                 print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n'.format(price_dict['site_title'],
                                                                                         price_dict['price_new'],
                                                                                         price_dict['price_old'],

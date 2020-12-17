@@ -13,7 +13,7 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-class LamodaHandler():
+class LamodaHandler:
 
     # def extract_products(self, max_prod=200):
     #
@@ -154,8 +154,8 @@ class LamodaHandler():
             # print(' id_n =', id_n)
             i = 0
 
-            ua = UserAgent()
-            header = {'User-Agent': str(ua.chrome)}
+            # ua = UserAgent(verify_ssl=False)
+            header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15'}
             while i + 1 <= len(url_list):
 
                 href_i = url_list[i]
@@ -163,11 +163,11 @@ class LamodaHandler():
                 i += 1
 
                 try:
-                    # time.sleep(3)
+                    time.sleep(3)
                     if proxies is not None:
-                        r = requests.get(href_i, proxies=proxies, headers=header, timeout=60)  # CRITICAL
+                        r = requests.get(href_i, proxies=proxies, headers=header, timeout=100)  # CRITICAL
                     else:
-                        r = requests.get(href_i, headers=header, timeout=60)
+                        r = requests.get(href_i, headers=header, timeout=100)
                 except:
                     while True:
 
@@ -195,12 +195,15 @@ class LamodaHandler():
                     print('Товара нет в наличии')
                     continue
                 except:
+                    # print(soup)
                     pass
 
                 if 'not found' in soup.text.lower():
                     print('not found')
                     continue
-
+                if 'Мы не смогли найти страницу по вашей ссылке' in soup.text:
+                    print('Мы не смогли найти страницу по вашей ссылке')
+                    continue
                 if not products_div:
                     proxies = get_proxy('https://www.lamoda.ru/')
                     i -= 1
@@ -213,15 +216,8 @@ class LamodaHandler():
                 price_dict['category_id'] = cat_id
                 price_dict['category_title'] = category_title
                 # print(soup)
-                div_sale = soup.find('span', {'class': 'product-prices__price product-prices__price_old'})
 
-                if div_sale is not None:
-                    # print('div-sale: ',div_sale)
-                    price_dict['price_old'] = int(re.match('\d+', wspex(div_sale.text))[0])
-                else:
-                    price_dict['price_old'] = ''
-
-                type_good = wspex_space(soup.find('div', {'class': 'ii-product dt1400'}).get('data-name'))
+                type_good = wspex_space(soup.find('div', {'class': 'ii-product'}).get('data-name'))
 
                 if type_good == '':
                     # print(' imhere!')
@@ -231,7 +227,7 @@ class LamodaHandler():
                 try:
 
                     price_dict['site_title'] = type_good + ' Артикул: ' + wspex_space(
-                        soup.find('div', {'class': 'ii-product dt1400'}).get('data-sku'))
+                        soup.find('div', {'class': 'ii-product'}).get('data-sku'))
 
                 except:
                     continue
@@ -242,16 +238,11 @@ class LamodaHandler():
                 if div_new is None:
                     div_new = soup.find('span', {'class': 'product-prices__price product-prices__price_current'})
                 # print(str(soup))
-                try:
-                    div_new = re.search('"current": "\d+"', str(soup))[0]
-                except:
-                    pass
 
-                if type(div_new) is str:
-                    # print(div_new)
-                    price_dict['price_new'] = int(re.search('\d+', div_new)[0])
-                else:
-                    price_dict['price_new'] = int(re.match('\d+', wspex(div_new.text))[0])
+                price_dict['price_new'] = int(re.match('\d+', wspex(div_new.get('content')))[0])
+                price_dict['price_old'] = int(re.match('\d+', wspex(div_new.text))[0])
+                if price_dict['price_old'] == price_dict['price_new']:
+                    price_dict['price_old'] = ''
 
                 '''
                 else:

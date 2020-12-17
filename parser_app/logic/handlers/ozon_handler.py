@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from tqdm import tqdm
 import random
+import os
 from parser_app.logic.handlers.tools import wspex, wspex_space, get_proxy, get_my_ip
 from parser_app.logic.global_status import Global
 from fake_useragent import UserAgent
@@ -67,7 +68,7 @@ class OzonHandler():
         return a
 
     def extract_products(self, max_prod=200):
-        path_sfb = os.path.join(Global.base_dir, r'description/urls.csv')
+        path_sfb = os.path.join(Global().base_dir, r'description/urls.csv')
         sfb_df = pd.read_csv(path_sfb, sep=';', index_col='id')
 
         list_urls = sfb_df.fillna('')[sfb_df.fillna('')['URL'].str.contains('ozon')]['URL'].values
@@ -85,52 +86,89 @@ class OzonHandler():
 
         driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
                                   chrome_options=Global().chrome_options)  # , chrome_options=self.option_chrome(proxy))
-
+        headers = {'Accept': '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                    'Connection': 'keep-alive',
+                    'Content-Length': '0',
+                    'Content-Type': 'text/plain;charset=UTF-8',
+                    'Cookie': 'VID=2sh8IT0p8Onz00000R0sD4Hz:::0-0-0-488ab53:CAASEHvKorqttCaEwEL2wJ6qbw4aYEYiFwEtz7TKHBhnYwAYnAgVVEuKyZrBcONGWUUBX029Gk4KsHhjdQh_fW9RjIhUo6VvoSrdaUUUUYqcsG2cXHtv8Ia63PlNuSqMs1NxSJhNdmF8Du_UA4pAGm9zRdfhzw',
+                    'Host': 'top-fwz1.mail.ru',
+                    'Origin': 'https://www.ozon.ru',
+                    'Referer': 'https://www.ozon.ru/category/chulki-i-kolgotki-7539/?text=%D0%9A%D0%BE%D0%BB%D0%B3%D0%BE%D1%82%D0%BA%D0%B8+Le+Cabaret+%D1%87%D0%B5%D1%80%D0%BD%D1%8B%D0%B9%2C+20+den',
+                    'Sec-Fetch-Dest': 'empty',
+                    'Sec-Fetch-Mode': 'no-cors',
+                    'Sec-Fetch-Site': 'cross-site',
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36}'}
         store = 'ozon'
-        driver.implicitly_wait(30)
 
-        id_n = -1
+        id_n = 0
 
-        for url in tqdm(list_urls[id_n + 1:]):
-            flag = 0
+        for url in tqdm(list_urls):
 
             id_n += 1
 
             driver.get(url)
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight*0.01);")
-
-            category_title = sfb_df[sfb_df.fillna('')['URL'].str.contains('ozon')]['cat_title'].iloc[id_n]
-            print('\n{} ...'.format(category_title))
-            offset = 0
-
             soup = BeautifulSoup(driver.page_source, 'lxml')
-            problem_array = []
+
+            category_title = sfb_df[sfb_df.fillna('')['URL'].str.contains('ozon')]['cat_title'].iloc[id_n-1]
+
+            print('\n{} ...'.format(category_title))
 
             i = 0
 
-            page_n = 0
             # print(url)
+            n = int(re.search('\d+', re.search('\d+ товар[а-я]*', soup.text)[0])[0])
+            num_pages = int(round(n/36, 0))
+            if num_pages<n/36:
+                num_pages+=1
+                print('num_pages:', num_pages)
+            print('amount of items: ', n)
+            for num_page in range(num_pages):
+                time.sleep(3)
+                num_page += 1
+                print(num_page)
+                if num_page > 1:
+                    if '?' in url:
+                        url_page = url.split('?')[0] + f'?page={num_page}&' + url.split('?')[-1]
+                    else:
+                        url_page = url + f'?page={num_page}'
+                    print('url_page:', url_page)
+                    driver.get(url_page)
 
-            while True:
+                # print(soup)
+                max_tiles=0
+                while True:
+                    time.sleep(1)
 
-                tiles_list = soup.findAll('div', {'class': 'tile'})[offset:]  # контейнер для одного продукта
-                try:
-                    n = int(re.search('\d+', re.search('\d+ товар[а-я]*', soup.text)[0])[0])
-                except:
-                    try:
-                        n = int(re.search('\d+', soup.find('div', {'class': 'search-title'}).text)[0])
-                    except:
-                        print("ACHTUNG! category {} has not been parsed".format(category_title))
-                        continue
-                # print('amount of items: ', n)
-
+                    soup = BeautifulSoup(driver.page_source, 'lxml')
+                    tiles_list = soup.findAll('div', {'class': 'a0s9'})
+                    if num_page != num_pages:
+                        print('1', len(tiles_list))
+                        if len(tiles_list) == 36:
+                            break
+                    else:
+                        print('2',len(tiles_list))
+                        print('n-i=', n-i)
+                        if len(tiles_list) == n-i:
+                            break
+                        if len(tiles_list) > n-i:
+                            max_tiles = n-i
+                            break
+                    driver.get(url_page)
+                    print('repeat url:', url_page)
+                #     tiles_list = soup.findAll('div', {'class': 'a0s9'})
+                    # контейнер для одного продукта
+                print('len(tiles_list)', len(tiles_list))
+                if max_tiles>0:
+                    tiles_list = tiles_list[:max_tiles]
                 for tile in tiles_list:
                     i += 1
                     price_dict = dict()
                     # print(tile)
 
                     try:
-                        price_dict['price_old'] = tile.find('div', {'data-test-id': 'tile-discount'}).text
+                        price_dict['price_old'] = tile.find('div', {'class': 'a0y7'}).text
                         # print('price old:', price_dict['price_old'])
                         price_dict['price_old'] = int(re.search('\d+', wspex(price_dict['price_old']))[0])
                     except:
@@ -144,68 +182,34 @@ class OzonHandler():
                     price_dict['date'] = Global().date
                     price_dict['type'] = 'non-food'
 
-                    try:
-                        price_dict['site_title'] = self.tnout(tile.find('a', {'data-test-id': "tile-name"}).text)
-                    except:
-                        problem_array.append(url)
-                        print('OOPS! url {} has not parsed site title'.format(url))
-                        break
+
+                    price_dict['site_title'] = self.tnout(tile.find('a', {'class': "a2g0 tile-hover-target"}).text)
+
                     price_dict['category_title'] = category_title
-                    price_dict['price_new'] = tile.find('span', {'class': 'total-price'}).text
-                    price_dict['price_new'] = int(re.match('\d+', self.tnout(wspex(price_dict['price_new'])))[0])
-                    if tile.find('a', {'class': 'full-cover-link'}) == None:
-                        price_dict['site_link'] = ''
-                        print("ACHTUNG! link has not parsed for site_title: {}".format(price_dict['site_title']))
-                    else:
+                    try:
+                        price_dict['price_new'] = tile.find('span', {'class': 'a0y4 a0y5'}).text
+                        price_dict['price_new'] = int(re.match('\d+', self.tnout(wspex(price_dict['price_new'])))[0])
+                    except:
+
+                        price_dict['price_new'] = tile.find('span', {'class': 'a0y4'}).text
+                        price_dict['price_new'] = int(re.match('\d+', self.tnout(wspex(price_dict['price_new'])))[0])
+
+                    try:
                         price_dict['site_link'] = 'https://www.ozon.ru' + tile.find('a',
-                                                                                    {'class': 'full-cover-link'}).get(
+                                                                                    {'class': 'a2g0 tile-hover-target'}).get(
                             'href')
-                    '''print('site_title[{}]: {}\nprice_new: {}\nprice_old: {}\n\n'.format(i,price_dict['site_title'],
-                                                                                        price_dict['price_new'],
-                                                                                        price_dict['price_old']))'''
+                    except:
+                        print(price_dict['site_title'] + ' Has not site_link!!!')
+                        # print(soup)
+                        price_dict['site_link'] = price_dict['site_title']
+                    print('site_title[{}]: {}\ncategory_title: {}\nprice_new: {}'
+                          '\nprice_old: {}\nsite_link: {}\n\n'.format(i,
+                                                                    price_dict['site_title'],
+                                                                    price_dict['category_title'],
+                                                                    price_dict['price_new'],
+                                                                    price_dict['price_old'],
+                                                                    price_dict['site_link']))
                     res = res.append(price_dict, ignore_index=True)
-
-                if i >= n or i >= max_prod or flag == 1:
-                    print('   parsing has ended!')
-                    break
-
-                offset = offset + len(tiles_list)
-
-                if offset % 280 == 0 and offset != 0:
-                    page_n += 11
-                    url = url + '&page={}'.format(str(page_n))
-                    driver.get(url)
-                    print('\n   loading url:{}'.format(url))
-                    offset = 0
-                    while True:
-                        time.sleep(1)
-
-                        soup = BeautifulSoup(driver.page_source, 'lxml')
-
-                        if soup.findAll('div', {'class': 'tile'}) != []:
-                            break
-                else:
-
-                    scheight = 0.9
-
-                    while True:
-
-                        driver.execute_script("window.scrollTo(0, document.body.scrollHeight*{});".format(scheight))
-
-                        soup = BeautifulSoup(driver.page_source, 'lxml')
-
-                        if soup.findAll('div', {'class': 'tile'})[offset:] != []:
-                            print("  offset: {}".format(offset))
-                            break
-                        if scheight < 1:
-                            scheight += 0.01
-                        else:
-                            print('WARNING! Scrolling has not been executed (we are here)')
-                            flag = 1
-                            break
-
-                        print(scheight)
-                        time.sleep(1)
 
         return res
 
@@ -228,8 +232,8 @@ class OzonHandler():
 
         #, chrome_options=self.option_chrome(proxy))
 
-        ua = UserAgent()
-        header = {'User-Agent': str(ua.chrome)}
+        # ua = UserAgent(verify_ssl=False)
+        header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15'}
         proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0])
 
         h1_class = 'b3a8'

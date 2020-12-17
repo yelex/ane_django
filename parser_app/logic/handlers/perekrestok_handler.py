@@ -157,12 +157,12 @@ class PerekrestokHandler():
         return res
 
     def extract_product_page(self):
-        site_code = 'perekrestok'
+        site_code = 'vprok'
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
-        ua = UserAgent()
-        header = {'User-Agent': str(ua.chrome)}
+        # ua = UserAgent()
+        # header = {'User-Agent': str(ua.chrome)}
 
         if Global().max_links != None:
             links_df = links_df.iloc[:Global().max_links]
@@ -171,25 +171,10 @@ class PerekrestokHandler():
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
 
-        proxies = get_proxy('https://www.perekrestok.ru/')  #  #
+        proxies = get_proxy('https://www.vprok.ru/')  #  #
+        # proxies = None
+        cookie = r'suuid=2612af35-2fa1-464c-9776-a8729ee5cdc1; luuid=2612af35-2fa1-464c-9776-a8729ee5cdc1; split_segment=7; split_segment_amount=10; noHouse=0; appservername=app0; fcf=3; _dy_csc_ses=t; _dy_c_exps=; _gcl_au=1.1.1101498930.1602849311; _dycnst=dg; tmr_lvid=8199eecf75aa278e274aca7b823f79bb; tmr_lvidTS=1602849311544; _ym_uid=1602849312634665940; _ym_d=1602849312; _gid=GA1.2.116608189.1602849312; _dyid=-2882303570935707106; _dyjsession=2924924e01bc000c2c966b01e714bf3b; dy_fs_page=www.vprok.ru%2Fproduct%2Fcherkizovo-cherkiz-sheyka-svin-ohl-vu-pf-kat-b-1kg--303771; _dycst=dk.m.c.ms.; _dy_geo=RU.EU.RU_MOW.RU_MOW_Moscow; _dy_df_geo=Russia..Moscow; _ym_isad=2; _fbp=fb.1.1602849312171.481873387; flocktory-uuid=7fa0fb16-68aa-4d3c-853e-c3ee945b1c33-1; _dyid_server=-2882303570935707106; _dy_c_att_exps=; _dy_ses_load_seq=51541%3A1602850907093; _dyfs=1602850908656; _dy_lu_ses=2924924e01bc000c2c966b01e714bf3b%3A1602850908658; _dy_toffset=-1; _dy_soct=401501.688468.1602849310*464250.838984.1602849311*484922.888305.1602850907*487393.894852.1602850907*496179.916906.1602850907*498939.923749.1602850907*515052.971092.1602850907*366287.608896.1602850907*451565.810320.1602850907*451564.810319.1602850907*464773.921941.1602850908; tmr_detect=0%7C1602850911632; mindboxDeviceUUID=c59980ec-0612-419a-8d13-02580e94b1a0; directCrm-session=%7B%22deviceGuid%22%3A%22c59980ec-0612-419a-8d13-02580e94b1a0%22%7D; tmr_reqNum=1315; XSRF-TOKEN=eyJpdiI6Im16M1EzVWU2djlNa1wvUkF6RTlMNE13PT0iLCJ2YWx1ZSI6InlhRXhSbkI2RURWanpQXC9uTzhzOVZ1WEd0WElEM2VMM3FjYnpRUjR5bUxUMlNMa2JZcDBldDdBakN1TGJjek5WZmE5N1E5cHJcL3FOeE5nQmJpU0crTUE9PSIsIm1hYyI6ImUyOTEzN2ZhMGRhYjVkYTI0YTdjZTM0MzdhMzNmZWY1ZTJlOTM3YmQ1NjA5MjlhMzZhNTU1NGE5OGM0ODQ2ZTkifQ%3D%3D; aid=eyJpdiI6IklBREluTG1PUmNaYkZKUThseFh3RVE9PSIsInZhbHVlIjoiY1E3SHZUMXVYbmxKc0lkZGswWXFBeVwvbEY5Qzc5SEdLUmxPSGQ4SkllR1pONmdHREREaWxcLzVNYW1jM3pkcnRtMmtcLzZKYnY0WlJ6UHRPZ1o3clU3bXc9PSIsIm1hYyI6ImZjYWIwZGY3Mzg1ZGFmODExMjZkY2JlNjgwOTRjMzZiNzY3YzU2ZmIzOGRlMWU5Yzc5YjJiMTc2OGE4YjVjNGUifQ%3D%3D; appservername=app5; _ga=GA1.1.335220323.1602849312; _ga_B122VKXXJE=GS1.1.1602852969.2.0.1602852969.0'
 
-        cookie = r'noHouse=0; _gcl_au=1.1.444475933.1574074757; _ga=GA1.2.762214331.1574074757; _ym_d=1574074757; _ym_uid=1574074757539893444; flocktory-uuid=3da0c784-c6e6-48a1-b5ad-006da3a9393d-1; tracker_ai_user=BWv32|2019-11-18T10:59:21.089Z; cto_lwid=a238aaa4-fac9-42fb-8702-20f8fa785b79; _dy_c_exps=; _dycnst=dg; _dyid=-3805541292711961998; _dy_c_att_exps=; fcf=2; splitVar=test01-B; regionChange=1; luuid=2a83671e-e74e-43bf-9453-1475f62aefda; ins-product-id=484225; insdrSV=18; suuid=96bfa68c-e76a-4623-9bf0-4109601bdb57; _dy_csc_ses=t; _gid=GA1.2.710391697.1575716218; _dyjsession=f58bf955e8baea66ef52b8df2f36e6db; _dy_geo=RU.EU.RU_TUL.RU_TUL_Kireyevsk; _dy_df_geo=Russia..Kireyevsk; _ym_visorc_43992189=w; _ym_isad=1; _dycst=dk.w.c.ss.; _dy_toffset=-3; _dy_ses_load_seq=22331%3A1575717228721; _dy_soct=401501.688467.1575716213*404726.695596.1575716217*405772.698298.1575717228*405837.698434.1575717228*446004.795652.1575717228*366287.608896.1575717228; tmr_detect=1%7C1575717234838; mindboxDeviceUUID=dc46eafc-5856-4f9a-8f46-c7194b0dc0a5; directCrm-session=%7B%22deviceGuid%22%3A%22dc46eafc-5856-4f9a-8f46-c7194b0dc0a5%22%7D; XSRF-TOKEN=eyJpdiI6ImdJYzV2R2xjWHhOSTFKZTFsOFhRcXc9PSIsInZhbHVlIjoiZHhyajVkTTMrQUNXajducW5NeTk2b2JDVHlkVGhYcU9xdkFmU2pEMlBGQ0RIY1NrWlBQaFc2Y2R5MmZsRFFoUE1KS25KcGZjWDJscmRhV2ZrckNJa3c9PSIsIm1hYyI6IjQzODMyMDU5OTI4YzIwOWFkZDA5ODY2YTA1M2QyNjY1MGM5YWVjYzk0NGQ5MmE4MDY3NDE4M2M1ODAyMGZlZTgifQ%3D%3D; aid=eyJpdiI6IndQU3hKYmtDTHdcL1ZHczZtajc4K2JnPT0iLCJ2YWx1ZSI6ImlJQ1ZcL3NHQjE3emg5cDZKdzRJeUllTXBDNmRPcm9aM1JiWmx2OStGK0J5TnJEWWdxZ1FsbDFCUE5FMnlucEk2RFJNN015R0MrWXFNNUhNaXAxeitBQT09IiwibWFjIjoiZDkxYThiOGI0ZjRmNDYyYzU5M2UwYWVlMjJiNjRjYTcwNDFlZDg0ZDg2YTRjOGY0ODkzMWRmNDc5MTM1MmY3YiJ9; appservername=app1; region=1'
-
-        headers = {
-            'Accept': r'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-            'Accept-Encoding': r'gzip, deflate, br',
-            'Accept-Language': r'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Cache-Control': r'max-age=0',
-            'Connection': r'keep-alive',
-            'Cookie': cookie,
-            'Host': r'www.perekrestok.ru',
-            'Referer': r'https://www.perekrestok.ru/',
-            'Sec-Fetch-Mode': r'navigate',
-            'Sec-Fetch-Site': r'same-origin',
-            'Sec-Fetch-User': r'?1',
-            'Upgrade-Insecure-Requests': r'1',
-            'User-Agent': r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36',
-            }
 
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
@@ -204,10 +189,27 @@ class PerekrestokHandler():
             while i + 1 <= len(url_list):
                 # time.sleep(3)
                 href_i = url_list[i]
+
                 print(href_i)
+
+                headers = {
+                    'Accept': r'text/css,*/*;q=0.1',
+                    'Accept-Encoding': r'gzip, deflate, br',
+                    'Accept-Language': r'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                    'Connection': r'keep-alive',
+                    'Cookie': cookie,
+                    'Host': r'www.vprok.ru',
+                    'Referer': href_i,
+                    'Sec-Fetch-Dest': 'style',
+                    'Sec-Fetch-Mode': r'no-cors',
+                    'Sec-Fetch-Site': r'same-origin',
+                    'User-Agent': r'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
+                }
+
                 i += 1
 
                 try:
+                    # time.sleep(2)
                     if proxies != None:
                         r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
                     else:
@@ -227,8 +229,11 @@ class PerekrestokHandler():
                 html = r.content
 
                 soup = BeautifulSoup(html, 'lxml')
+                if 'страница не существует' in soup:
+                    continue
                 price_dict = dict()
-                print('city:', soup.find('span', {'class': 'js-address-data'}).text)
+                # print(soup)
+                # print('city:', soup.find('span', {'class': 'js-address-data'}).text)
                 try:
                     price_dict['site_title'] = wspex_space(
                         soup.find('h1', {'class': re.compile('xf-product-new__title js-product__title js-product-new-title')}).text)

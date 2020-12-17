@@ -17,8 +17,9 @@ class MvideoHandler:
 
     def extract_product_page(self):
         site_code = 'mvideo'
-        ua = UserAgent()
-        header = {'User-Agent': str(ua.chrome)}
+        ua = UserAgent(verify_ssl=False)
+        header = {'User-Agent': r'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36'}
+
         desc_df = Global().desc_df
         links_df = Global().links.replace(np.nan, '')
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
@@ -59,16 +60,20 @@ class MvideoHandler:
                 price_dict['category_id'] = int(cat_id)
                 price_dict['category_title'] = category_title
 
+                # print(soup)
                 price_dict['site_title'] = wspex_space(
-                    soup.find('h1', {'class': 'e-h1 sel-product-title'}).text)
+                        soup.find('h1', {'class': 'e-h1 sel-product-title'}).text)
+
                 price_dict['site_link'] = href_i
                 # print(price_dict['site_link'])
 
                 # if filter_flag(id_n, price_dict['site_title']) == False:
                 # print("   skipped position: {}".format(price_dict['site_title']))
                 # continue
-
-                div_sale = soup.find('div', {'class': 'c-pdp-price__old'})
+                div_price_content = soup.find('div', {'class': 'o-pay__content-trade'})
+                if not div_price_content:
+                    div_price_content = soup.find('div', {'class': 'o-pay__content'})
+                div_sale = div_price_content.find('div', {'class': 'fl-pdp-price__old'})
                 # print('div_sale:', div_sale)
                 if div_sale is not None and div_sale.text != '':
                     # print('div_sale: ',div_sale)
@@ -76,8 +81,13 @@ class MvideoHandler:
                 else:
                     price_dict['price_old'] = ''
 
-                div_new = soup.find('div', {'class': 'c-pdp-price__current sel-product-tile-price'})
+                div_new = div_price_content.find('div', {'class': 'fl-pdp-price__current'})
                 price_dict['price_new'] = float(re.match('\d+', wspex(div_new.text))[0])
+
+                if price_dict['price_new'] == price_dict['price_old']:
+                    print(soup)
+                    raise ValueError
+
                 price_dict['site_unit'] = 'шт.'
                 print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n'.format(price_dict['site_title'],
                                                                                         price_dict['price_new'],

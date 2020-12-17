@@ -40,7 +40,7 @@ class Services:
         n=0
         url=list_url[n]
         print(url)
-        html=requests.get(url, headers={'User-Agent': UserAgent().chrome}).content#, headers={'User-Agent': UserAgent().chrome}
+        html=requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15'}).content#, headers={'User-Agent': UserAgent().chrome}
         soup=BeautifulSoup(html, 'lxml')
         price_list=soup.findAll('div',{'class':'slider_slide'})#0 заменить
         for price_elem in price_list:
@@ -176,7 +176,7 @@ class Services:
         final_df=final_df.append(price_dict,ignore_index=True)
         '''
 
-        #Постановка набоек, пара	https://masterskaya-obuvi.ru/tseny
+        #Постановка набоек, пара	http://www.lelab.ru/3.html
         n=6
         price_dict=dict()
         price_dict['date']=Global().date

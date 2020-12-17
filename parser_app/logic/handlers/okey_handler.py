@@ -177,7 +177,7 @@ class OkeyHandler:
                                     'site_link', 'site_code'])
         # proxies = get_proxy('https://okeydostavka.ru/')
         proxies = None
-        ua = UserAgent()
+        # ua = UserAgent(verify_ssl=False)
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
 
@@ -228,7 +228,7 @@ class OkeyHandler:
                     'Sec-Fetch-Site': 'none',
                     'Sec-Fetch-User': '?1',
                     'Upgrade-Insecure-Requests': '1',
-                    'User-Agent': str(ua.chrome),
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15',
                 }
                 if Global().is_selenium_okey:
                     driver.get(href_i)

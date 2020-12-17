@@ -31,7 +31,7 @@ class GlobusHandler:
                            'site_title', 'price_new', 'price_old', 'site_unit',
                            'site_link', 'site_code'])
         proxies = get_proxy(hrefs[0])
-        header = UserAgent().chrome
+        header = UserAgent(verify_ssl=False).chrome
         for href in tqdm(hrefs): #испр
             id_n += 1
             category_title = sfb_df[sfb_df.fillna('')['URL'].str.contains('globus')]['cat_title'].iloc[id_n - 1]
@@ -148,15 +148,16 @@ class GlobusHandler:
         desc_df = Global().desc_df
         links_df = Global().links
         links_df = links_df[links_df['site_link'].str.contains(site_code)]
-        ua = UserAgent()
-        header = {'User-Agent': str(ua.chrome)}
+        # ua = UserAgent(verify_ssl=False, use_cache_server=False)
+        header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15'}
         if Global().max_links != None:
             links_df = links_df.iloc[:Global().max_links]
         category_ids = links_df.category_id.unique()
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        proxies = get_proxy('https://online.globus.ru/')
+        # proxies = get_proxy('https://online.globus.ru/')
+        proxies = None
 
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
@@ -175,23 +176,33 @@ class GlobusHandler:
 
                 print('{} ...'.format(url))
                 try:
-                    # time.sleep(3)
+                    time.sleep(2)
                     if proxies is not None:
                         r = requests.get(url, proxies=proxies, headers=header, timeout=10)  # CRITICAL
                     else:
                         r = requests.get(url, headers=header, timeout=10)
-                except:
+                except Exception as e:
+                    print(e)
+                    if 'timeout' in str(e):
+                        continue
                     while True:
                         try:
                             proxies = get_proxy(url)
                             time.sleep(3)
                             r = requests.get(url, proxies=proxies, headers=header)
-                            if r.status_code == 200:
+                            soup = BeautifulSoup(r.content)
+                            print(BeautifulSoup(r.content))
+
+                            if soup.find('body', {'id': 'globus-app'}) is not None:
                                 break
-                        except:
+                        except Exception as e:
+                            print('Exception:', e)
                             continue
                 html = r.content
                 soup = BeautifulSoup(html, 'lxml')
+                if 'Неправильно набран адрес' in soup.text:
+                    print('Error 404')
+                    continue
                 products_div = soup.find('div', {'class': 'item-card__content--right'})
 
                 price_dict = dict()
@@ -204,7 +215,7 @@ class GlobusHandler:
                     price_dict['site_title'] = wspex_space(
                         products_div.find('h1', {'class': 'js-with-nbsp-after-digit'}).text)
                 except:
-                    # print('OOPS! {} has not been parsed'.format(url))
+                    print('OOPS! {} has not been parsed'.format(url))
                     continue
 
                 # if filter_flag(id_n, price_dict['site_title']) == False:
