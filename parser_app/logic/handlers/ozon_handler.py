@@ -256,7 +256,7 @@ class OzonHandler():
                     soup = BeautifulSoup(driver.page_source, 'lxml')
                 else:
                     try:
-                        # time.sleep(3)
+                        time.sleep(3)
                         if proxies is not None:
                             print(proxies)
                             r = requests.get(href_i, proxies=proxies, headers=header)  # CRITICAL
@@ -306,7 +306,7 @@ class OzonHandler():
                         time.sleep(10)
                         proxies = get_proxy(href_i)
 
-                    # i -= 1
+                        i -= 1
                     if soup.find('li', {'class': 'links-item'}) is None:
                         print('links-item place')
 

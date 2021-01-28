@@ -36,7 +36,7 @@ class TotalNongrocery():
                                    'site_link', 'site_code'])
 
 
-        site_handlers = [LamodaHandler(), OzonHandler(), ]  # MvideoHandler(),
+        site_handlers = [OzonHandler(), LamodaHandler(), ]  # MvideoHandler(),
 
         for handler in site_handlers:
 

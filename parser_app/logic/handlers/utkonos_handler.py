@@ -224,7 +224,10 @@ class UtkonosHandler():
 
                 print(href_i)
                 if Global().is_selenium_utkonos:
-                    driver.get(href_i)
+                    try:
+                        driver.get(href_i)
+                    except:
+                        driver.get(href_i)
                     time.sleep(5)
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     # driver.close()

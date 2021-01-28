@@ -156,8 +156,23 @@ class GlobusHandler:
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
+        url = 'https://online.globus.ru/'
+        while True:
+            try:
+                proxies = get_proxy(url)
+                time.sleep(3)
+                r = requests.get(url, proxies=proxies, headers=header)
+                soup = BeautifulSoup(r.content)
+                print(BeautifulSoup(r.content))
+
+                if soup.find('body', {'id': 'globus-app'}) is not None:
+                    break
+            except Exception as e:
+                print('Exception:', e)
+                continue
+
         # proxies = get_proxy('https://online.globus.ru/')
-        proxies = None
+        # proxies = None
 
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
