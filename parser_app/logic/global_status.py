@@ -26,7 +26,7 @@ class Global(Singleton):
         self.path_desc = os.path.join(self.base_dir, r'description/categories.csv')
         self.example_shot = os.path.join(self.base_dir, r'description/data_2019-10-02.csv')
         self.desc_df = pd.read_csv(self.path_desc, sep=';', index_col='id')
-        self.date = date(year=2021, month=1, day=27)  # 27 datetime.now().date()  #
+        self.date = datetime.now().date()  # date(year=2021, month=6, day=7) #
         self.max_links = None
         self.is_selenium_ozon = False
         self.is_selenium_okey = False

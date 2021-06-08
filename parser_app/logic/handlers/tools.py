@@ -119,8 +119,12 @@ def get_proxy(link, get_new=False, get_list=False):
     }
 
     url = 'http://icanhazip.com'
-    r = requests.get(url, proxies=proxies)
-    print('New IP Address: %s' % r.text)
+    try:
+        r = requests.get(url, proxies=proxies)
+        print('New IP Address: %s' % r.text)
+    except:
+        print("http://icanhazip.com doesn't work")
+        pass
     return proxies
 
 

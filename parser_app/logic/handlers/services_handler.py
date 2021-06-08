@@ -286,7 +286,7 @@ class Services:
         except:
             print('DAMN! {} can not be parsed'.format(url))
 
-        #стрижка
+        #стрижка salon-baumanskaya
         n=10
         price_dict=dict()
         price_dict['site_code']='services'

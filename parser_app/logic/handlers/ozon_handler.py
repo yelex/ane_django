@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import pandas as pd
+import numpy as np
 import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -233,13 +234,15 @@ class OzonHandler():
         #, chrome_options=self.option_chrome(proxy))
 
         # ua = UserAgent(verify_ssl=False)
-        header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15'}
+        header = {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15',
+                }
         proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0])
 
         h1_class = 'b3a8'
-        price_new_class_sale = 'b3d b3n5'
+        price_new_class_sale = 'c8q7 c8q8'
         price_new_class = price_new_class_sale.split(' ')[0]
-        price_old_class = 'b3d5'
+        price_old_class = 'c8r'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -249,16 +252,18 @@ class OzonHandler():
 
             while i + 1 <= len(url_list):
                 # get_my_ip()
+                time.sleep(1 + 4 * np.random.rand(1)[0])
                 href_i = url_list[i]
                 print(href_i)
                 if Global().is_selenium_ozon is True:
                     driver.get(href_i)
                     soup = BeautifulSoup(driver.page_source, 'lxml')
+
                 else:
                     try:
-                        time.sleep(3)
+
                         if proxies is not None:
-                            print(proxies)
+                            get_my_ip()
                             r = requests.get(href_i, proxies=proxies, headers=header)  # CRITICAL
                         else:
                             r = requests.get(href_i, headers=header)
@@ -297,13 +302,14 @@ class OzonHandler():
 
                     print('site_title:', price_dict['site_title'])
                 except:
+                    print(soup)
                     print('except sitetitle not found')
                     if 'Такой страницы не существует' in soup.text:
                         print('Такой страницы не существует!')
 
                     if 'Incapsula' in soup.text:
                         print('Incapsula detected!')
-                        time.sleep(10)
+                        time.sleep(3 + np.random.rand(1)[0])
                         proxies = get_proxy(href_i)
 
                         i -= 1
@@ -337,6 +343,10 @@ class OzonHandler():
                     continue
 
                 if re.search('\d+', wspex(div_new.text)) is None:
+                    print('Товар закончился!\n')
+                    continue
+
+                if 'Этот товар закончился' in soup.text:
                     print('Товар закончился!\n')
                     continue
                 # print('din_new:\n', div_new)

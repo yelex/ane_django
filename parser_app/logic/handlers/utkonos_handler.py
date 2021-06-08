@@ -253,7 +253,9 @@ class UtkonosHandler():
 
                     soup = BeautifulSoup(html, 'html.parser')
                 #                 print('soup:\n', soup)
-
+                if 'Упс! Страница не найдена' in soup.text:
+                    print('Упс! Страница не найдена')
+                    continue
                 products_div = soup.find('div', {'class': 'product-base-info_content'})
                 if products_div is None:
                     # print(soup)

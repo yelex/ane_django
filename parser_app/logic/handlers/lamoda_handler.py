@@ -221,8 +221,9 @@ class LamodaHandler:
 
                 if type_good == '':
                     # print(' imhere!')
-                    type_good = wspex_space(text_diff(soup.find('span', {'class': 'heading_m ii-product__title'}).text,
-                                                      soup.find('span', {'class': 'ii-product__brand'}).text))
+                    raise AttributeError
+                    # type_good = wspex_space(text_diff(soup.find('span', {'class': 'heading_m ii-product__title'}).text,
+                    #                                   soup.find('span', {'class': 'ii-product__brand'}).text))
 
                 try:
 
@@ -232,24 +233,26 @@ class LamodaHandler:
                 except:
                     continue
                 # print(products_div)
-
-                div_new = soup.find('span', {'class': 'product-prices__price product-prices__price_current product-prices__price_red'})
-
-                if div_new is None:
-                    div_new = soup.find('span', {'class': 'product-prices__price product-prices__price_current'})
                 # print(str(soup))
+                div_prices = soup.find('div', {'class': 'product-prices'})
+                # print(div_prices)
+                if len(div_prices.findAll('span')) == 2:
+                    # print('there is discount')
+                    div_old = div_prices.findAll('span')[0]
+                    div_new = div_prices.findAll('span')[1]
+                    # print(f'div_new: {div_new}\ndiv_old: {div_old}')
+                else:
+                    # print('there is no discount')
+                    div_old = None
+                    div_new = div_prices.findAll('span')[0]
+                #
 
-                price_dict['price_new'] = int(re.match('\d+', wspex(div_new.get('content')))[0])
-                price_dict['price_old'] = int(re.match('\d+', wspex(div_new.text))[0])
-                if price_dict['price_old'] == price_dict['price_new']:
+                price_dict['price_new'] = int(re.match('\d+', wspex(div_new.text))[0])
+                if div_old:
+                    price_dict['price_old'] = int(re.match('\d+', wspex(div_old.text))[0])
+                else:
                     price_dict['price_old'] = ''
 
-                '''
-                else:
-                    div_old = 
-                    price_dict['price_old'] = int(wspex())
-                    price_dict['price_new'] = int(dct['details'][1]['value'])
-                '''
 
                 price_dict['site_unit'] = 'шт.'
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него
