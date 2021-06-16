@@ -290,7 +290,7 @@ class UtkonosHandler():
 
                 try:
                     price_dict['site_title'] = wspex_space(
-                        soup.find('h1', {'class': 'product-base-info_name ng-star-inserted'}).text)
+                        soup.find('h1', {'class': 'product-base-info_name title-l2 ng-star-inserted'}).text)
                 except Exception as e:
                     print(e)
                     print('soup:\n', soup)
@@ -321,13 +321,13 @@ class UtkonosHandler():
                 price_dict['site_unit'] = None
                 price_dict['price_new'] = None
                 # если есть цена за кг
-                if price_div.find('span', {'class': 'product-price __accent ng-star-inserted'}) is not None:
+                if price_div.find('span', {'class': 'product-price title-l6 ng-star-inserted'}) is not None:
                     price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(
-                        price_div.find('span', {'class': 'product-price __accent ng-star-inserted'}).text).replace(',',
+                        price_div.find('span', {'class': 'product-price title-l6 ng-star-inserted'}).text).replace(',',
                                                                                                                    '.'))[
                                                         0])
                     price_dict['site_unit'] = re.search('/[а-яА-Я]*', price_div.find('span', {
-                        'class': 'product-price __accent ng-star-inserted'}).text.lower())[0][1:]
+                        'class': 'product-price title-l6 ng-star-inserted'}).text.lower())[0][1:]
                 else:
                     if price_div.find('span', {'class': 'product-price ng-star-inserted'}) is not None:
                         price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(
@@ -338,14 +338,14 @@ class UtkonosHandler():
                     # если нет
                     else:
                         if price_div.find('span',
-                                          {'class': 'product-sale-price __accent ng-star-inserted'}) is not None:
+                                          {'class': 'product-sale-price title-l1 __accent ng-star-inserted'}) is not None:
                             price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(price_div.find('span', {
-                                'class': 'product-sale-price __accent ng-star-inserted'}).text).replace(',', '.'))[0])
+                                'class': 'product-sale-price title-l1 __accent ng-star-inserted'}).text).replace(',', '.'))[0])
                         else:
 
-                            if price_div.find('span', {'class': 'product-sale-price ng-star-inserted'}) is not None:
+                            if price_div.find('span', {'class': 'product-sale-price title-l1 ng-star-inserted'}) is not None:
                                 price_dict['price_new'] = float(re.search('\d+\.\d+', wspex(price_div.find('span', {
-                                    'class': 'product-sale-price ng-star-inserted'}).text).replace(',', '.'))[0])
+                                    'class': 'product-sale-price title-l1 ng-star-inserted'}).text).replace(',', '.'))[0])
 
                 if price_dict['site_unit'] is None:
                     piece_units = ['шт', 'штук', 'штуки', 'штука', 'пак', 'пакетиков', 'пак']
