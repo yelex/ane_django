@@ -304,11 +304,9 @@ class UtkonosHandler():
                     print('soup:\n', soup)
                     raise AttributeError
                     # continue
-
-                if soup.find('span', {'class': 'product-nameplate__text'}) is not None:
-                    if 'Снят' in soup.find('span', {'class': 'product-nameplate__text'}).text:
-                        print('Снят с продажи!\n')
-                        continue
+                if 'InStock' not in soup.find('meta', {"itemprop": "availability"}).get('content'):
+                    print('Снят с продажи!\n')
+                    continue
 
                 price_dict['site_link'] = href_i
 
