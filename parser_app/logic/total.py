@@ -54,6 +54,7 @@ class Total:
         df = df.append(TotalNongrocery().get_df_page())
         df = df.append(Services().get_df())
 
+
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
         # df = df.drop_duplicates(subset=['date', 'category_id', 'site_link'])

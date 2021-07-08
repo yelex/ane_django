@@ -179,13 +179,21 @@ class UtkonosHandler():
         # ua = UserAgent()
         # header = {'User-Agent': str(ua.chrome)}
         header = {
-            'Cookie': 'ADRUM=s=1606571730119&r=https%3A%2F%2Fwww.utkonos.ru%2Fitem%2F2008269%2Flopatka-teljachja-na-kosti-ekol-khaljal-okhlazhdennaja-0-1---1-5-kg%3F0; SGM_VAR=C; Utk_SssTkn=10390D51A0E3C538D282011930FAD50E; store=utk; uid=6738448053914566656; store_mod=full; agree_with_cookie=true; _tm_st_sid=1606571209652.203312; _ym_visorc_942065=w; cto_bundle=VkCUE190eUhneXAwc0kzS3lvS0xJaTFIcnBpVEg3NW5VdDI4QmtSNFltR2VQTzh1ZEZhU0thQTI5S1d3QWx1M0FnTiUyQmd3RTlHJTJCVmpUbTJLcnVvb2tLJTJGNUdZaUhxdmZ3S3dVYVhoVWtES2EwT2xpcXJ4UXZaVkVGSDhTSEZHSXZ3NyUyQjFP; flocktory-uuid=c6879935-8824-424d-be6e-b833a0016c8f-8; _dc_gtm_UA-8149186-8=1; _fbp=fb.1.1606571210725.1126819666; _ga=GA1.2.1582499665.1606571209; _gid=GA1.2.1593123435.1606571209; _ym_debug=1; G_ENABLED_IDPS=google; _tm_lt_sid=1606571209652.884297; _ym_isad=2; _ym_d=1606571208; _ym_uid=1606571208479204302; _gcl_au=1.1.1702359336.1606571207; Utk_MrkGrpTkn=7A53C82F44D108F552CEA4AF171B9340; SGM_201012_1000=443; Utk_DvcGuid=B1C823335BA04BFFFCFC95C54804F944; Utk_LncTime=2020-11-28+16%3A46%3A30',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Host': 'www.utkonos.ru',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15',
-            'Accept-Language': 'ru',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive'}
+            'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Cache-Control': 'max-age=0',
+            'Connection': 'keep-alive',
+            'Cookie': 'Utk_DvcGuid=EBD84CCB48685E87A8797114CD8E5641; Utk_SssTkn=C5D643998F7E8EAAE32548B2C36D686A; Utk_LncTime=2021-07-08+19%3A51%3A25; store_mod=full; low_vision=false; store=utk; SGM_210527_1000=178; Utk_MrkGrpTkn=32272049DCF9DBF4A5CD3D9CC0E2FA26; _gcl_au=1.1.519209760.1625763097; _ym_debug=1; gtm_source=na; gtm_medium=referrer; _ga=GA1.2.2081761378.1625763097; _gid=GA1.2.1934410785.1625763097; SGM_VAR=A; tmr_lvid=8d36ea6d24fda949e1be9751a412fbc8; tmr_lvidTS=1625763132329; _fbp=fb.1.1625763132904.762725467; _tm_lt_sid=1625763132357.432652; _ym_uid=1625763134605670190; _ym_d=1625763134; uid=6818944816957620224; _ym_isad=2; tmr_detect=0%7C1625763134711; flocktory-uuid=01abba0d-5099-47f0-bdab-053080ec689d-0; ADRUM=s=1625763781150&r=https%3A%2F%2Fwww.utkonos.ru%2Fitem%2F3399082%2Fmoloko-super-ultrapasterizovannoe-3-2-1-l%3F0; tmr_reqNum=4',
+            'Host': 'www.utkonos.ru',
+            'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+            'sec-ch-ua-mobile': '?0',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36}'}
         # print(header)
         desc_df = Global().desc_df
         links_df = Global().links
