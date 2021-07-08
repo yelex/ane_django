@@ -15,6 +15,7 @@ from parser_app.logic.global_status import Global
 from fake_useragent import UserAgent
 import requests
 import ssl
+import brotli # for decompress ozon response
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -235,14 +236,26 @@ class OzonHandler():
 
         # ua = UserAgent(verify_ssl=False)
         header = {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15',
-                }
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+            'cache-control': 'max-age=0',
+            'cookie': 'nlbi_1101384=nMCUfawHylboXscAyZtWRQAAAADULGu6hNydKBIS55YeLZJg; visid_incap_1101384=W5yRhcwfRrKKb0DX8Q3BnQBi52AAAAAAQUIPAAAAAAAbE1IuoFZ/7IrCe3zJwzBe; incap_ses_768_1101384=EDgCOxY1gUiOphuWS3yoCgBi52AAAAAAf44l/wKIx9AeZNfNLWgj9g==; __Secure-access-token=3.0.T-KiWYofRlKVSzlSNQdppw.28.l8cMBQAAAABg52ICGkZT0KN3ZWKgAICQoA..20210708223722.ObT4s6K91cYcpagT-iQ3CKBZ4MBIjR_L8NvxnHM2HGY; __Secure-refresh-token=3.0.T-KiWYofRlKVSzlSNQdppw.28.l8cMBQAAAABg52ICGkZT0KN3ZWKgAICQoA..20210708223722.30dS_d1zG6-y39NqVfU4xRZvbEcmn7rYzY4hyNJtiwk; __Secure-ab-group=28; __Secure-user-id=0; xcid=b1330628b1a2692f6557f8169e96bde9; __Secure-ext_xcid=b1330628b1a2692f6557f8169e96bde9; _gcl_au=1.1.779718125.1625776650; _ga=GA1.2.599202631.1625776650; _gid=GA1.2.137797260.1625776651; cnt_of_orders=0; isBuyer=0; tmr_lvid=837623c478bf17c1e0075b46d1b1cfdf; tmr_lvidTS=1625776656643; __exponea_etc__=05906026-cd7f-4c80-93d0-2586b22ad6d2; __exponea_time2__=1.0410804748535156; _fbp=fb.1.1625776660025.704811238; tmr_detect=0%7C1625776665697; _ga_JNVTMNXQ6F=GS1.1.1625776649.1.1.1625776699.0; RT="z=1&dm=ozon.ru&si=1aa9d7b4-2632-4a85-a92a-9aef525090c8&ss=kqvdfoda&sl=1&tt=6wq&bcn=%2F%2F6852bd13.akstat.io%2F&ld=72s&nu=6i3y0u4s&cl=17xw&ul=5rzn"; tmr_reqNum=5',
+            'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-fetch-dest': 'document',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'none',
+            'sec-fetch-user': '?1',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
+        }
         proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0])
 
         h1_class = 'b3a8'
-        price_new_class_sale = 'c8q7 c8q8'
+        price_new_class_sale = 'c2h5 c2h6'
         price_new_class = price_new_class_sale.split(' ')[0]
-        price_old_class = 'c8r'
+        price_old_class = 'c2h8'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -278,13 +291,11 @@ class OzonHandler():
                                     break
                                 else:
                                     print('r.status_code:', r.status_code)
-                                    html = r.content
-                                    soup = BeautifulSoup(html, 'lxml')
+                                    soup = BeautifulSoup(brotli.decompress(r.content), 'lxml')
                                     print('soup:\n', soup)
                             except:
                                 continue
-                    html = r.content
-                    soup = BeautifulSoup(html, 'lxml')
+                    soup = BeautifulSoup(brotli.decompress(r.content), 'lxml')
 
 
 
@@ -347,6 +358,10 @@ class OzonHandler():
                     continue
 
                 if 'Этот товар закончился' in soup.text:
+                    print('Товар закончился!\n')
+                    continue
+
+                if 'Товар закончился' in soup.text:
                     print('Товар закончился!\n')
                     continue
                 # print('din_new:\n', div_new)
