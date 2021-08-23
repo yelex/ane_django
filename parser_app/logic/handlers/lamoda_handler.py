@@ -204,8 +204,14 @@ class LamodaHandler:
                 if 'Мы не смогли найти страницу по вашей ссылке' in soup.text:
                     print('Мы не смогли найти страницу по вашей ссылке')
                     continue
+
+                if soup.find('button', {'class': 'x-add-to-cart-skeleton__cart-button x-button x-button_primaryFilled x-button_40'}):
+                    print('Товара нет в наличии!')
+                    continue
+
                 if not products_div:
                     proxies = get_proxy('https://www.lamoda.ru/')
+                    print(soup)
                     i -= 1
                     print('no products_div!')
                     continue

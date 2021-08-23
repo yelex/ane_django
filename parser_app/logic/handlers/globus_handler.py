@@ -159,11 +159,11 @@ class GlobusHandler:
         url = 'https://online.globus.ru/'
         while True:
             try:
-                proxies = get_proxy(url)
-                time.sleep(3)
-                r = requests.get(url, proxies=proxies, headers=header)
-                soup = BeautifulSoup(r.content)
-                print(BeautifulSoup(r.content))
+                # proxies = get_proxy(url)
+                # time.sleep(3)
+                r = requests.get(url, headers=header)
+                soup = BeautifulSoup(r.content, 'lxml')
+                # print(BeautifulSoup(r.content))
 
                 if soup.find('body', {'id': 'globus-app'}) is not None:
                     break
@@ -172,7 +172,7 @@ class GlobusHandler:
                 continue
 
         # proxies = get_proxy('https://online.globus.ru/')
-        # proxies = None
+        proxies = None
 
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values

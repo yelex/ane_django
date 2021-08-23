@@ -235,24 +235,32 @@ class OzonHandler():
         #, chrome_options=self.option_chrome(proxy))
 
         # ua = UserAgent(verify_ssl=False)
+        # header = {
+        #     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        #     'accept-encoding': 'gzip, deflate, br',
+        #     'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+        #     'cache-control': 'max-age=0',
+        #     'cookie': 'nlbi_1101384=nMCUfawHylboXscAyZtWRQAAAADULGu6hNydKBIS55YeLZJg; visid_incap_1101384=W5yRhcwfRrKKb0DX8Q3BnQBi52AAAAAAQUIPAAAAAAAbE1IuoFZ/7IrCe3zJwzBe; incap_ses_768_1101384=EDgCOxY1gUiOphuWS3yoCgBi52AAAAAAf44l/wKIx9AeZNfNLWgj9g==; __Secure-access-token=3.0.T-KiWYofRlKVSzlSNQdppw.28.l8cMBQAAAABg52ICGkZT0KN3ZWKgAICQoA..20210708223722.ObT4s6K91cYcpagT-iQ3CKBZ4MBIjR_L8NvxnHM2HGY; __Secure-refresh-token=3.0.T-KiWYofRlKVSzlSNQdppw.28.l8cMBQAAAABg52ICGkZT0KN3ZWKgAICQoA..20210708223722.30dS_d1zG6-y39NqVfU4xRZvbEcmn7rYzY4hyNJtiwk; __Secure-ab-group=28; __Secure-user-id=0; xcid=b1330628b1a2692f6557f8169e96bde9; __Secure-ext_xcid=b1330628b1a2692f6557f8169e96bde9; _gcl_au=1.1.779718125.1625776650; _ga=GA1.2.599202631.1625776650; _gid=GA1.2.137797260.1625776651; cnt_of_orders=0; isBuyer=0; tmr_lvid=837623c478bf17c1e0075b46d1b1cfdf; tmr_lvidTS=1625776656643; __exponea_etc__=05906026-cd7f-4c80-93d0-2586b22ad6d2; __exponea_time2__=1.0410804748535156; _fbp=fb.1.1625776660025.704811238; tmr_detect=0%7C1625776665697; _ga_JNVTMNXQ6F=GS1.1.1625776649.1.1.1625776699.0; RT="z=1&dm=ozon.ru&si=1aa9d7b4-2632-4a85-a92a-9aef525090c8&ss=kqvdfoda&sl=1&tt=6wq&bcn=%2F%2F6852bd13.akstat.io%2F&ld=72s&nu=6i3y0u4s&cl=17xw&ul=5rzn"; tmr_reqNum=5',
+        #     'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+        #     'sec-ch-ua-mobile': '?0',
+        #     'sec-fetch-dest': 'document',
+        #     'sec-fetch-mode': 'navigate',
+        #     'sec-fetch-site': 'none',
+        #     'sec-fetch-user': '?1',
+        #     'upgrade-insecure-requests': '1',
+        #     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
+        # } # true
+
         header = {
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
             'cache-control': 'max-age=0',
-            'cookie': 'nlbi_1101384=nMCUfawHylboXscAyZtWRQAAAADULGu6hNydKBIS55YeLZJg; visid_incap_1101384=W5yRhcwfRrKKb0DX8Q3BnQBi52AAAAAAQUIPAAAAAAAbE1IuoFZ/7IrCe3zJwzBe; incap_ses_768_1101384=EDgCOxY1gUiOphuWS3yoCgBi52AAAAAAf44l/wKIx9AeZNfNLWgj9g==; __Secure-access-token=3.0.T-KiWYofRlKVSzlSNQdppw.28.l8cMBQAAAABg52ICGkZT0KN3ZWKgAICQoA..20210708223722.ObT4s6K91cYcpagT-iQ3CKBZ4MBIjR_L8NvxnHM2HGY; __Secure-refresh-token=3.0.T-KiWYofRlKVSzlSNQdppw.28.l8cMBQAAAABg52ICGkZT0KN3ZWKgAICQoA..20210708223722.30dS_d1zG6-y39NqVfU4xRZvbEcmn7rYzY4hyNJtiwk; __Secure-ab-group=28; __Secure-user-id=0; xcid=b1330628b1a2692f6557f8169e96bde9; __Secure-ext_xcid=b1330628b1a2692f6557f8169e96bde9; _gcl_au=1.1.779718125.1625776650; _ga=GA1.2.599202631.1625776650; _gid=GA1.2.137797260.1625776651; cnt_of_orders=0; isBuyer=0; tmr_lvid=837623c478bf17c1e0075b46d1b1cfdf; tmr_lvidTS=1625776656643; __exponea_etc__=05906026-cd7f-4c80-93d0-2586b22ad6d2; __exponea_time2__=1.0410804748535156; _fbp=fb.1.1625776660025.704811238; tmr_detect=0%7C1625776665697; _ga_JNVTMNXQ6F=GS1.1.1625776649.1.1.1625776699.0; RT="z=1&dm=ozon.ru&si=1aa9d7b4-2632-4a85-a92a-9aef525090c8&ss=kqvdfoda&sl=1&tt=6wq&bcn=%2F%2F6852bd13.akstat.io%2F&ld=72s&nu=6i3y0u4s&cl=17xw&ul=5rzn"; tmr_reqNum=5',
-            'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'none',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
         }
-        proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0])
+        proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0]) # None #
 
-        h1_class = 'b3a8'
+        h1_class = 'e8i9'
         price_new_class_sale = 'c2h5 c2h6'
         price_new_class = price_new_class_sale.split(' ')[0]
         price_old_class = 'c2h8'
@@ -265,7 +273,7 @@ class OzonHandler():
 
             while i + 1 <= len(url_list):
                 # get_my_ip()
-                time.sleep(1 + 4 * np.random.rand(1)[0])
+                time.sleep(1 + 2 * np.random.rand(1)[0])
                 href_i = url_list[i]
                 print(href_i)
                 if Global().is_selenium_ozon is True:
@@ -281,8 +289,8 @@ class OzonHandler():
                         else:
                             r = requests.get(href_i, headers=header)
                     except:
-                        for i in range(2):
-                            print('im here!')
+                        while 'Incapsula' in r.content:
+                            print('Damn, Incapsula!')
                             try:
                                 proxies = get_proxy(href_i)
                                 # time.sleep(10)
@@ -291,13 +299,14 @@ class OzonHandler():
                                     break
                                 else:
                                     print('r.status_code:', r.status_code)
-                                    soup = BeautifulSoup(brotli.decompress(r.content), 'lxml')
-                                    print('soup:\n', soup)
                             except:
                                 continue
-                    soup = BeautifulSoup(brotli.decompress(r.content), 'lxml')
-
-
+                    try:
+                        soup = BeautifulSoup(brotli.decompress(r.content), 'lxml')
+                    except Exception as e:
+                        print('Exception:', e)
+                        print(r.content)
+                        raise ImportError
 
                 # print(soup)
                 price_dict = dict()
@@ -313,7 +322,7 @@ class OzonHandler():
 
                     print('site_title:', price_dict['site_title'])
                 except:
-                    print(soup)
+                    # print(soup)
                     print('except sitetitle not found')
                     if 'Такой страницы не существует' in soup.text:
                         print('Такой страницы не существует!')
@@ -327,22 +336,7 @@ class OzonHandler():
                     if soup.find('li', {'class': 'links-item'}) is None:
                         print('links-item place')
 
-                        # while True:
-                        # for iterr in range(2):
-                        #     proxies = get_proxy(href_i)
-                        #     time.sleep(3)
-                        #     r = requests.get(href_i, proxies=proxies, headers=header)
-                        #     if r.status_code == 200:
-                        #         break
-                        #     else:
-                        #         print('r.status_code:', r.status_code)
                     continue
-
-                # div_new = soup.find('span', {'data-test-id': 'saleblock-first-price'})
-                # print('soup:\n', soup)
-                # if 'Товар закончился' in soup.text:
-                #     print('Товар точно закончился!')
-                #     continue
 
                 div_new = soup.find('span', {'class': price_new_class_sale})
 
@@ -350,20 +344,29 @@ class OzonHandler():
                     div_new = soup.find('span', {'class': price_new_class})
 
                 if div_new is None:
-                    print('Товар закончился!\n')
+                    print('Товар исчез!\n')
                     continue
 
                 if re.search('\d+', wspex(div_new.text)) is None:
-                    print('Товар закончился!\n')
+                    print('Нет цифр в цене!\n')
                     continue
 
                 if 'Этот товар закончился' in soup.text:
-                    print('Товар закончился!\n')
+                    print('Этот товар закончился\n')
                     continue
 
-                if 'Товар закончился' in soup.text:
-                    print('Товар закончился!\n')
+                if 'Товар не доставляется в Ваш город' in soup.text:
+                    print('Товар не доставляется в Ваш город\n')
                     continue
+
+                if soup.find('div', {'class': 'c2e2'}):
+                    print('Товар тупо закончился\n')
+                    continue
+
+                # if 'Товар закончился' in soup.text:
+                #     print('except4')
+                #     print('Товар закончился!\n')
+                #     continue
                 # print('din_new:\n', div_new)
                 '''
                 soup.find('span', {

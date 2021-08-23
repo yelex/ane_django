@@ -266,29 +266,20 @@ class UtkonosHandler():
                     continue
                 products_div = soup.find('div', {'class': 'product-base-info_content'})
                 if products_div is None:
+                    print('products_div is None!')
+                    continue
                     # print(soup)
-                    while True:
-                        proxies = get_proxy(href_i)
-                        time.sleep(3)
-                        r = requests.get(href_i, proxies=proxies, headers=header)
-                        html = r.content
-                        soup = BeautifulSoup(html, 'html.parser')
-                        # print(soup)
-                        if soup.find('h1', {'class': 'product-base-info_name ng-star-inserted'}) is not None:
-                            print('yahoo!')
-                            break
-                # print(soup.text.lower())
-                #                 print(soup)
-                #                 if soup.find('span', {'class': 'product-nameplate__text'}) is not None:
-                #                     print('Снят с продажи!')
-                #                     continue
-                # print('soup:\n', soup)
-                # raise AttributeError
-                # print('products_div not found!')
-                # continue
-                # print(products_div)
-                # products_div = soup.find('div', {'class': 'b-section--bg i-pb30 js-product-item js-product-main'})
-                # print('\n\nproducts_div:\n', products_div)
+                    # while True:
+                    #     proxies = get_proxy(href_i)
+                    #     time.sleep(3)
+                    #     r = requests.get(href_i, proxies=proxies, headers=header)
+                    #     html = r.content
+                    #     soup = BeautifulSoup(html, 'html.parser')
+                    #     # print(soup)
+                    #     if soup.find('h1', {'class': 'product-base-info_name ng-star-inserted'}) is not None:
+                    #         print('yahoo!')
+                    #         break
+
                 price_dict = dict()
 
                 price_dict['date'] = Global().date
