@@ -192,28 +192,28 @@ class LamodaHandler:
                 products_div = soup.find('div', {'class': 'ii-product__aside-wrapper'})
                 try:
                     soup.find('div', {'class': 'ii-product__buy js-widget-buy ii-product__buy_disabled'}).get('data-dict-out_of_stock')
-                    print('Товара нет в наличии')
+                    print('Товара нет в наличии\n')
                     continue
                 except:
                     # print(soup)
                     pass
 
                 if 'not found' in soup.text.lower():
-                    print('not found')
+                    print('not found\n')
                     continue
                 if 'Мы не смогли найти страницу по вашей ссылке' in soup.text:
-                    print('Мы не смогли найти страницу по вашей ссылке')
+                    print('Мы не смогли найти страницу по вашей ссылке\n')
                     continue
 
                 if soup.find('button', {'class': 'x-add-to-cart-skeleton__cart-button x-button x-button_primaryFilled x-button_40'}):
-                    print('Товара нет в наличии!')
+                    print('Товара нет в наличии!\n')
                     continue
 
                 if not products_div:
                     proxies = get_proxy('https://www.lamoda.ru/')
                     print(soup)
                     i -= 1
-                    print('no products_div!')
+                    print('no products_div!\n')
                     continue
 
                 price_dict = dict()
@@ -263,7 +263,7 @@ class LamodaHandler:
                 price_dict['site_unit'] = 'шт.'
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него
                 price_dict['type'] = 'non-food'
-                print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n\n'.format(price_dict['site_title'],
+                print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n'.format(price_dict['site_title'],
                                                                                           price_dict['price_new'],
                                                                                           price_dict['price_old'],
                                                                                           price_dict['site_unit']))

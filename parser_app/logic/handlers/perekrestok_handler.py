@@ -171,8 +171,8 @@ class PerekrestokHandler():
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
 
-        proxies = get_proxy('https://www.vprok.ru/')  #  #
-        # proxies = None
+        # proxies = get_proxy('https://www.vprok.ru/')  #  #
+        proxies = None
         cookie = r'suuid=2612af35-2fa1-464c-9776-a8729ee5cdc1; luuid=2612af35-2fa1-464c-9776-a8729ee5cdc1; split_segment=7; split_segment_amount=10; noHouse=0; appservername=app0; fcf=3; _dy_csc_ses=t; _dy_c_exps=; _gcl_au=1.1.1101498930.1602849311; _dycnst=dg; tmr_lvid=8199eecf75aa278e274aca7b823f79bb; tmr_lvidTS=1602849311544; _ym_uid=1602849312634665940; _ym_d=1602849312; _gid=GA1.2.116608189.1602849312; _dyid=-2882303570935707106; _dyjsession=2924924e01bc000c2c966b01e714bf3b; dy_fs_page=www.vprok.ru%2Fproduct%2Fcherkizovo-cherkiz-sheyka-svin-ohl-vu-pf-kat-b-1kg--303771; _dycst=dk.m.c.ms.; _dy_geo=RU.EU.RU_MOW.RU_MOW_Moscow; _dy_df_geo=Russia..Moscow; _ym_isad=2; _fbp=fb.1.1602849312171.481873387; flocktory-uuid=7fa0fb16-68aa-4d3c-853e-c3ee945b1c33-1; _dyid_server=-2882303570935707106; _dy_c_att_exps=; _dy_ses_load_seq=51541%3A1602850907093; _dyfs=1602850908656; _dy_lu_ses=2924924e01bc000c2c966b01e714bf3b%3A1602850908658; _dy_toffset=-1; _dy_soct=401501.688468.1602849310*464250.838984.1602849311*484922.888305.1602850907*487393.894852.1602850907*496179.916906.1602850907*498939.923749.1602850907*515052.971092.1602850907*366287.608896.1602850907*451565.810320.1602850907*451564.810319.1602850907*464773.921941.1602850908; tmr_detect=0%7C1602850911632; mindboxDeviceUUID=c59980ec-0612-419a-8d13-02580e94b1a0; directCrm-session=%7B%22deviceGuid%22%3A%22c59980ec-0612-419a-8d13-02580e94b1a0%22%7D; tmr_reqNum=1315; XSRF-TOKEN=eyJpdiI6Im16M1EzVWU2djlNa1wvUkF6RTlMNE13PT0iLCJ2YWx1ZSI6InlhRXhSbkI2RURWanpQXC9uTzhzOVZ1WEd0WElEM2VMM3FjYnpRUjR5bUxUMlNMa2JZcDBldDdBakN1TGJjek5WZmE5N1E5cHJcL3FOeE5nQmJpU0crTUE9PSIsIm1hYyI6ImUyOTEzN2ZhMGRhYjVkYTI0YTdjZTM0MzdhMzNmZWY1ZTJlOTM3YmQ1NjA5MjlhMzZhNTU1NGE5OGM0ODQ2ZTkifQ%3D%3D; aid=eyJpdiI6IklBREluTG1PUmNaYkZKUThseFh3RVE9PSIsInZhbHVlIjoiY1E3SHZUMXVYbmxKc0lkZGswWXFBeVwvbEY5Qzc5SEdLUmxPSGQ4SkllR1pONmdHREREaWxcLzVNYW1jM3pkcnRtMmtcLzZKYnY0WlJ6UHRPZ1o3clU3bXc9PSIsIm1hYyI6ImZjYWIwZGY3Mzg1ZGFmODExMjZkY2JlNjgwOTRjMzZiNzY3YzU2ZmIzOGRlMWU5Yzc5YjJiMTc2OGE4YjVjNGUifQ%3D%3D; appservername=app5; _ga=GA1.1.335220323.1602849312; _ga_B122VKXXJE=GS1.1.1602852969.2.0.1602852969.0'
 
 
@@ -193,23 +193,13 @@ class PerekrestokHandler():
                 print(href_i)
 
                 headers = {
-                    'Accept': r'text/css,*/*;q=0.1',
-                    'Accept-Encoding': r'gzip, deflate, br',
-                    'Accept-Language': r'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-                    'Connection': r'keep-alive',
-                    'Cookie': cookie,
-                    'Host': r'www.vprok.ru',
-                    'Referer': href_i,
-                    'Sec-Fetch-Dest': 'style',
-                    'Sec-Fetch-Mode': r'no-cors',
-                    'Sec-Fetch-Site': r'same-origin',
                     'User-Agent': r'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
                 }
 
                 i += 1
 
                 try:
-                    # time.sleep(2)
+                    time.sleep(2)
                     if proxies != None:
                         r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
                     else:
