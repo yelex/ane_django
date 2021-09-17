@@ -2,7 +2,7 @@
 from parser_app.logic.total_scrap import TotalGrocery
 from parser_app.logic.total_neprod import TotalNongrocery
 from parser_app.logic.handlers.services_handler import Services
-from parser_app.logic.handlers.tools import perpetualTimer, fill_df, get_basket_df
+from parser_app.logic.handlers.tools import perpetualTimer, fill_df, get_basket_df, send_mail
 from parser_app.logic.global_status import Global
 from parser_app.logic.handlers.gks_handler import SiteHandlerGks
 from parser_app.models import PricesRaw, PricesProcessed, Gks, Basket
@@ -49,8 +49,8 @@ class Total:
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
-        df = df.append(TotalGrocery().get_df_page())
         df = df.append(TotalNongrocery().get_df_page())
+        df = df.append(TotalGrocery().get_df_page())
         df = df.append(Services().get_df())
 
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])

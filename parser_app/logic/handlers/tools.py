@@ -122,7 +122,8 @@ def get_proxy(link, get_new=False, get_list=False):
     try:
         r = requests.get(url, proxies=proxies)
         print('New IP Address: %s' % r.text)
-    except:
+    except Exception as e:
+        print('Exception:', e)
         print("http://icanhazip.com doesn't work")
         pass
     return proxies

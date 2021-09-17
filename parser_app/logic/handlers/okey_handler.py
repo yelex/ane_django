@@ -175,8 +175,8 @@ class OkeyHandler:
         res = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                     'site_title', 'price_new', 'price_old', 'site_unit',
                                     'site_link', 'site_code'])
-        # proxies = get_proxy('https://okeydostavka.ru/')
-        proxies = None
+        proxies = get_proxy('https://okeydostavka.ru/')
+        # proxies = None
         # ua = UserAgent(verify_ssl=False)
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values

@@ -142,3 +142,4 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

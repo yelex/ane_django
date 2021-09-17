@@ -49,7 +49,7 @@ class TotalGrocery:
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
 
-        site_handlers = [PerekrestokHandler(), GlobusHandler(), UtkonosHandler(), OkeyHandler(),
+        site_handlers = [GlobusHandler(), OkeyHandler(), PerekrestokHandler(), UtkonosHandler(),
                          ]  #
 
         for handler in site_handlers:

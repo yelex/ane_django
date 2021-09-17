@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import pandas as pd
+import numpy as np
 import requests
 from datetime import datetime, timedelta
 from parser_app.logic.handlers.tools import filter_flag, get_proxy, tofloat, wspex_space
@@ -199,7 +200,6 @@ class PerekrestokHandler():
                 i += 1
 
                 try:
-                    time.sleep(2)
                     if proxies != None:
                         r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
                     else:
