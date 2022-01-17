@@ -198,14 +198,14 @@ class GlobusHandler:
                         r = requests.get(url, headers=header, timeout=10)
                 except Exception as e:
                     print(e)
-                    if 'timeout' in str(e):
+                    if 'timeout' or 'Max retries' in str(e):
                         continue
                     while True:
                         try:
                             proxies = get_proxy(url)
                             time.sleep(3)
                             r = requests.get(url, proxies=proxies, headers=header)
-                            soup = BeautifulSoup(r.content)
+                            soup = BeautifulSoup(r.content, features="lxml")
                             print(BeautifulSoup(r.content))
 
                             if soup.find('body', {'id': 'globus-app'}) is not None:

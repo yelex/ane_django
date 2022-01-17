@@ -7,6 +7,7 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
+
 class PiluliHandler():
 
     def extract_products(self):
@@ -45,13 +46,22 @@ class PiluliHandler():
             price_dict['type'] = 'non-food'
             price_dict['category_title'] = category_titles[index]
             price_dict['site_link'] = link
-            if soup.find('h1', {'id': 'offer-title'}) is not None:
-                price_dict['site_title'] = soup.find('h1', {'id': 'offer-title'}).text
+            if soup.find('h1') is not None:
+                price_dict['site_title'] = soup.find('h1').text
             else:
-                print(' site_link is unreachable!')
-            price_dict['price_new'] = int(soup.find('span', {'id': 'products_price'}).text)
-            price_dict['price_old'] = int(soup.find('span', {'class': 'old-price'}).text) if soup.find('span', {'class': 'old-price'}).text != '\n' else ''
+                print('site_title is null!')
+                continue
 
+            if 'Товара нет в наличии' in soup.text or soup.find('span', {'class': 'offer-tools__price_num-strong'}) is None:
+                print('Товара нет в наличии!')
+                continue
+            price_dict['price_new'] = int(soup.find('span', {'class': 'offer-tools__price_num-strong'}).text)
+            price_dict['price_old'] = int(soup.find('div', {'class': 'offer-tools__old-price'}).text) if soup.find('div', {'class': 'offer-tools__old-price'}).text != '\n' else ''
+            print('site_title: {}\nprice_new: {}\nprice_old: {}\nunit: {}\n'.format(
+                price_dict['site_title'],
+                price_dict['price_new'],
+                price_dict['price_old'],
+                price_dict['site_unit']))
             res = res.append(price_dict, ignore_index=True)
 
         driver.quit()

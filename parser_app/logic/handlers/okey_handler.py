@@ -36,7 +36,7 @@ class OkeyHandler:
         hrefs = sfb_df[sfb_df.fillna('')['URL'].str.contains('okeydostavka')]['URL'].values
         hrefs = [href for href in hrefs if type(href) is not float]
         id_n = 0
-        # proxies = get_proxy('https://www.okeydostavka.ru/')
+        proxies = get_proxy('https://www.okeydostavka.ru/')
 
         for href in tqdm(hrefs):
 
@@ -76,7 +76,7 @@ class OkeyHandler:
 
                 try:
                     r = requests.get(url_full, headers=headers)  # CRITICAL
-                    clever_sleep()
+                    clever_sleep(mu=2)
                 except:
                     r = 404
                     while r.status_code != 200:
@@ -236,7 +236,7 @@ class OkeyHandler:
                     # driver.close()
                 else:
                     try:
-                        # clever_sleep()
+                        # time.sleep(5)
                         if proxies is not None:
                             r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
                         else:
@@ -246,7 +246,7 @@ class OkeyHandler:
                         while True:
                             try:
                                 proxies = get_proxy(href_i)
-                                time.sleep(3)
+
                                 r = requests.get(href_i, headers=headers, proxies=proxies, timeout=60)
                                 if r.status_code == 200:
                                     break

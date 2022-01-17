@@ -233,19 +233,15 @@ class OzonHandler():
                                       chrome_options=Global().chrome_options)
 
         header = {
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-encoding': 'gzip, deflate, br',
-            'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-            'cache-control': 'max-age=0',
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
         }
 
         proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0]) # None #
 
-        h1_class = 'e8j2'
-        price_new_class_sale = 'c2h5 c2h6'
+        h1_class = 'jn6'
+        price_new_class_sale = 'm3j jm4'
         price_new_class = price_new_class_sale.split(' ')[0]
-        price_old_class = 'c2h8'
+        price_old_class = 'mj4'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -255,7 +251,7 @@ class OzonHandler():
 
             while i + 1 <= len(url_list):
                 # get_my_ip()
-                time.sleep(1 + 2 * np.random.rand(1)[0])
+                time.sleep(3 + 2 * np.random.rand(1)[0])
                 href_i = url_list[i]
                 print(href_i)
                 if Global().is_selenium_ozon is True:
@@ -340,7 +336,7 @@ class OzonHandler():
                     print('Товар не доставляется в Ваш город\n')
                     continue
 
-                if soup.find('div', {'class': 'c2e2'}):
+                if soup.find('div', {'class': 'mj5'}):
                     print('Товар тупо закончился\n')
                     continue
 

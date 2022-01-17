@@ -177,28 +177,28 @@ class Services:
         '''
 
         #Постановка набоек, пара	http://www.lelab.ru/3.html
-        n=6
-        price_dict=dict()
-        price_dict['date']=Global().date
-        price_dict['site_code']='services'
-        url=list_url[n]
-        print(url)
-        html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
-        soup=BeautifulSoup(html, 'lxml')
-        price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
-        price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
-        for elem in soup.findAll('tr'):
-            if re.findall('эконом',elem.text)!=[]:
-                price_div=elem
-                price_dict['site_title']=self.wspex_space(re.findall('[А-Яа-яёз(). ]+',price_div.findAll('td',{'align':'left'})[0].text)[0])
-                price_text=price_div.findAll('strong')[0].text
-                price_dict['price_new']=int(re.findall('\d+',price_text)[0])
-                price_dict['price_old'] = ''
-                price_dict['type'] = 'services'
-                price_dict['site_unit']=re.findall('\([А-Яа-я]*\)',price_dict['site_title'])[0][1:-1]
-                price_dict['site_link']=url
-                break
-        final_df=final_df.append(price_dict,ignore_index=True)
+        # n=6
+        # price_dict=dict()
+        # price_dict['date']=Global().date
+        # price_dict['site_code']='services'
+        # url=list_url[n]
+        # print(url)
+        # html=requests.get(url).content#, headers={'User-Agent': UserAgent().chrome}
+        # soup=BeautifulSoup(html, 'lxml')
+        # price_dict['category_id']=int(serv_df[serv_df['URL'].str.contains(url)].index[0])
+        # price_dict['category_title'] = serv_df.loc[price_dict['category_id']]['cat_title'].values[0]
+        # for elem in soup.findAll('tr'):
+        #     if re.findall('эконом',elem.text)!=[]:
+        #         price_div=elem
+        #         price_dict['site_title']=self.wspex_space(re.findall('[А-Яа-яёз(). ]+',price_div.findAll('td',{'align':'left'})[0].text)[0])
+        #         price_text=price_div.findAll('strong')[0].text
+        #         price_dict['price_new']=int(re.findall('\d+',price_text)[0])
+        #         price_dict['price_old'] = ''
+        #         price_dict['type'] = 'services'
+        #         price_dict['site_unit']=re.findall('\([А-Яа-я]*\)',price_dict['site_title'])[0][1:-1]
+        #         price_dict['site_link']=url
+        #         break
+        # final_df=final_df.append(price_dict,ignore_index=True)
 
 
         #Билет на 1 поездку - мосгортранс

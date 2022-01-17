@@ -114,17 +114,17 @@ def get_proxy(link, get_new=False, get_list=False):
         controller.authenticate('mypassword')
         controller.signal(Signal.NEWNYM)
     proxies = {
-        'http': 'socks5h://127.0.0.1:9060',
-        'https': 'socks5h://127.0.0.1:9060'
+        'http': 'socks5://127.0.0.1:9060',
+        'https': 'socks5://127.0.0.1:9060'
     }
 
-    url = 'http://icanhazip.com'
+    url = 'http://httpbin.org/ip'
     try:
-        r = requests.get(url, proxies=proxies)
-        print('New IP Address: %s' % r.text)
+        r = requests.get(url, proxies=proxies).json()['origin']
+        print('New IP Address: %s' % r)
     except Exception as e:
         print('Exception:', e)
-        print("http://icanhazip.com doesn't work")
+        print("http://httpbin.org/ip doesn't work")
         pass
     return proxies
 

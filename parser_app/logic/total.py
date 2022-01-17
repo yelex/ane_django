@@ -49,13 +49,13 @@ class Total:
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
+
+        df = df.append(Services().get_df())
         df = df.append(TotalNongrocery().get_df_page())
         df = df.append(TotalGrocery().get_df_page())
-        df = df.append(Services().get_df())
 
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
-        # df = df.drop_duplicates(subset=['date', 'category_id', 'site_link'])
         df = df.sort_values(['category_id', 'site_link'])
 
         # conn = sqlite3.connect(os.path.join(BASE_DIR, 'db.sqlite3'))

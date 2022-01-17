@@ -34,9 +34,9 @@ class TotalNongrocery():
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
-        df = df.append(PiluliHandler().extract_products())
-        site_handlers = [OzonHandler(), LamodaHandler(), ]  #     MvideoHandler(),
 
+        site_handlers = [OzonHandler(), LamodaHandler(), ]  #   MvideoHandler(),
+        df = df.append(PiluliHandler().extract_products())
         for handler in site_handlers:
 
             df = df.append(handler.extract_product_page())
