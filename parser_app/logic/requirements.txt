@@ -7,7 +7,7 @@ Django==1.10.6
 django-heroku==0.3.1
 docutils==0.13.1
 fake-useragent==0.1.11
-future==0.17.1
+future==0.18.3
 gunicorn==19.9.0
 idna==2.6
 lxml==4.3.2
