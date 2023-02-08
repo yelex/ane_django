@@ -229,19 +229,18 @@ class OzonHandler():
                                     'site_link', 'site_code'])
 
         if Global().is_selenium_ozon is True:
-            driver = webdriver.Chrome(executable_path=Global().path_chromedriver,
-                                      chrome_options=Global().chrome_options)
+            driver = webdriver.Chrome(executable_path=Global().path_chromedriver)
 
         header = {
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15',
         }
 
-        proxies = None # get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0]) # None #
+        # proxies = get_proxy(links_df[links_df.category_id == category_ids[0]].site_link.values[0])
 
-        h1_class = 'jn6'
-        price_new_class_sale = 'm3j jm4'
+        h1_class = 'n2p'
+        price_new_class_sale = 'no0 n0o'
         price_new_class = price_new_class_sale.split(' ')[0]
-        price_old_class = 'mj4'
+        price_old_class = 'o0n'
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
             category_title = desc_df.loc[cat_id, 'cat_title']
@@ -251,10 +250,14 @@ class OzonHandler():
 
             while i + 1 <= len(url_list):
                 # get_my_ip()
-                time.sleep(3 + 2 * np.random.rand(1)[0])
+                if i == 2:
+                    time.sleep(120 + 2 * np.random.rand(1)[0])
+                else:
+                    time.sleep(10 + 2 * np.random.rand(1)[0])
                 href_i = url_list[i]
                 print(href_i)
                 if Global().is_selenium_ozon is True:
+                    print('im here')
                     driver.get(href_i)
                     soup = BeautifulSoup(driver.page_source, 'lxml')
 
@@ -336,19 +339,9 @@ class OzonHandler():
                     print('Товар не доставляется в Ваш город\n')
                     continue
 
-                if soup.find('div', {'class': 'mj5'}):
+                if soup.find('div', {'class': 'm3o'}):
                     print('Товар тупо закончился\n')
                     continue
-
-                # if 'Товар закончился' in soup.text:
-                #     print('except4')
-                #     print('Товар закончился!\n')
-                #     continue
-                # print('din_new:\n', div_new)
-                '''
-                soup.find('span', {
-                'class': 'price-number'})
-                '''
 
                 div_old = soup.find('span', {'class': price_old_class})
 

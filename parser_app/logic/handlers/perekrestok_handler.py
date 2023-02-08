@@ -3,13 +3,14 @@ import pandas as pd
 import numpy as np
 import requests
 from datetime import datetime, timedelta
-from parser_app.logic.handlers.tools import filter_flag, get_proxy, tofloat, wspex_space
+from parser_app.logic.handlers.tools import filter_flag, get_proxy, tofloat, wspex_space, wspex
 from parser_app.logic.global_status import Global
 from tqdm import tqdm
 import re
 import time
 from fake_useragent import UserAgent
 import ssl
+from selenium import webdriver
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -175,7 +176,13 @@ class PerekrestokHandler():
         # proxies = get_proxy('https://www.vprok.ru/')  #  #
         proxies = None
         cookie = r'suuid=2612af35-2fa1-464c-9776-a8729ee5cdc1; luuid=2612af35-2fa1-464c-9776-a8729ee5cdc1; split_segment=7; split_segment_amount=10; noHouse=0; appservername=app0; fcf=3; _dy_csc_ses=t; _dy_c_exps=; _gcl_au=1.1.1101498930.1602849311; _dycnst=dg; tmr_lvid=8199eecf75aa278e274aca7b823f79bb; tmr_lvidTS=1602849311544; _ym_uid=1602849312634665940; _ym_d=1602849312; _gid=GA1.2.116608189.1602849312; _dyid=-2882303570935707106; _dyjsession=2924924e01bc000c2c966b01e714bf3b; dy_fs_page=www.vprok.ru%2Fproduct%2Fcherkizovo-cherkiz-sheyka-svin-ohl-vu-pf-kat-b-1kg--303771; _dycst=dk.m.c.ms.; _dy_geo=RU.EU.RU_MOW.RU_MOW_Moscow; _dy_df_geo=Russia..Moscow; _ym_isad=2; _fbp=fb.1.1602849312171.481873387; flocktory-uuid=7fa0fb16-68aa-4d3c-853e-c3ee945b1c33-1; _dyid_server=-2882303570935707106; _dy_c_att_exps=; _dy_ses_load_seq=51541%3A1602850907093; _dyfs=1602850908656; _dy_lu_ses=2924924e01bc000c2c966b01e714bf3b%3A1602850908658; _dy_toffset=-1; _dy_soct=401501.688468.1602849310*464250.838984.1602849311*484922.888305.1602850907*487393.894852.1602850907*496179.916906.1602850907*498939.923749.1602850907*515052.971092.1602850907*366287.608896.1602850907*451565.810320.1602850907*451564.810319.1602850907*464773.921941.1602850908; tmr_detect=0%7C1602850911632; mindboxDeviceUUID=c59980ec-0612-419a-8d13-02580e94b1a0; directCrm-session=%7B%22deviceGuid%22%3A%22c59980ec-0612-419a-8d13-02580e94b1a0%22%7D; tmr_reqNum=1315; XSRF-TOKEN=eyJpdiI6Im16M1EzVWU2djlNa1wvUkF6RTlMNE13PT0iLCJ2YWx1ZSI6InlhRXhSbkI2RURWanpQXC9uTzhzOVZ1WEd0WElEM2VMM3FjYnpRUjR5bUxUMlNMa2JZcDBldDdBakN1TGJjek5WZmE5N1E5cHJcL3FOeE5nQmJpU0crTUE9PSIsIm1hYyI6ImUyOTEzN2ZhMGRhYjVkYTI0YTdjZTM0MzdhMzNmZWY1ZTJlOTM3YmQ1NjA5MjlhMzZhNTU1NGE5OGM0ODQ2ZTkifQ%3D%3D; aid=eyJpdiI6IklBREluTG1PUmNaYkZKUThseFh3RVE9PSIsInZhbHVlIjoiY1E3SHZUMXVYbmxKc0lkZGswWXFBeVwvbEY5Qzc5SEdLUmxPSGQ4SkllR1pONmdHREREaWxcLzVNYW1jM3pkcnRtMmtcLzZKYnY0WlJ6UHRPZ1o3clU3bXc9PSIsIm1hYyI6ImZjYWIwZGY3Mzg1ZGFmODExMjZkY2JlNjgwOTRjMzZiNzY3YzU2ZmIzOGRlMWU5Yzc5YjJiMTc2OGE4YjVjNGUifQ%3D%3D; appservername=app5; _ga=GA1.1.335220323.1602849312; _ga_B122VKXXJE=GS1.1.1602852969.2.0.1602852969.0'
+        # selenium
+        if Global().is_selenium_perekrestok:
+            path = Global().path_chromedriver
+            # options = webdriver.ChromeOptions()
+            # options.add_argument('--headless')
 
+            driver = webdriver.Chrome(executable_path=path, chrome_options=Global().chrome_options)
 
         for cat_id in tqdm(category_ids):  # испр
             url_list = links_df[links_df.category_id == cat_id].site_link.values
@@ -198,27 +205,35 @@ class PerekrestokHandler():
                 }
 
                 i += 1
+                if Global().is_selenium_perekrestok:
+                    try:
+                        driver.get(href_i)
+                    except:
+                        driver.get(href_i)
+                    time.sleep(5)
+                    soup = BeautifulSoup(driver.page_source, 'html.parser')
+                    # driver.close()
+                else:
+                    try:
+                        if proxies != None:
+                            r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
+                        else:
+                            r = requests.get(href_i, headers=headers, timeout=60)
+                    except Exception as e:
+                        print(e)
+                        while True:
+                            try:
+                                proxies = get_proxy(href_i)
+                                r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)
+                                time.sleep(3)
+                                if r.status_code == 200:
+                                    break
+                            except:
+                                continue
 
-                try:
-                    if proxies != None:
-                        r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)  # CRITICAL
-                    else:
-                        r = requests.get(href_i, headers=headers, timeout=60)
-                except Exception as e:
-                    print(e)
-                    while True:
-                        try:
-                            proxies = get_proxy(href_i)
-                            r = requests.get(href_i, proxies=proxies, headers=headers, timeout=60)
-                            time.sleep(3)
-                            if r.status_code == 200:
-                                break
-                        except:
-                            continue
+                    html = r.content
+                    soup = BeautifulSoup(html, 'lxml')
 
-                html = r.content
-
-                soup = BeautifulSoup(html, 'lxml')
                 if 'страница не существует' in soup:
                     continue
                 price_dict = dict()
@@ -226,9 +241,9 @@ class PerekrestokHandler():
                 # print('city:', soup.find('span', {'class': 'js-address-data'}).text)
                 try:
                     price_dict['site_title'] = wspex_space(
-                        soup.find('h1', {'class': re.compile('xf-product-new__title js-product__title js-product-new-title')}).text)
+                        soup.find('h1', {'class': re.compile('Title_title__QoS6h')}).text)
                 except:
-                    # print(soup)
+                    print(soup)
                     print('site_title not found!')
                     continue
 
@@ -237,41 +252,42 @@ class PerekrestokHandler():
                     print('Распродано!')
                     continue
 
-                if 'Временно отсутствует' in soup.text:
+                if 'Временно недоступен' in soup.text:
                     print('Временно отсутствует!')
                     continue
-
-                products_div = soup.find('div', {'class': 'xf-product-new__price-text'})
-                if not products_div:
-                    print('no products_div!')
-                    # print(soup)
-                    continue
-
 
                 price_dict['date'] = Global().date
                 price_dict['site_code'] = site_code
                 price_dict['category_id'] = cat_id
                 price_dict['category_title'] = category_title
-                div_sale = products_div.find('span', {'class': 'xf-product-new__crossout-price-text js-product__old-cost'})
+                price_div = soup.find('div', {'class': 'Buy_row__E8Q9c'})
+                if not price_div:
+                    print('im here')
+                    price_div = soup.find('div', {'class': 'BuyQuant_price__7f54F'})
+                div_sale = price_div.find('span', {'class': 'Price_price__B1Q8E Price_role_old__qW2bx'})
                 if div_sale is not None:
                     # print('div-sale:', div_sale)
-                    price_dict['price_old'] = float(div_sale.get('data-cost'))
+                    price_dict['price_old'] = float(re.search('\d+\.*\d+', wspex(div_sale.text).replace(',', '.'))[0])
                     if price_dict['price_old'] == 0.0:
                         price_dict['price_old'] = ''
                 else:
                     price_dict['price_old'] = ''
 
-                div_new = products_div.find('span',
-                                            {'class': 'js-product__cost _with_old_price'})
+                div_new = price_div.find('span',
+                                            {'class': 'Price_price__B1Q8E Price_size_XL__gvZDE Price_role_discount__E0QVZ'})
                 if div_new is None:
-                    div_new = products_div.find('span', {
-                        'class': re.compile('js-product__cost\s*')})
+                    div_new = price_div.find('span', {
+                        'class': re.compile('Price_price__B1Q8E Price_size_XL__gvZDE\s*')})
 
                 if div_new is None:
                     print('\tdiv_new is None!')
                     # print('products_div:', products_div)
                     continue
-                price_dict['price_new'] = float(div_new.get('data-cost'))
+                price_dict['price_new'] = float(re.search('\d+\.*\d+', wspex(div_new.text).replace(',', '.'))[0])
+                if type(price_dict['price_old']) is float:
+                    if price_dict['price_old'] < price_dict['price_new']:
+                        print('Old price is less than new one!')
+                        price_dict['price_old'] = ''
                 price_dict['site_unit'] = wspex_space(div_new.get('data-type'))
                 price_dict['site_link'] = href_i  # показывает название товара и ссылку на него
                 price_dict['type'] = 'food'
@@ -280,6 +296,7 @@ class PerekrestokHandler():
                                                                         price_dict['price_old'],
                                                                         price_dict['site_unit']))
                 res = res.append(price_dict, ignore_index=True)
-
+        if Global().is_selenium_perekrestok:
+            driver.quit()
         print('PEREKRESTOK has successfully parsed')
         return res

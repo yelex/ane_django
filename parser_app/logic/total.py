@@ -49,23 +49,17 @@ class Total:
         df = pd.DataFrame(columns=['date', 'type', 'category_id', 'category_title',
                                    'site_title', 'price_new', 'price_old', 'site_unit',
                                    'site_link', 'site_code'])
-
-        df = df.append(Services().get_df())
         df = df.append(TotalNongrocery().get_df_page())
         df = df.append(TotalGrocery().get_df_page())
+        # df = df.append(Services().get_df())
 
         df.loc[:, 'date'] = pd.to_datetime(df.loc[:, 'date'])
 
         df = df.sort_values(['category_id', 'site_link'])
 
-        # conn = sqlite3.connect(os.path.join(BASE_DIR, 'db.sqlite3'))
         df.reset_index(drop=True, inplace=True)
         df.loc[:, 'miss'] = 0
 
-        # df.to_csv(os.path.join(Global().path_parsedcontent, 'data_test_{}.csv').format(date_now))
-        # pivot = df.pivot_table(index='category_id', columns=['type', 'site_code'],
-        #                        values='site_link', aggfunc='nunique')
-        # pivot.to_csv(os.path.join(Global().path_parsedcontent, 'pivot_test_{}.csv').format(date_now))
         df.loc[:, 'price_old'] = df.loc[:, 'price_old'].replace('', -1.0)
         df.loc[:, 'price_old'] = df.loc[:, 'price_old'].fillna(-1.0)
 

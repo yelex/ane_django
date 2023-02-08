@@ -26,11 +26,12 @@ class Global(Singleton):
         self.path_desc = os.path.join(self.base_dir, r'description/categories.csv')
         self.example_shot = os.path.join(self.base_dir, r'description/data_2019-10-02.csv')
         self.desc_df = pd.read_csv(self.path_desc, sep=';', index_col='id')
-        self.date = date(year=2022, month=1, day=14)  # datetime.now().date() #
+        self.date = date(year=2023, month=2, day=1)  # datetime.now().date() #
         self.max_links = None
-        self.is_selenium_ozon = False
-        self.is_selenium_okey = False
-        self.is_selenium_utkonos = False
+        self.is_selenium_ozon = True
+        self.is_selenium_okey = True
+        self.is_selenium_utkonos = True
+        self.is_selenium_perekrestok = True
         self.is_shutdown = False
         self.path_chromedriver = os.path.join(BASE_DIR, 'chromedriver')  # '/home/yelex/PycharmProjects/ane_django/chromedriver'
         self.path_parsedcontent = os.path.join(BASE_DIR, 'parsed_content')
@@ -39,6 +40,9 @@ class Global(Singleton):
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+
+        # options.binary_location = "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta"
+
         self.chrome_options = options
         self.path_sfb = os.path.join(self.base_dir, r'description/sfb.csv')
 

@@ -2,21 +2,17 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
-import random
 import requests
 import time
 import os
 from parser_app.logic.global_status import Global
-from selenium import webdriver
 from threading import Timer  # для автозапуска
-from fake_useragent import UserAgent
 import smtplib
 import datetime
 from datetime import date
 import numpy as np
 from tqdm import tqdm
 import difflib
-# from webdriver_manager.chrome import ChromeDriverManager
 import ssl
 from stem.control import Controller
 from stem import Signal
@@ -104,7 +100,7 @@ def checkIP():
 
 
 def clever_sleep(mu=5, sigma=0.3):
-    nmb = sigma*np.random.randn()+mu
+    nmb = np.abs(sigma*np.random.randn()+mu)
     print(nmb)
     time.sleep(nmb)
 

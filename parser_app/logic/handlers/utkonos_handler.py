@@ -212,7 +212,8 @@ class UtkonosHandler():
             path = Global().path_chromedriver
             # options = webdriver.ChromeOptions()
             # options.add_argument('--headless')
-            driver = webdriver.Chrome(executable_path=path)
+
+            driver = webdriver.Chrome(executable_path=path, chrome_options=Global().chrome_options)
 
         #
         for cat_id in tqdm(category_ids):  # испр
@@ -265,6 +266,7 @@ class UtkonosHandler():
                     print('Упс! Страница не найдена')
                     continue
                 products_div = soup.find('div', {'class': 'product-base-info_content'})
+                # print('soup:\n', soup)
                 if products_div is None:
                     print('products_div is None!')
                     continue
@@ -293,8 +295,8 @@ class UtkonosHandler():
                 except Exception as e:
                     print(e)
                     print('soup:\n', soup)
-                    raise AttributeError
-                    # continue
+                    # raise AttributeError
+                    continue
                 if 'InStock' not in soup.find('meta', {"itemprop": "availability"}).get('content'):
                     print('Снят с продажи!\n')
                     continue
