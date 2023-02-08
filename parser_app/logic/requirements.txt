@@ -21,7 +21,7 @@ pyTelegramBotAPI==3.6.1
 python-dateutil==2.8.0
 python-telegram-bot==7.0.1
 pytz==2018.9
-requests==2.13.0
+requests==2.20.0
 selenium==3.141.0
 six==1.10.0
 soupsieve==1.8
