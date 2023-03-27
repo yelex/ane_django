@@ -74,7 +74,7 @@ PyVirtualDisplay==0.2.5
 pyzmq==19.0.0
 qtconsole==4.7.1
 QtPy==1.9.0
-redis==3.3.11
+redis==4.5.3
 requests==2.21.0
 retrying==1.3.3
 selenium==3.141.0
