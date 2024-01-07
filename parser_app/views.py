@@ -15,7 +15,7 @@ class PriceTableFood(tables.Table):
     gks = tables.Column(verbose_name='Росстат (руб.)')
     globus = tables.Column(verbose_name='Глобус (руб.)')
     okey = tables.Column(verbose_name='Окей (руб.)')
-    perekrestok = tables.Column(verbose_name='Перекресток (руб.)')
+    vprok = tables.Column(verbose_name='Перекресток (руб.)')
     utkonos = tables.Column(verbose_name='Утконос (руб.)')
 
 
@@ -45,10 +45,10 @@ def mean_prices(request):
     df.date = pd.to_datetime(df.date)
     # conn = sqlite3.connect('D:\ANE_django\db.sqlite3')
 
-    df_gks = pd.DataFrame(list(Gks.objects.filter(date=fresh_snapshot_date).all().values())) # pd.read_sql('SELECT * FROM parser_app_gks', conn)
-    df_gks.date = pd.to_datetime(df_gks.date)
+    # df_gks = pd.DataFrame(list(Gks.objects.filter(date=fresh_snapshot_date).all().values())) # pd.read_sql('SELECT * FROM parser_app_gks', conn)
+    # df_gks.date = pd.to_datetime(df_gks.date)
     
-    df = pd.concat([df, df_gks], join='inner')
+    # df = pd.concat([df, df_gks], join='inner')
 
     pivot_food = df[df.type=='food'].pivot_table(index=['type', 'category_title'],
                            columns='site_code', values='price_new', aggfunc=lambda x: round(x.mean(), 1)).reset_index()
